@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Helen Estates | Property Manager</title>
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body>
+  <div class="login-screen" id="login-screen">
+    <form class="login-card" id="login-form">
+      <div class="admin-brand admin-brand-dark">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 54"><path d="M8 30 32 8l24 22"/><path d="M16 28v18h32V28"/><path d="M24 46V31h16v15"/></svg>
+        </span>
+        <span><strong>HELEN ESTATES</strong><small>PROPERTY MANAGER</small></span>
+      </div>
+      <p class="kicker">Admin access</p>
+      <h1>Manage your property portfolio</h1>
+      <p class="muted">Sign in to add, edit or remove properties from the Helen Estates website.</p>
+      <label class="field full">
+        <span>Password</span>
+        <input id="admin-password" name="password" type="password" autocomplete="current-password" placeholder="Enter admin password" required />
+      </label>
+      <button class="primary-button full-button" type="submit">Sign in</button>
+      <p class="form-message" id="login-message" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <div class="app-shell" id="app-shell" hidden>
+    <aside class="sidebar">
+      <a class="admin-brand" href="/" aria-label="View Helen Estates website">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 54"><path d="M8 30 32 8l24 22"/><path d="M16 28v18h32V28"/><path d="M24 46V31h16v15"/></svg>
+        </span>
+        <span><strong>HELEN ESTATES</strong><small>PROPERTY MANAGER</small></span>
+      </a>
+
+      <nav class="side-nav" aria-label="Admin navigation">
+        <button class="side-link active" type="button" data-section="dashboard"><span>⌂</span> Dashboard</button>
+        <button class="side-link" type="button" data-section="editor"><span>＋</span> Add property</button>
+        <a class="side-link" href="/" target="_blank" rel="noopener"><span>↗</span> View website</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>Helen Estates CMS</p>
+        <button class="text-button" id="logout-button" type="button">Sign out</button>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="topbar">
+        <div>
+          <p class="kicker">Property management</p>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+        <button class="primary-button" id="add-property-top" type="button">+ Add property</button>
+      </header>
+
+      <section class="view active" id="dashboard-view" data-view="dashboard">
+        <div class="stats-grid">
+          <article class="stat-card"><span>Total properties</span><strong id="stat-total">0</strong><small>All active listings</small></article>
+          <article class="stat-card"><span>For sale</span><strong id="stat-buy">0</strong><small>Purchase listings</small></article>
+          <article class="stat-card"><span>To rent</span><strong id="stat-rent">0</strong><small>Rental listings</small></article>
+          <article class="stat-card"><span>Featured</span><strong id="stat-featured">0</strong><small>Homepage highlights</small></article>
+        </div>
+
+        <section class="panel">
+          <div class="panel-heading">
+            <div>
+              <p class="kicker">Portfolio</p>
+              <h2>Your properties</h2>
+            </div>
+            <div class="panel-tools">
+              <label class="search-control">
+                <span class="sr-only">Search properties</span>
+                <input id="admin-search" type="search" placeholder="Search title or location" />
+              </label>
+              <select id="admin-filter" aria-label="Filter by listing type">
+                <option value="all">All listings</option>
+                <option value="buy">For sale</option>
+                <option value="rent">To rent</option>
+                <option value="featured">Featured</option>
+              </select>
+            </div>
+          </div>
+          <div class="property-admin-list" id="property-admin-list"></div>
+          <div class="empty-state" id="empty-state" hidden>
+            <div>⌂</div>
+            <h3>No properties found</h3>
+            <p>Add your first listing or change the current search filters.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="view" id="editor-view" data-view="editor">
+        <form class="property-form" id="property-form" enctype="multipart/form-data">
+          <input type="hidden" id="property-id" />
+
+          <section class="panel form-panel">
+            <div class="panel-heading simple">
+              <div>
+                <p class="kicker" id="editor-kicker">New listing</p>
+                <h2 id="editor-title">Add a property</h2>
+                <p class="muted">Fill in the details below. The listing will appear on the public website after saving.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <label class="field field-wide">
+                <span>Property title *</span>
+                <input id="title" name="title" type="text" placeholder="e.g. Contemporary 3 Bedroom Home" required />
+              </label>
+
+              <label class="field">
+                <span>Listing type *</span>
+                <select id="purpose" name="purpose" required>
+                  <option value="buy">For sale</option>
+                  <option value="rent">To rent</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Property type *</span>
+                <select id="propertyType" name="propertyType" required>
+                  <option value="house">House</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="bungalow">Bungalow</option>
+                  <option value="terraced">Terraced house</option>
+                  <option value="semi-detached">Semi-detached</option>
+                  <option value="detached">Detached</option>
+                  <option value="studio">Studio</option>
+                  <option value="land">Land</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+              </label>
+
+              <label class="field field-wide">
+                <span>Location *</span>
+                <input id="property-location" name="location" type="text" placeholder="e.g. Edgbaston, Birmingham" required />
+              </label>
+
+              <label class="field">
+                <span id="price-label">Sale price (£) *</span>
+                <input id="price" name="price" type="number" min="0" step="1" placeholder="450000" required />
+              </label>
+
+              <label class="field">
+                <span>Bedrooms *</span>
+                <input id="bedrooms-input" name="bedrooms" type="number" min="0" max="30" step="1" value="3" required />
+              </label>
+
+              <label class="field">
+                <span>Bathrooms *</span>
+                <input id="bathrooms-input" name="bathrooms" type="number" min="0" max="30" step="1" value="2" required />
+              </label>
+
+              <label class="field">
+                <span>Floor area (sq ft) *</span>
+                <input id="size" name="size" type="number" min="0" step="1" placeholder="1500" required />
+              </label>
+
+              <label class="field field-wide">
+                <span>Description</span>
+                <textarea id="description" name="description" rows="5" placeholder="Add a concise property description for buyers or renters..."></textarea>
+              </label>
+
+              <label class="toggle-field field-wide">
+                <input id="featured" name="featured" type="checkbox" value="true" checked />
+                <span class="toggle"></span>
+                <span><strong>Featured property</strong><small>Show this listing in the homepage featured collection.</small></span>
+              </label>
+            </div>
+          </section>
+
+          <section class="panel form-panel">
+            <div class="panel-heading simple">
+              <div>
+                <p class="kicker">Photography</p>
+                <h2>Property images</h2>
+                <p class="muted">Upload up to 8 JPG, PNG or WEBP images. The first image is used as the property card cover.</p>
+              </div>
+            </div>
+
+            <label class="upload-zone" id="upload-zone" for="images">
+              <input id="images" name="images" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+              <span class="upload-icon">⇧</span>
+              <strong>Choose property images</strong>
+              <small>or drag and drop files here · maximum 8 MB each</small>
+            </label>
+
+            <div class="existing-images" id="existing-images" hidden>
+              <div class="existing-heading">
+                <span>Current images</span>
+                <label><input id="replace-images" type="checkbox" /> Replace existing images with newly selected files</label>
+              </div>
+              <div class="image-preview-grid" id="existing-image-grid"></div>
+            </div>
+
+            <div class="image-preview-grid" id="new-image-preview"></div>
+          </section>
+
+          <div class="form-actions">
+            <button class="secondary-button" id="cancel-edit" type="button">Cancel</button>
+            <button class="primary-button" id="save-property" type="submit">Publish property</button>
+          </div>
+          <p class="form-message" id="property-form-message" aria-live="polite"></p>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="admin.js"></script>
+</body>
+</html>

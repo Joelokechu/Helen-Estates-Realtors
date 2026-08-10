@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Helen Estates — premium property sales, lettings and valuations across the West Midlands." />
+  <title>Helen Estates | Find. Love. Live.</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header" id="top">
+    <div class="container nav-wrap">
+      <a class="brand" href="#top" aria-label="Helen Estates home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 64 54" role="img">
+            <path d="M8 30 32 8l24 22" />
+            <path d="M16 28v18h32V28" />
+            <path d="M24 46V31h16v15" />
+          </svg>
+        </span>
+        <span>
+          <strong>HELEN ESTATES</strong>
+          <small>FIND. LOVE. LIVE.</small>
+        </span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" aria-label="Open navigation">
+        <span></span><span></span><span></span>
+      </button>
+
+      <nav class="main-nav" id="main-navigation" aria-label="Main navigation">
+        <a class="active" href="#top">Home</a>
+        <a href="#properties">Buy</a>
+        <a href="#properties">Rent</a>
+        <a href="#valuation">Sell</a>
+        <a href="#about">About us</a>
+        <a href="#services">Services</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <a class="button button-gold header-cta" href="#contact">Get in touch</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
+        <p class="eyebrow">Welcome to Helen Estates</p>
+        <h1 id="hero-title">Your Property.<br />Our Priority.</h1>
+        <p class="hero-copy">We help you find the perfect property or achieve the best value for your home.</p>
+        <a class="button button-gold" href="#properties">Explore properties <span aria-hidden="true">→</span></a>
+      </div>
+    </section>
+
+    <section class="property-search" aria-label="Property search">
+      <div class="container">
+        <div class="search-shell">
+          <div class="search-tabs" role="tablist" aria-label="Property search type">
+            <button class="search-tab active" type="button" role="tab" aria-selected="true" data-mode="buy">Buy</button>
+            <button class="search-tab" type="button" role="tab" aria-selected="false" data-mode="rent">Rent</button>
+            <button class="search-tab" type="button" role="tab" aria-selected="false" data-mode="sell">Sell</button>
+          </div>
+
+          <form class="search-form" id="property-search-form">
+            <label>
+              <span>Location</span>
+              <div class="field-wrap">
+                <span class="field-icon" aria-hidden="true">⌖</span>
+                <input id="location" type="text" placeholder="Enter location" />
+              </div>
+            </label>
+            <label>
+              <span>Property type</span>
+              <select id="property-type">
+                <option value="any">Any</option>
+                <option value="house">House</option>
+                <option value="apartment">Apartment</option>
+                <option value="bungalow">Bungalow</option>
+              </select>
+            </label>
+            <label>
+              <span>Min price</span>
+              <select id="min-price">
+                <option value="0">No min</option>
+                <option value="150000">£150,000</option>
+                <option value="250000">£250,000</option>
+                <option value="350000">£350,000</option>
+              </select>
+            </label>
+            <label>
+              <span>Max price</span>
+              <select id="max-price">
+                <option value="0">No max</option>
+                <option value="350000">£350,000</option>
+                <option value="500000">£500,000</option>
+                <option value="750000">£750,000</option>
+              </select>
+            </label>
+            <label>
+              <span>Bedrooms</span>
+              <select id="bedrooms">
+                <option value="any">Any</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
+              </select>
+            </label>
+            <button class="button button-gold search-button" type="submit">Search <span aria-hidden="true">⌕</span></button>
+          </form>
+          <p class="search-message" id="search-message" aria-live="polite"></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section properties-section" id="properties">
+      <div class="container">
+        <div class="section-heading-row">
+          <div>
+            <p class="eyebrow">Featured properties</p>
+            <h2>Handpicked for You</h2>
+          </div>
+          <button class="text-link view-all-button" id="view-all-properties" type="button">View all properties <span aria-hidden="true">→</span></button>
+        </div>
+
+        <div class="property-grid" id="property-grid" aria-live="polite">
+          <p class="properties-loading" id="properties-loading">Loading properties…</p>
+        </div>
+        <p class="properties-status" id="properties-status" hidden></p>
+      </div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="container about-grid">
+        <div class="about-copy">
+          <p class="eyebrow">About Helen Estates</p>
+          <h2>A Better Way<br />to Move</h2>
+          <p>At Helen Estates, we combine local expertise with a personal approach to deliver an exceptional service for buyers, renters and sellers.</p>
+
+          <div class="benefit-list">
+            <div class="benefit">
+              <span class="benefit-icon">⌂</span>
+              <div><strong>Local expertise</strong><small>In-depth knowledge of your area.</small></div>
+            </div>
+            <div class="benefit">
+              <span class="benefit-icon">♧</span>
+              <div><strong>Trusted service</strong><small>We put your goals first.</small></div>
+            </div>
+            <div class="benefit">
+              <span class="benefit-icon">♙</span>
+              <div><strong>Results driven</strong><small>Achieving the best outcomes for you.</small></div>
+            </div>
+          </div>
+
+          <a class="button button-gold" href="#contact">Learn more about us <span aria-hidden="true">→</span></a>
+        </div>
+
+        <div class="about-image">
+          <img src="about.jpg" alt="Elegant, bright sitting room" />
+        </div>
+
+        <div class="valuation-card" id="valuation">
+          <p class="eyebrow">Looking to sell?</p>
+          <h2>Get the Best Value for Your Property</h2>
+          <p>Our expert team will market your property to the right audience and help you achieve the best possible price.</p>
+          <a class="button button-gold" href="#contact">Book a free valuation <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-section" aria-label="Company statistics">
+      <div class="container stats-grid">
+        <div class="stat"><span>⌂</span><div><strong data-count="1250">0</strong><small>Properties sold</small></div></div>
+        <div class="stat"><span>♧</span><div><strong data-count="3000">0</strong><small>Happy clients</small></div></div>
+        <div class="stat"><span>⌖</span><div><strong data-count="15">0</strong><small>Locations covered</small></div></div>
+        <div class="stat"><span>☆</span><div><strong>5 ★</strong><small>Client rating</small></div></div>
+      </div>
+    </section>
+
+    <section class="services-section" id="services">
+      <div class="container">
+        <div class="section-heading centered">
+          <p class="eyebrow">How we can help</p>
+          <h2>Property Services Built Around You</h2>
+        </div>
+        <div class="services-grid">
+          <article><span>01</span><h3>Property sales</h3><p>Confident marketing, qualified buyers and expert support from valuation to completion.</p></article>
+          <article><span>02</span><h3>Lettings</h3><p>Thoughtful tenant matching and reliable property management for landlords and renters.</p></article>
+          <article><span>03</span><h3>Valuations</h3><p>Clear, evidence-led valuations informed by local knowledge and current market conditions.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="newsletter">
+      <div class="container newsletter-row">
+        <div>
+          <h2>Stay Updated</h2>
+          <p>Be the first to know about new properties and exclusive offers.</p>
+        </div>
+        <form id="newsletter-form" class="newsletter-form">
+          <label class="sr-only" for="newsletter-email">Email address</label>
+          <input id="newsletter-email" type="email" placeholder="Enter your email address" required />
+          <button class="button button-gold" type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-message" id="newsletter-message" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer" id="contact">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 54"><path d="M8 30 32 8l24 22"/><path d="M16 28v18h32V28"/><path d="M24 46V31h16v15"/></svg>
+          </span>
+          <span><strong>HELEN ESTATES</strong><small>FIND. LOVE. LIVE.</small></span>
+        </a>
+        <p>Your trusted real estate partner. Helping you find, sell and invest with confidence.</p>
+      </div>
+
+      <div><h3>Quick links</h3><a href="#properties">Buy</a><a href="#properties">Rent</a><a href="#valuation">Sell</a><a href="#about">About us</a></div>
+      <div><h3>Services</h3><a href="#valuation">Property valuation</a><a href="#services">Mortgage advice</a><a href="#services">Property management</a><a href="#services">Investments</a></div>
+      <div><h3>Company</h3><a href="#about">About us</a><a href="#contact">Testimonials</a><a href="#contact">Careers</a><a href="#contact">Contact us</a></div>
+      <div><h3>Contact us</h3><a href="tel:+441214567890">0121 456 7890</a><a href="mailto:hello@helenestates.co.uk">hello@helenestates.co.uk</a><p>123 Colmore Row,<br />Birmingham, B3 3AP</p></div>
+    </div>
+
+    <div class="container footer-bottom">
+      <p>© <span id="current-year"></span> Helen Estates. All rights reserved.</p>
+      <div><a href="#">Privacy policy</a><a href="#">Terms &amp; conditions</a></div>
+    </div>
+  </footer>
+
+  <button class="back-to-top" type="button" aria-label="Back to top">↑</button>
+  <script src="script.js"></script>
+</body>
+</html>
