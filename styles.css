@@ -88,18 +88,85 @@ h3 { line-height: 1.25; }
 }
 .site-header.scrolled { background: rgba(6,51,47,.985); box-shadow: 0 14px 36px rgba(0,0,0,.16); }
 .nav-wrap { min-height: 106px; display: flex; align-items: center; justify-content: space-between; gap: 26px; }
-.brand { display: inline-flex; align-items: center; min-width: 0; flex-shrink: 0; }
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 22px;
+  min-width: 0;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+
+.brand-badge {
+  width: 102px;
+  height: 102px;
+  display: grid;
+  place-items: center;
+  background: #f8f5ef;
+  border: 2px solid rgba(215, 173, 99, 0.88);
+  border-radius: 50%;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.16);
+  overflow: hidden;
+}
+
+.brand-badge-footer {
+  width: 84px;
+  height: 84px;
+  box-shadow: 0 8px 18px rgba(0,0,0,.18);
+}
+
 .brand-logo {
   display: block;
-  width: auto;
+  width: 76%;
   height: auto;
   object-fit: contain;
-  filter: invert(1) brightness(1.08);
+  filter: none;
 }
-.brand-logo-header { width: 228px; max-height: 82px; }
-.brand-logo-footer { width: 245px; max-height: 92px; opacity: .96; }
-.footer-logo-link { width: fit-content; }
-.brand-wordmark { display: none; }
+
+.brand-logo-header,
+.brand-logo-footer {
+  max-height: none;
+}
+
+.brand-wordmark {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  line-height: 1;
+}
+
+.brand-wordmark strong {
+  margin: 0;
+  color: var(--white);
+  font-family: "Playfair Display", serif;
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+}
+
+.brand-wordmark small {
+  margin-top: 10px;
+  color: var(--gold);
+  font-size: clamp(.86rem, 1.35vw, 1.05rem);
+  font-weight: 700;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+}
+
+.brand-footer {
+  align-items: center;
+}
+
+.brand-wordmark-footer strong {
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+}
+
+.brand-wordmark-footer small {
+  margin-top: 8px;
+  font-size: .82rem;
+  letter-spacing: .28em;
+}
 .main-nav { display: flex; align-items: center; gap: clamp(15px, 1.8vw, 27px); margin-left: auto; }
 .main-nav a { position: relative; font-size: .74rem; text-transform: uppercase; letter-spacing: .04em; }
 .main-nav a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -12px; height: 2px; background: linear-gradient(135deg, var(--coral), var(--gold)); transition: right 180ms ease; }
@@ -366,6 +433,28 @@ h3 { line-height: 1.25; }
 .status-actions { display: flex; flex-wrap: wrap; gap: 10px; }
 
 @media (max-width: 620px) {
+  .nav-wrap { min-height: 86px; }
+  .brand {
+    gap: 10px;
+  }
+  .brand-badge {
+    width: 62px;
+    height: 62px;
+    border-width: 1.5px;
+  }
+  .brand-wordmark strong {
+    font-size: 1.28rem;
+    letter-spacing: -0.02em;
+  }
+  .brand-wordmark small {
+    margin-top: 5px;
+    font-size: .58rem;
+    letter-spacing: .18em;
+  }
+  .header-cta {
+    display: none;
+  }
+
   .status-main { padding-top: 42px; }
   .status-card { padding: 24px 18px; }
   .status-topline { display: grid; }
