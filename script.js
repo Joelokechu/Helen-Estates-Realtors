@@ -9,8 +9,139 @@ const propertyGrid = document.getElementById('property-grid');
 const propertiesLoading = document.getElementById('properties-loading');
 const propertiesStatus = document.getElementById('properties-status');
 const viewAllButton = document.getElementById('view-all-properties');
-const newsletterForm = document.getElementById('newsletter-form');
-const newsletterMessage = document.getElementById('newsletter-message');
+const ticketForm = document.getElementById('ticket-form');
+const ticketStatus = document.getElementById('ticket-message-status');
+const ticketReference = document.getElementById('ticket-property-reference');
+const ticketBudgetLabel = document.getElementById('ticket-budget-label');
+const ticketConfirmation = document.getElementById('ticket-confirmation');
+const confirmationName = document.getElementById('confirmation-name');
+const confirmationReference = document.getElementById('confirmation-reference');
+const confirmationEmailNote = document.getElementById('confirmation-email-note');
+const confirmationStatusLink = document.getElementById('confirmation-status-link');
+const newRequestButton = document.getElementById('new-request-button');
+const publicConfig = window.HELEN_ESTATES_CONFIG || {};
+const backendConfigured = Boolean(
+  publicConfig.supabaseUrl &&
+  publicConfig.supabasePublicKey &&
+  !String(publicConfig.supabaseUrl).includes('YOUR_') &&
+  !String(publicConfig.supabasePublicKey).includes('YOUR_')
+);
+
+/*
+  FRONTEND / BACKEND BRIDGE
+  -------------------------
+  The public site stays on GitHub Pages. Supabase stores published properties and
+  property-request tickets. Customer tickets are created through an Edge Function
+  so private database credentials and ticket access tokens never live in the browser.
+*/
+const BACKEND = {
+  enabled: backendConfigured,
+
+  async getPublishedProperties() {
+    const base = String(publicConfig.supabaseUrl).replace(/\/$/, '');
+    const url = new URL(`${base}/rest/v1/properties`);
+    url.searchParams.set('select', 'id,title,purpose,property_type,location,bedrooms,bathrooms,size,price,currency,price_period,featured,status,images,created_at');
+    url.searchParams.set('published', 'eq.true');
+    url.searchParams.set('order', 'featured.desc,created_at.desc');
+
+    const response = await fetch(url, {
+      headers: {
+        apikey: publicConfig.supabasePublicKey,
+        Authorization: `Bearer ${publicConfig.supabasePublicKey}`
+      }
+    });
+    if (!response.ok) throw new Error('Could not load published properties.');
+    const rows = await response.json();
+    return rows.map(row => ({
+      ...row,
+      propertyType: row.property_type,
+      pricePeriod: row.price_period
+    }));
+  },
+
+  async createTicket(ticket) {
+    const base = String(publicConfig.supabaseUrl).replace(/\/$/, '');
+    const response = await fetch(`${base}/functions/v1/create-ticket`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: publicConfig.supabasePublicKey,
+        Authorization: `Bearer ${publicConfig.supabasePublicKey}`
+      },
+      body: JSON.stringify(ticket)
+    });
+
+    let payload = {};
+    try { payload = await response.json(); } catch (_error) {}
+    if (!response.ok) throw new Error(payload.error || 'Could not submit your request.');
+    return payload;
+  }
+};
+
+const DEMO_PROPERTIES = [
+  {
+    id: 'HER-001',
+    title: 'Contemporary Pool Villa',
+    purpose: 'buy',
+    propertyType: 'house',
+    location: 'Soufrière',
+    bedrooms: 4,
+    bathrooms: 4,
+    size: 2800,
+    price: 875000,
+    currency: 'USD',
+    featured: true,
+    status: 'Available',
+    images: ['property-1.jpg']
+  },
+  {
+    id: 'HER-002',
+    title: 'Waterfront Two Bedroom Apartment',
+    purpose: 'rent',
+    propertyType: 'apartment',
+    location: 'Rodney Bay',
+    bedrooms: 2,
+    bathrooms: 2,
+    size: 1050,
+    price: 2200,
+    currency: 'USD',
+    pricePeriod: 'month',
+    featured: true,
+    status: 'Available',
+    images: ['property-2.jpg']
+  },
+  {
+    id: 'HER-003',
+    title: 'Family Home with Garden',
+    purpose: 'buy',
+    propertyType: 'house',
+    location: 'Gros Islet',
+    bedrooms: 3,
+    bathrooms: 2,
+    size: 1850,
+    price: 465000,
+    currency: 'USD',
+    featured: true,
+    status: 'Available',
+    images: ['property-3.jpg']
+  },
+  {
+    id: 'HER-004',
+    title: 'Bright One Bedroom Apartment',
+    purpose: 'rent',
+    propertyType: 'apartment',
+    location: 'Marigot Bay',
+    bedrooms: 1,
+    bathrooms: 1,
+    size: 720,
+    price: 1450,
+    currency: 'USD',
+    pricePeriod: 'month',
+    featured: true,
+    status: 'Available',
+    images: ['property-4.jpg']
+  }
+];
 
 let activeMode = 'buy';
 let allProperties = [];
@@ -43,23 +174,25 @@ navToggle.addEventListener('click', () => {
 });
 
 mainNav.querySelectorAll('a').forEach(link => link.addEventListener('click', closeNavigation));
-
 window.addEventListener('scroll', () => {
-  header.classList.toggle('scrolled', window.scrollY > 30);
-  backToTop.classList.toggle('visible', window.scrollY > 550);
+  header.classList.toggle('scrolled', window.scrollY > 24);
+  backToTop.classList.toggle('visible', window.scrollY > 580);
 });
-
 backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
 function formatPrice(property) {
-  const amount = Number(property.price || 0).toLocaleString('en-GB');
-  return property.purpose === 'rent'
-    ? `£${amount} <small>pcm</small>`
-    : `£${amount}`;
-}
-
-function formatPropertyType(value = '') {
-  return value.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+  const currency = property.currency || 'USD';
+  let value;
+  try {
+    value = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency,
+      maximumFractionDigits: 0
+    }).format(Number(property.price || 0));
+  } catch (_error) {
+    value = `${currency} ${Number(property.price || 0).toLocaleString('en-US')}`;
+  }
+  return property.pricePeriod ? `${value} <small>/ ${escapeHTML(property.pricePeriod)}</small>` : value;
 }
 
 function savedFavouriteIds() {
@@ -88,16 +221,22 @@ function renderPropertyCards(properties) {
     propertyGrid.innerHTML = '';
     propertiesStatus.hidden = false;
     propertiesStatus.textContent = searchActive
-      ? 'No exact matches found. Try widening your search.'
-      : 'No properties are currently available.';
+      ? 'No exact matches found. Try widening your search or open a property request and we can look for you.'
+      : 'No properties are currently published.';
     return;
   }
 
   propertiesStatus.hidden = true;
   propertyGrid.innerHTML = properties.map(property => {
-    const image = property.images?.[0] || '/property-1.jpg';
+    const image = property.images?.[0] || 'property-1.jpg';
     const isRent = property.purpose === 'rent';
     const saved = favourites.has(property.id);
+    const meta = [
+      property.bedrooms ? `${Number(property.bedrooms)} ${Number(property.bedrooms) === 1 ? 'bed' : 'beds'}` : '',
+      property.bathrooms ? `${Number(property.bathrooms)} ${Number(property.bathrooms) === 1 ? 'bath' : 'baths'}` : '',
+      property.size ? `${Number(property.size).toLocaleString('en-US')} sq ft` : ''
+    ].filter(Boolean);
+
     return `
       <article class="property-card" data-id="${escapeHTML(property.id)}">
         <div class="property-image">
@@ -107,18 +246,16 @@ function renderPropertyCards(properties) {
           <button class="favourite ${saved ? 'saved' : ''}" type="button" data-favourite-id="${escapeHTML(property.id)}" aria-label="Save ${escapeHTML(property.title)}" aria-pressed="${saved}">${saved ? '♥' : '♡'}</button>
         </div>
         <div class="property-body">
+          <p class="property-kicker">${escapeHTML(property.id)} · ${escapeHTML(property.status || 'Available')}</p>
           <h3>${escapeHTML(property.title)}</h3>
           <p class="location">${escapeHTML(property.location)}</p>
-          <ul class="property-meta" aria-label="Property features">
-            <li>${Number(property.bedrooms)} ${Number(property.bedrooms) === 1 ? 'bed' : 'beds'}</li>
-            <li>${Number(property.bathrooms)} ${Number(property.bathrooms) === 1 ? 'bath' : 'baths'}</li>
-            <li>${Number(property.size).toLocaleString('en-GB')} sq ft</li>
-          </ul>
-          ${property.description ? `<p class="property-description">${escapeHTML(property.description)}</p>` : ''}
-          <p class="price">${formatPrice(property)}</p>
+          <ul class="property-meta" aria-label="Property features">${meta.map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>
+          <div class="property-bottom">
+            <p class="price">${formatPrice(property)}</p>
+            <button class="property-enquire" type="button" data-enquire-property="${escapeHTML(property.id)}">Enquire →</button>
+          </div>
         </div>
-      </article>
-    `;
+      </article>`;
   }).join('');
 }
 
@@ -135,7 +272,20 @@ function renderDefaultProperties() {
 
 propertyGrid.addEventListener('click', event => {
   const favouriteButton = event.target.closest('[data-favourite-id]');
-  if (favouriteButton) toggleFavourite(favouriteButton.dataset.favouriteId, favouriteButton);
+  if (favouriteButton) {
+    toggleFavourite(favouriteButton.dataset.favouriteId, favouriteButton);
+    return;
+  }
+
+  const enquireButton = event.target.closest('[data-enquire-property]');
+  if (enquireButton) {
+    const id = enquireButton.dataset.enquireProperty;
+    const property = allProperties.find(item => item.id === id);
+    ticketReference.value = id;
+    selectRequestType(property?.purpose || 'buy');
+    document.getElementById('ticket-message').value = `I'm interested in ${property?.title || 'this property'} (${id}). Please contact me with more information.`;
+    document.getElementById('request').scrollIntoView({ behavior: 'smooth' });
+  }
 });
 
 viewAllButton.addEventListener('click', () => {
@@ -147,60 +297,42 @@ function setPriceOptions(mode) {
   const minSelect = document.getElementById('min-price');
   const maxSelect = document.getElementById('max-price');
 
-  if (mode === 'rent') {
-    minSelect.innerHTML = `
-      <option value="0">No min</option>
-      <option value="750">£750 pcm</option>
-      <option value="1000">£1,000 pcm</option>
-      <option value="1500">£1,500 pcm</option>
-      <option value="2000">£2,000 pcm</option>`;
-    maxSelect.innerHTML = `
-      <option value="0">No max</option>
-      <option value="1000">£1,000 pcm</option>
-      <option value="1500">£1,500 pcm</option>
-      <option value="2000">£2,000 pcm</option>
-      <option value="3000">£3,000 pcm</option>`;
-  } else {
-    minSelect.innerHTML = `
-      <option value="0">No min</option>
-      <option value="150000">£150,000</option>
-      <option value="250000">£250,000</option>
-      <option value="350000">£350,000</option>
-      <option value="500000">£500,000</option>`;
-    maxSelect.innerHTML = `
-      <option value="0">No max</option>
-      <option value="350000">£350,000</option>
-      <option value="500000">£500,000</option>
-      <option value="750000">£750,000</option>
-      <option value="1000000">£1,000,000</option>`;
-  }
+  const rentMin = [[0, 'No min'], [750, 'US$750'], [1200, 'US$1,200'], [2000, 'US$2,000'], [3000, 'US$3,000']];
+  const rentMax = [[0, 'No max'], [1500, 'US$1,500'], [2500, 'US$2,500'], [4000, 'US$4,000'], [6000, 'US$6,000']];
+  const buyMin = [[0, 'No min'], [150000, 'US$150,000'], [300000, 'US$300,000'], [500000, 'US$500,000'], [750000, 'US$750,000']];
+  const buyMax = [[0, 'No max'], [350000, 'US$350,000'], [600000, 'US$600,000'], [1000000, 'US$1,000,000'], [2000000, 'US$2,000,000']];
+  const makeOptions = options => options.map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+
+  minSelect.innerHTML = makeOptions(mode === 'rent' ? rentMin : buyMin);
+  maxSelect.innerHTML = makeOptions(mode === 'rent' ? rentMax : buyMax);
 }
 
-searchTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    activeMode = tab.dataset.mode;
-    searchTabs.forEach(item => {
-      const isActive = item === tab;
-      item.classList.toggle('active', isActive);
-      item.setAttribute('aria-selected', String(isActive));
-    });
+function setSearchMode(mode) {
+  activeMode = mode === 'rent' ? 'rent' : 'buy';
+  searchTabs.forEach(tab => {
+    const isActive = tab.dataset.mode === activeMode;
+    tab.classList.toggle('active', isActive);
+    tab.setAttribute('aria-selected', String(isActive));
+  });
+  setPriceOptions(activeMode);
+  searchMessage.classList.remove('show');
+}
 
-    const buttonLabel = activeMode === 'sell' ? 'Book valuation' : 'Search';
-    document.querySelector('.search-button').firstChild.textContent = `${buttonLabel} `;
-    searchMessage.classList.remove('show');
-    if (activeMode !== 'sell') setPriceOptions(activeMode);
+searchTabs.forEach(tab => tab.addEventListener('click', () => setSearchMode(tab.dataset.mode)));
+
+document.querySelectorAll('[data-filter-link]').forEach(link => {
+  link.addEventListener('click', () => {
+    setSearchMode(link.dataset.filterLink);
+    setTimeout(() => {
+      const matches = allProperties.filter(property => property.purpose === activeMode);
+      searchActive = true;
+      renderPropertyCards(matches);
+    }, 50);
   });
 });
 
 searchForm.addEventListener('submit', event => {
   event.preventDefault();
-
-  if (activeMode === 'sell') {
-    document.getElementById('valuation').scrollIntoView({ behavior: 'smooth' });
-    searchMessage.textContent = 'Let’s arrange a free property valuation.';
-    searchMessage.classList.add('show');
-    return;
-  }
 
   const location = document.getElementById('location').value.trim().toLowerCase();
   const type = document.getElementById('property-type').value;
@@ -212,8 +344,8 @@ searchForm.addEventListener('submit', event => {
     const matchesMode = property.purpose === activeMode;
     const matchesLocation = !location || String(property.location).toLowerCase().includes(location);
     const matchesType = type === 'any' || property.propertyType === type;
-    const matchesBeds = bedrooms === 'any' || Number(property.bedrooms) >= Number(bedrooms);
-    const price = Number(property.price);
+    const matchesBeds = bedrooms === 'any' || Number(property.bedrooms || 0) >= Number(bedrooms);
+    const price = Number(property.price || 0);
     const matchesMin = !minPrice || price >= minPrice;
     const matchesMax = !maxPrice || price <= maxPrice;
     return matchesMode && matchesLocation && matchesType && matchesBeds && matchesMin && matchesMax;
@@ -223,53 +355,147 @@ searchForm.addEventListener('submit', event => {
   renderPropertyCards(matches);
   searchMessage.textContent = matches.length
     ? `${matches.length} matching ${matches.length === 1 ? 'property' : 'properties'} found.`
-    : 'No exact matches found. Try widening your search.';
+    : 'No exact matches found. You can open a property request and we can look for you.';
   searchMessage.classList.add('show');
   document.getElementById('properties').scrollIntoView({ behavior: 'smooth' });
 });
 
-async function loadProperties() {
-  try {
-    const response = await fetch('/api/properties');
-    if (!response.ok) throw new Error('Could not load properties.');
-    allProperties = await response.json();
-    propertiesLoading?.remove();
-    renderDefaultProperties();
-  } catch (error) {
-    if (propertiesLoading) propertiesLoading.textContent = 'Properties are temporarily unavailable.';
-    console.error(error);
-  }
+function selectRequestType(type) {
+  const normalized = ['buy', 'rent', 'sell'].includes(type) ? type : 'buy';
+  const input = ticketForm.querySelector(`input[name="requestType"][value="${normalized}"]`);
+  if (input) input.checked = true;
+  updateTicketLabels();
 }
 
-newsletterForm.addEventListener('submit', event => {
-  event.preventDefault();
-  const emailInput = document.getElementById('newsletter-email');
-  newsletterMessage.textContent = `Thanks — updates will be sent to ${emailInput.value}.`;
-  newsletterForm.reset();
+function updateTicketLabels() {
+  const type = ticketForm.querySelector('input[name="requestType"]:checked')?.value || 'buy';
+  ticketBudgetLabel.childNodes[0].nodeValue = type === 'sell' ? 'Expected price / valuation range' : 'Budget / target price';
+  document.getElementById('ticket-location').placeholder = type === 'sell'
+    ? 'Where is the property located?'
+    : 'Where would you like to live / invest?';
+}
+
+ticketForm.querySelectorAll('input[name="requestType"]').forEach(input => input.addEventListener('change', updateTicketLabels));
+document.querySelectorAll('[data-request-link]').forEach(link => link.addEventListener('click', () => selectRequestType(link.dataset.requestLink)));
+
+function makePreviewTicketReference() {
+  const date = new Date();
+  const stamp = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('');
+  const suffix = Math.random().toString(36).slice(2, 8).toUpperCase();
+  return `HER-${stamp}-${suffix}`;
+}
+
+function savePreviewTicket(ticket) {
+  const existing = JSON.parse(localStorage.getItem('helen-estates-demo-tickets') || '[]');
+  existing.unshift(ticket);
+  localStorage.setItem('helen-estates-demo-tickets', JSON.stringify(existing.slice(0, 30)));
+}
+
+function showTicketConfirmation({ name, reference, email, emailSent, statusUrl }) {
+  ticketForm.hidden = true;
+  ticketConfirmation.hidden = false;
+  confirmationName.textContent = name || 'there';
+  confirmationReference.textContent = reference || '—';
+
+  if (emailSent) {
+    confirmationEmailNote.textContent = `A receipt has been sent to ${email}. Keep it for your reference.`;
+  } else {
+    confirmationEmailNote.textContent = `Your request is safely recorded. We could not confirm the receipt email, so please save your reference number.`;
+  }
+
+  if (statusUrl) {
+    confirmationStatusLink.href = statusUrl;
+    confirmationStatusLink.hidden = false;
+  } else {
+    confirmationStatusLink.hidden = true;
+  }
+
+  ticketConfirmation.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+newRequestButton?.addEventListener('click', () => {
+  ticketConfirmation.hidden = true;
+  ticketForm.hidden = false;
+  ticketStatus.className = 'ticket-message';
+  ticketStatus.textContent = '';
+  ticketForm.reset();
+  selectRequestType('buy');
+  ticketReference.value = '';
+  ticketForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
-const counters = document.querySelectorAll('[data-count]');
-const counterObserver = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const element = entry.target;
-    const target = Number(element.dataset.count);
-    const duration = 1100;
-    const start = performance.now();
+ticketForm.addEventListener('submit', async event => {
+  event.preventDefault();
+  ticketStatus.className = 'ticket-message';
+  ticketStatus.textContent = '';
 
-    function updateCounter(now) {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      element.textContent = Math.floor(target * eased).toLocaleString('en-GB');
-      if (progress < 1) requestAnimationFrame(updateCounter);
+  const submitButton = ticketForm.querySelector('.ticket-submit');
+  const formData = new FormData(ticketForm);
+  const ticket = {
+    requestType: formData.get('requestType'),
+    name: String(formData.get('name') || '').trim(),
+    email: String(formData.get('email') || '').trim(),
+    phone: String(formData.get('phone') || '').trim(),
+    contactMethod: formData.get('contactMethod'),
+    location: String(formData.get('location') || '').trim(),
+    propertyType: formData.get('propertyType'),
+    budget: String(formData.get('budget') || '').trim(),
+    bedrooms: formData.get('bedrooms'),
+    message: String(formData.get('message') || '').trim(),
+    propertyReference: String(formData.get('propertyReference') || '').trim(),
+    website: String(formData.get('website') || '').trim()
+  };
+
+  const isLocalPreview = location.protocol === 'file:' || ['localhost', '127.0.0.1'].includes(location.hostname);
+
+  try {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Sending request…';
+
+    if (BACKEND.enabled) {
+      const result = await BACKEND.createTicket(ticket);
+      showTicketConfirmation({
+        name: ticket.name,
+        reference: result.reference,
+        email: ticket.email,
+        emailSent: Boolean(result.emailSent),
+        statusUrl: result.statusUrl || ''
+      });
+    } else if (isLocalPreview) {
+      const previewReference = makePreviewTicketReference();
+      savePreviewTicket({ ...ticket, id: previewReference, status: 'new', createdAt: new Date().toISOString() });
+      ticketStatus.textContent = `Preview mode: ${previewReference} was saved only in this browser. Connect Supabase before using this form with real customers.`;
+      ticketStatus.classList.add('show', 'success');
+    } else {
+      throw new Error('The online request desk is not connected yet. Please try again once the service is enabled.');
     }
+  } catch (error) {
+    console.error(error);
+    ticketStatus.textContent = error.message || 'We could not submit your request. Please try again shortly.';
+    ticketStatus.classList.add('show', 'error');
+  } finally {
+    submitButton.disabled = false;
+    submitButton.innerHTML = 'Submit property request <span aria-hidden="true">→</span>';
+  }
+});
 
-    requestAnimationFrame(updateCounter);
-    counterObserver.unobserve(element);
-  });
-}, { threshold: 0.45 });
+async function loadProperties() {
+  try {
+    if (BACKEND.enabled) {
+      allProperties = await BACKEND.getPublishedProperties();
+    } else {
+      allProperties = DEMO_PROPERTIES;
+    }
+  } catch (error) {
+    console.error(error);
+    allProperties = DEMO_PROPERTIES;
+  }
 
-counters.forEach(counter => counterObserver.observe(counter));
+  propertiesLoading?.remove();
+  renderDefaultProperties();
+}
+
 document.getElementById('current-year').textContent = new Date().getFullYear();
 setPriceOptions('buy');
+updateTicketLabels();
 loadProperties();
