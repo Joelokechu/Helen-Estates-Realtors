@@ -3,25 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Helen Estates — premium property sales, lettings and valuations across the West Midlands." />
-  <title>Helen Estates | Find. Love. Live.</title>
+  <meta name="description" content="Helen Estates Realtors — a modern property service for buying, renting, selling and advertising property." />
+  <meta name="theme-color" content="#063b37" />
+  <title>Helen Estates Realtors | Buy, Rent & Sell Property</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
+  <script src="supabase-config.js"></script>
 </head>
 <body>
   <header class="site-header" id="top">
     <div class="container nav-wrap">
-      <a class="brand" href="#top" aria-label="Helen Estates home">
-        <span class="brand-mark" aria-hidden="true">
-          <svg viewBox="0 0 64 54" role="img">
-            <path d="M8 30 32 8l24 22" />
-            <path d="M16 28v18h32V28" />
-            <path d="M24 46V31h16v15" />
-          </svg>
-        </span>
-        <span>
-          <strong>HELEN ESTATES</strong>
-          <small>FIND. LOVE. LIVE.</small>
-        </span>
+      <a class="brand" href="#top" aria-label="Helen Estates Realtors home">
+        <img class="brand-logo brand-logo-header" src="helen-estates-logo-transparent.png" alt="Helen Estates Realtors" />
       </a>
 
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-navigation" aria-label="Open navigation">
@@ -30,72 +25,72 @@
 
       <nav class="main-nav" id="main-navigation" aria-label="Main navigation">
         <a class="active" href="#top">Home</a>
-        <a href="#properties">Buy</a>
-        <a href="#properties">Rent</a>
-        <a href="#valuation">Sell</a>
-        <a href="#about">About us</a>
-        <a href="#services">Services</a>
+        <a href="#properties" data-filter-link="buy">Buy</a>
+        <a href="#properties" data-filter-link="rent">Rent</a>
+        <a href="#request" data-request-link="sell">Sell</a>
+        <a href="#request">Property request</a>
+        <a href="#about">About</a>
         <a href="#contact">Contact</a>
       </nav>
 
-      <a class="button button-gold header-cta" href="#contact">Get in touch</a>
+      <a class="button button-accent header-cta" href="#request">Start a request</a>
     </div>
   </header>
 
   <main>
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-overlay"></div>
+      <div class="tropical-orb tropical-orb-one" aria-hidden="true"></div>
+      <div class="tropical-orb tropical-orb-two" aria-hidden="true"></div>
       <div class="container hero-content">
-        <p class="eyebrow">Welcome to Helen Estates</p>
-        <h1 id="hero-title">Your Property.<br />Our Priority.</h1>
-        <p class="hero-copy">We help you find the perfect property or achieve the best value for your home.</p>
-        <a class="button button-gold" href="#properties">Explore properties <span aria-hidden="true">→</span></a>
+        <p class="eyebrow light">Helen Estates Realtors</p>
+        <h1 id="hero-title">Property made<br />more personal.</h1>
+        <p class="hero-copy">Discover homes, investment opportunities and rentals — or tell us exactly what you need and let us help you find it.</p>
+        <div class="hero-actions">
+          <a class="button button-accent" href="#properties">Explore properties <span aria-hidden="true">→</span></a>
+          <a class="button button-ghost" href="#request">Tell us what you need</a>
+        </div>
+        <div class="hero-proof" aria-label="Helen Estates service promise">
+          <span>Buy</span><i></i><span>Rent</span><i></i><span>Sell</span><i></i><span>Advertise</span>
+        </div>
       </div>
     </section>
 
     <section class="property-search" aria-label="Property search">
       <div class="container">
         <div class="search-shell">
+          <div class="search-intro">
+            <p class="eyebrow">Find your property</p>
+            <h2>Search what is available</h2>
+          </div>
+
           <div class="search-tabs" role="tablist" aria-label="Property search type">
             <button class="search-tab active" type="button" role="tab" aria-selected="true" data-mode="buy">Buy</button>
             <button class="search-tab" type="button" role="tab" aria-selected="false" data-mode="rent">Rent</button>
-            <button class="search-tab" type="button" role="tab" aria-selected="false" data-mode="sell">Sell</button>
           </div>
 
           <form class="search-form" id="property-search-form">
             <label>
               <span>Location</span>
-              <div class="field-wrap">
-                <span class="field-icon" aria-hidden="true">⌖</span>
-                <input id="location" type="text" placeholder="Enter location" />
-              </div>
+              <input id="location" type="text" placeholder="Area, town or district" />
             </label>
             <label>
               <span>Property type</span>
               <select id="property-type">
-                <option value="any">Any</option>
-                <option value="house">House</option>
-                <option value="apartment">Apartment</option>
-                <option value="bungalow">Bungalow</option>
+                <option value="any">Any type</option>
+                <option value="house">House / Villa</option>
+                <option value="apartment">Apartment / Condo</option>
+                <option value="land">Land</option>
+                <option value="commercial">Commercial</option>
               </select>
             </label>
             <label>
               <span>Min price</span>
-              <select id="min-price">
-                <option value="0">No min</option>
-                <option value="150000">£150,000</option>
-                <option value="250000">£250,000</option>
-                <option value="350000">£350,000</option>
-              </select>
+              <select id="min-price"></select>
             </label>
             <label>
               <span>Max price</span>
-              <select id="max-price">
-                <option value="0">No max</option>
-                <option value="350000">£350,000</option>
-                <option value="500000">£500,000</option>
-                <option value="750000">£750,000</option>
-              </select>
+              <select id="max-price"></select>
             </label>
             <label>
               <span>Bedrooms</span>
@@ -107,7 +102,7 @@
                 <option value="4">4+</option>
               </select>
             </label>
-            <button class="button button-gold search-button" type="submit">Search <span aria-hidden="true">⌕</span></button>
+            <button class="button button-accent search-button" type="submit">Search <span aria-hidden="true">⌕</span></button>
           </form>
           <p class="search-message" id="search-message" aria-live="polite"></p>
         </div>
@@ -118,8 +113,9 @@
       <div class="container">
         <div class="section-heading-row">
           <div>
-            <p class="eyebrow">Featured properties</p>
-            <h2>Handpicked for You</h2>
+            <p class="eyebrow">Current portfolio</p>
+            <h2>Featured properties</h2>
+            <p class="section-copy">Listings published from the Helen Estates management system will appear here automatically.</p>
           </div>
           <button class="text-link view-all-button" id="view-all-properties" type="button">View all properties <span aria-hidden="true">→</span></button>
         </div>
@@ -131,50 +127,155 @@
       </div>
     </section>
 
-    <section class="about-section" id="about">
-      <div class="container about-grid">
-        <div class="about-copy">
-          <p class="eyebrow">About Helen Estates</p>
-          <h2>A Better Way<br />to Move</h2>
-          <p>At Helen Estates, we combine local expertise with a personal approach to deliver an exceptional service for buyers, renters and sellers.</p>
+    <section class="request-section" id="request">
+      <div class="container request-grid">
+        <div class="request-copy">
+          <p class="eyebrow light">Property request desk</p>
+          <h2>Tell us what you need.<br />We’ll take it from there.</h2>
+          <p>Buying, renting, selling or advertising a property? Submit a request with the essentials. It will become a ticket in the private Helen Estates admin dashboard so the team can follow up directly.</p>
 
-          <div class="benefit-list">
-            <div class="benefit">
-              <span class="benefit-icon">⌂</span>
-              <div><strong>Local expertise</strong><small>In-depth knowledge of your area.</small></div>
-            </div>
-            <div class="benefit">
-              <span class="benefit-icon">♧</span>
-              <div><strong>Trusted service</strong><small>We put your goals first.</small></div>
-            </div>
-            <div class="benefit">
-              <span class="benefit-icon">♙</span>
-              <div><strong>Results driven</strong><small>Achieving the best outcomes for you.</small></div>
-            </div>
+          <div class="request-steps" aria-label="How the property request service works">
+            <article>
+              <span>01</span>
+              <div><strong>Submit your request</strong><p>Share your contact details and the basics of what you need.</p></div>
+            </article>
+            <article>
+              <span>02</span>
+              <div><strong>We review it</strong><p>Your request appears in the private admin queue with a unique reference.</p></div>
+            </article>
+            <article>
+              <span>03</span>
+              <div><strong>Keep your receipt</strong><p>We email your reference number and a secure link so you can check the request status without creating an account.</p></div>
+            </article>
+            <article>
+              <span>04</span>
+              <div><strong>We contact you</strong><p>Helen Estates aims to contact you within two working days to understand the requirement and agree the next step.</p></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="ticket-card">
+          <div class="ticket-card-head">
+            <p class="eyebrow">Open a property request</p>
+            <h3>How can we help?</h3>
+            <p>Fields marked * are required.</p>
           </div>
 
-          <a class="button button-gold" href="#contact">Learn more about us <span aria-hidden="true">→</span></a>
-        </div>
+          <form id="ticket-form" class="ticket-form">
+            <div class="hp-field" aria-hidden="true">
+              <label>Website<input name="website" type="text" tabindex="-1" autocomplete="off" /></label>
+            </div>
+            <div class="form-row form-row-three">
+              <label class="choice-card">
+                <input type="radio" name="requestType" value="buy" checked />
+                <span>Buy</span>
+              </label>
+              <label class="choice-card">
+                <input type="radio" name="requestType" value="rent" />
+                <span>Rent</span>
+              </label>
+              <label class="choice-card">
+                <input type="radio" name="requestType" value="sell" />
+                <span>Sell / Advertise</span>
+              </label>
+            </div>
 
-        <div class="about-image">
-          <img src="about.jpg" alt="Elegant, bright sitting room" />
-        </div>
+            <div class="form-row form-row-two">
+              <label>Full name *<input id="ticket-name" name="name" type="text" autocomplete="name" required /></label>
+              <label>Email *<input id="ticket-email" name="email" type="email" autocomplete="email" required /></label>
+            </div>
 
-        <div class="valuation-card" id="valuation">
-          <p class="eyebrow">Looking to sell?</p>
-          <h2>Get the Best Value for Your Property</h2>
-          <p>Our expert team will market your property to the right audience and help you achieve the best possible price.</p>
-          <a class="button button-gold" href="#contact">Book a free valuation <span aria-hidden="true">→</span></a>
+            <div class="form-row form-row-two">
+              <label>Phone / WhatsApp *<input id="ticket-phone" name="phone" type="tel" autocomplete="tel" required /></label>
+              <label>Preferred contact
+                <select id="ticket-contact-method" name="contactMethod">
+                  <option value="phone">Phone</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="email">Email</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="form-row form-row-two">
+              <label>Preferred area / property location *<input id="ticket-location" name="location" type="text" required placeholder="e.g. area, town, community" /></label>
+              <label>Property type
+                <select id="ticket-property-type" name="propertyType">
+                  <option value="any">Any / Not sure</option>
+                  <option value="house">House / Villa</option>
+                  <option value="apartment">Apartment / Condo</option>
+                  <option value="land">Land</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="form-row form-row-two">
+              <label id="ticket-budget-label">Budget / target price<input id="ticket-budget" name="budget" type="text" placeholder="e.g. US$350,000" /></label>
+              <label>Bedrooms
+                <select id="ticket-bedrooms" name="bedrooms">
+                  <option value="">Not specified</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                  <option value="4">4+</option>
+                  <option value="5">5+</option>
+                </select>
+              </label>
+            </div>
+
+            <label>Tell us a little more *
+              <textarea id="ticket-message" name="message" rows="5" required placeholder="Describe the property you want to find, sell, rent or advertise."></textarea>
+            </label>
+
+            <input id="ticket-property-reference" name="propertyReference" type="hidden" value="" />
+
+            <label class="consent-row">
+              <input id="ticket-consent" type="checkbox" required />
+              <span>I agree that Helen Estates Realtors may use these details to contact me about this request.</span>
+            </label>
+
+            <button class="button button-accent ticket-submit" type="submit">Submit property request <span aria-hidden="true">→</span></button>
+            <p class="ticket-message" id="ticket-message-status" aria-live="polite"></p>
+          </form>
+
+          <section class="ticket-confirmation" id="ticket-confirmation" hidden aria-live="polite">
+            <div class="confirmation-icon" aria-hidden="true">✓</div>
+            <p class="eyebrow">Request received</p>
+            <h3>Thank you, <span id="confirmation-name">there</span>.</h3>
+            <p>Your Helen Estates Realtors request has been recorded. We aim to contact you within two working days.</p>
+            <div class="confirmation-reference">
+              <span>Your reference</span>
+              <strong id="confirmation-reference">—</strong>
+            </div>
+            <p class="confirmation-email-note" id="confirmation-email-note"></p>
+            <a class="button button-accent" id="confirmation-status-link" href="request-status.html" hidden>View request status <span aria-hidden="true">→</span></a>
+            <button class="text-link confirmation-new-request" id="new-request-button" type="button">Submit another request</button>
+          </section>
         </div>
       </div>
     </section>
 
-    <section class="stats-section" aria-label="Company statistics">
-      <div class="container stats-grid">
-        <div class="stat"><span>⌂</span><div><strong data-count="1250">0</strong><small>Properties sold</small></div></div>
-        <div class="stat"><span>♧</span><div><strong data-count="3000">0</strong><small>Happy clients</small></div></div>
-        <div class="stat"><span>⌖</span><div><strong data-count="15">0</strong><small>Locations covered</small></div></div>
-        <div class="stat"><span>☆</span><div><strong>5 ★</strong><small>Client rating</small></div></div>
+    <section class="about-section" id="about">
+      <div class="container about-grid">
+        <div class="about-image">
+          <img src="about.jpg" alt="Bright, elegant interior" />
+          <div class="image-note">Personal service. Modern marketing. Local knowledge.</div>
+        </div>
+
+        <div class="about-copy">
+          <p class="eyebrow">About Helen Estates Realtors</p>
+          <h2>Property service with a human touch.</h2>
+          <p>Helen Estates Realtors is built around a simple idea: make it easier for people to find the right opportunity and easier for owners to put their property in front of serious prospects.</p>
+
+          <div class="service-pills" aria-label="Services">
+            <span>Property sales</span>
+            <span>Long-term rentals</span>
+            <span>Property sourcing</span>
+            <span>Owner advertising</span>
+          </div>
+
+          <a class="button button-dark" href="#request">Open a property request</a>
+        </div>
       </div>
     </section>
 
@@ -182,28 +283,20 @@
       <div class="container">
         <div class="section-heading centered">
           <p class="eyebrow">How we can help</p>
-          <h2>Property Services Built Around You</h2>
+          <h2>One place for both sides of the property search</h2>
         </div>
         <div class="services-grid">
-          <article><span>01</span><h3>Property sales</h3><p>Confident marketing, qualified buyers and expert support from valuation to completion.</p></article>
-          <article><span>02</span><h3>Lettings</h3><p>Thoughtful tenant matching and reliable property management for landlords and renters.</p></article>
-          <article><span>03</span><h3>Valuations</h3><p>Clear, evidence-led valuations informed by local knowledge and current market conditions.</p></article>
+          <article><span>01</span><h3>Find a property</h3><p>Tell us what you want to buy or rent and create a request even if the ideal listing is not yet on the website.</p><a href="#request" data-request-link="buy">Start buying request →</a></article>
+          <article><span>02</span><h3>Advertise a property</h3><p>Owners can submit the essentials and Helen Estates can follow up to prepare the property for listing.</p><a href="#request" data-request-link="sell">Advertise property →</a></article>
+          <article><span>03</span><h3>Enquire on a listing</h3><p>Every property can be connected to the same ticket system so enquiries arrive with the listing reference attached.</p><a href="#properties">Browse listings →</a></article>
         </div>
       </div>
     </section>
 
-    <section class="newsletter">
-      <div class="container newsletter-row">
-        <div>
-          <h2>Stay Updated</h2>
-          <p>Be the first to know about new properties and exclusive offers.</p>
-        </div>
-        <form id="newsletter-form" class="newsletter-form">
-          <label class="sr-only" for="newsletter-email">Email address</label>
-          <input id="newsletter-email" type="email" placeholder="Enter your email address" required />
-          <button class="button button-gold" type="submit">Subscribe</button>
-        </form>
-        <p class="newsletter-message" id="newsletter-message" aria-live="polite"></p>
+    <section class="closing-cta">
+      <div class="container closing-cta-inner">
+        <div><p class="eyebrow light">Not seeing what you need?</p><h2>Make the first move.</h2></div>
+        <a class="button button-light" href="#request">Create a property request</a>
       </div>
     </section>
   </main>
@@ -211,27 +304,25 @@
   <footer class="site-footer" id="contact">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a class="brand" href="#top">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 64 54"><path d="M8 30 32 8l24 22"/><path d="M16 28v18h32V28"/><path d="M24 46V31h16v15"/></svg>
-          </span>
-          <span><strong>HELEN ESTATES</strong><small>FIND. LOVE. LIVE.</small></span>
+        <a class="brand footer-logo-link" href="#top" aria-label="Helen Estates Realtors home">
+          <img class="brand-logo brand-logo-footer" src="helen-estates-logo-transparent.png" alt="Helen Estates Realtors" />
         </a>
-        <p>Your trusted real estate partner. Helping you find, sell and invest with confidence.</p>
+        <p>Helping people buy, rent, sell and advertise property through one straightforward service.</p>
       </div>
 
-      <div><h3>Quick links</h3><a href="#properties">Buy</a><a href="#properties">Rent</a><a href="#valuation">Sell</a><a href="#about">About us</a></div>
-      <div><h3>Services</h3><a href="#valuation">Property valuation</a><a href="#services">Mortgage advice</a><a href="#services">Property management</a><a href="#services">Investments</a></div>
-      <div><h3>Company</h3><a href="#about">About us</a><a href="#contact">Testimonials</a><a href="#contact">Careers</a><a href="#contact">Contact us</a></div>
-      <div><h3>Contact us</h3><a href="tel:+441214567890">0121 456 7890</a><a href="mailto:hello@helenestates.co.uk">hello@helenestates.co.uk</a><p>123 Colmore Row,<br />Birmingham, B3 3AP</p></div>
+      <div><h3>Explore</h3><a href="#properties">Properties</a><a href="#properties" data-filter-link="buy">Buy</a><a href="#properties" data-filter-link="rent">Rent</a><a href="#request" data-request-link="sell">Sell / Advertise</a></div>
+      <div><h3>Requests</h3><a href="#request" data-request-link="buy">Find to buy</a><a href="#request" data-request-link="rent">Find to rent</a><a href="#request" data-request-link="sell">List a property</a></div>
+      <div><h3>Company</h3><a href="#about">About</a><a href="#services">Services</a><a href="#contact">Contact</a></div>
+      <div><h3>Contact</h3><p>Contact details will be managed here before launch.</p><a href="#request">Open a property request</a></div>
     </div>
 
     <div class="container footer-bottom">
-      <p>© <span id="current-year"></span> Helen Estates. All rights reserved.</p>
+      <p>© <span id="current-year"></span> Helen Estates Realtors. All rights reserved.</p>
       <div><a href="#">Privacy policy</a><a href="#">Terms &amp; conditions</a></div>
     </div>
   </footer>
 
+  <a class="floating-request" href="#request" aria-label="Open a property request"><span>+</span> Property request</a>
   <button class="back-to-top" type="button" aria-label="Back to top">↑</button>
   <script src="script.js"></script>
 </body>
