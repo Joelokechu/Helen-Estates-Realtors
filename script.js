@@ -53,8 +53,7 @@ const BACKEND = {
 
     const response = await fetch(url, {
       headers: {
-        apikey: publicConfig.supabasePublicKey,
-        Authorization: `Bearer ${publicConfig.supabasePublicKey}`
+        apikey: publicConfig.supabasePublicKey
       }
     });
 
@@ -80,8 +79,7 @@ const BACKEND = {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          apikey: publicConfig.supabasePublicKey,
-          Authorization: `Bearer ${publicConfig.supabasePublicKey}`
+          apikey: publicConfig.supabasePublicKey
         },
         body: JSON.stringify(ticket)
       }
