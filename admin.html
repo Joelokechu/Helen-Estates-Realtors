@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,9 +7,16 @@
 
   <title>Helen Estates Realtors | Property Manager</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+    rel="stylesheet"
+  />
+
   <link rel="stylesheet" href="admin.css" />
 </head>
-
 
 <body>
 
@@ -18,59 +24,44 @@
        ADMIN LOGIN
        ========================================================= -->
 
-  <div
-    class="login-screen"
-    id="login-screen"
-  >
+  <div class="login-screen" id="login-screen">
 
-    <form
-      class="login-card"
-      id="login-form"
-    >
+    <form class="login-card" id="login-form">
 
-      <div class="admin-brand admin-brand-dark">
+      <div class="login-brand">
 
-        <span
-          class="brand-mark"
-          aria-hidden="true"
-        >
-          <svg viewBox="0 0 64 54">
-            <path d="M8 30 32 8l24 22"/>
-            <path d="M16 28v18h32V28"/>
-            <path d="M24 46V31h16v15"/>
-          </svg>
-        </span>
+        <div class="login-logo-wrap">
+          <img
+            src="Helen Estates Realtors Logo 1.png"
+            alt="Helen Estates Realtors logo"
+            class="login-logo"
+          />
+        </div>
 
-        <span>
-          <strong>HELEN ESTATES REALTORS</strong>
-          <small>PROPERTY MANAGER</small>
-        </span>
+        <div class="login-brand-copy">
+          <strong>Helen Estates</strong>
+          <small>Realtors · Private Admin</small>
+        </div>
 
       </div>
 
 
-      <p class="kicker">
-        Admin access
-      </p>
+      <p class="kicker">Secure access</p>
 
 
       <h1>
-        Manage your property portfolio
+        Property<br />
+        manager
       </h1>
 
 
-      <p class="muted">
-        Sign in to manage properties published on the Helen Estates Realtors website.
+      <p class="login-intro">
+        Only authorised Helen Estates Realtors administrators can access this dashboard.
       </p>
 
 
-      <!-- Admin email -->
-
       <label class="field full">
-
-        <span>
-          Email
-        </span>
+        <span>Email</span>
 
         <input
           id="admin-email"
@@ -80,17 +71,11 @@
           placeholder="Enter admin email"
           required
         />
-
       </label>
 
 
-      <!-- Admin password -->
-
       <label class="field full">
-
-        <span>
-          Password
-        </span>
+        <span>Password</span>
 
         <input
           id="admin-password"
@@ -100,12 +85,11 @@
           placeholder="Enter admin password"
           required
         />
-
       </label>
 
 
       <button
-        class="primary-button full-button"
+        class="primary-button full-button login-button"
         type="submit"
       >
         Sign in
@@ -121,7 +105,6 @@
     </form>
 
   </div>
-
 
 
   <!-- =========================================================
@@ -147,47 +130,35 @@
         aria-label="View Helen Estates Realtors website"
       >
 
-        <span
-          class="brand-mark"
-          aria-hidden="true"
-        >
-
-          <svg viewBox="0 0 64 54">
-            <path d="M8 30 32 8l24 22"/>
-            <path d="M16 28v18h32V28"/>
-            <path d="M24 46V31h16v15"/>
-          </svg>
-
+        <span class="admin-logo-wrap">
+          <img
+            src="Helen Estates Realtors Logo 1.png"
+            alt=""
+            class="admin-logo"
+          />
         </span>
 
 
-        <span>
-          <strong>HELEN ESTATES REALTORS</strong>
-          <small>PROPERTY MANAGER</small>
+        <span class="admin-brand-copy">
+          <strong>Helen Estates</strong>
+          <small>Realtors · Admin</small>
         </span>
 
       </a>
 
-
-
-      <!-- ADMIN NAVIGATION -->
 
       <nav
         class="side-nav"
         aria-label="Admin navigation"
       >
 
-
         <button
           class="side-link active"
           type="button"
           data-section="dashboard"
         >
-
           <span>⌂</span>
-
           Dashboard
-
         </button>
 
 
@@ -196,11 +167,8 @@
           type="button"
           data-section="editor"
         >
-
           <span>＋</span>
-
           Add property
-
         </button>
 
 
@@ -210,22 +178,16 @@
           target="_blank"
           rel="noopener"
         >
-
           <span>↗</span>
-
           View website
-
         </a>
 
       </nav>
 
 
-
       <div class="sidebar-footer">
 
-        <p>
-          Helen Estates Realtors CMS
-        </p>
+        <p>Helen Estates Realtors</p>
 
         <button
           class="text-button"
@@ -240,15 +202,12 @@
     </aside>
 
 
-
     <!-- =======================================================
-         ADMIN MAIN CONTENT
+         MAIN ADMIN AREA
          ======================================================= -->
 
     <main class="admin-main">
 
-
-      <!-- TOP BAR -->
 
       <header class="topbar">
 
@@ -276,7 +235,6 @@
       </header>
 
 
-
       <!-- =====================================================
            DASHBOARD
            ===================================================== -->
@@ -288,95 +246,43 @@
       >
 
 
-        <!-- PROPERTY STATISTICS -->
-
         <div class="stats-grid">
 
-
           <article class="stat-card">
-
-            <span>
-              Total properties
-            </span>
-
-            <strong id="stat-total">
-              0
-            </strong>
-
-            <small>
-              All listings
-            </small>
-
+            <span>Total properties</span>
+            <strong id="stat-total">0</strong>
+            <small>All listings</small>
           </article>
 
 
-
           <article class="stat-card">
-
-            <span>
-              For sale
-            </span>
-
-            <strong id="stat-buy">
-              0
-            </strong>
-
-            <small>
-              Purchase listings
-            </small>
-
+            <span>For sale</span>
+            <strong id="stat-buy">0</strong>
+            <small>Purchase listings</small>
           </article>
 
 
-
           <article class="stat-card">
-
-            <span>
-              To rent
-            </span>
-
-            <strong id="stat-rent">
-              0
-            </strong>
-
-            <small>
-              Rental listings
-            </small>
-
+            <span>To rent</span>
+            <strong id="stat-rent">0</strong>
+            <small>Rental listings</small>
           </article>
 
 
-
           <article class="stat-card">
-
-            <span>
-              Featured
-            </span>
-
-            <strong id="stat-featured">
-              0
-            </strong>
-
-            <small>
-              Homepage highlights
-            </small>
-
+            <span>Featured</span>
+            <strong id="stat-featured">0</strong>
+            <small>Homepage highlights</small>
           </article>
 
         </div>
 
 
-
-        <!-- PROPERTY PORTFOLIO -->
-
         <section class="panel">
-
 
           <div class="panel-heading">
 
-
             <div>
-
               <p class="kicker">
                 Portfolio
               </p>
@@ -384,13 +290,10 @@
               <h2>
                 Your properties
               </h2>
-
             </div>
 
 
-
             <div class="panel-tools">
-
 
               <label class="search-control">
 
@@ -405,7 +308,6 @@
                 />
 
               </label>
-
 
 
               <select
@@ -431,15 +333,10 @@
 
               </select>
 
-
             </div>
-
 
           </div>
 
-
-
-          <!-- PROPERTIES GENERATED BY ADMIN.JS -->
 
           <div
             class="property-admin-list"
@@ -447,18 +344,13 @@
           ></div>
 
 
-
-          <!-- EMPTY STATE -->
-
           <div
             class="empty-state"
             id="empty-state"
             hidden
           >
 
-            <div>
-              ⌂
-            </div>
+            <div>⌂</div>
 
             <h3>
               No properties found
@@ -470,12 +362,9 @@
 
           </div>
 
-
         </section>
 
-
       </section>
-
 
 
       <!-- =====================================================
@@ -488,13 +377,11 @@
         data-view="editor"
       >
 
-
         <form
           class="property-form"
           id="property-form"
           enctype="multipart/form-data"
         >
-
 
           <input
             type="hidden"
@@ -502,16 +389,11 @@
           />
 
 
-
-          <!-- =================================================
-               PROPERTY DETAILS
-               ================================================= -->
+          <!-- PROPERTY DETAILS -->
 
           <section class="panel form-panel">
 
-
             <div class="panel-heading simple">
-
 
               <div>
 
@@ -522,60 +404,46 @@
                   New listing
                 </p>
 
-
                 <h2 id="editor-title">
                   Add a property
                 </h2>
 
-
                 <p class="muted">
-                  Fill in the details below. The listing will appear on the public website after saving.
+                  Add the property information below. Once saved, the listing will be published to the Helen Estates Realtors website.
                 </p>
 
               </div>
 
-
             </div>
-
 
 
             <div class="form-grid">
 
 
-              <!-- PROPERTY TITLE -->
-
               <label class="field field-wide">
 
-                <span>
-                  Property title *
-                </span>
+                <span>Property title *</span>
 
                 <input
                   id="title"
                   name="title"
                   type="text"
-                  placeholder="e.g. Contemporary 3 Bedroom Villa"
+                  placeholder="e.g. Contemporary Pool Villa"
                   required
                 />
 
               </label>
 
 
-
-              <!-- LISTING TYPE -->
-
               <label class="field">
 
-                <span>
-                  Listing type *
-                </span>
+                <span>Listing type *</span>
 
                 <select
                   id="purpose"
                   name="purpose"
                   required
                 >
-
                   <option value="buy">
                     For sale
                   </option>
@@ -583,27 +451,20 @@
                   <option value="rent">
                     To rent
                   </option>
-
                 </select>
 
               </label>
 
 
-
-              <!-- PROPERTY TYPE -->
-
               <label class="field">
 
-                <span>
-                  Property type *
-                </span>
+                <span>Property type *</span>
 
                 <select
                   id="propertyType"
                   name="propertyType"
                   required
                 >
-
                   <option value="house">
                     House / Villa
                   </option>
@@ -639,20 +500,14 @@
                   <option value="commercial">
                     Commercial
                   </option>
-
                 </select>
 
               </label>
 
 
-
-              <!-- LOCATION -->
-
               <label class="field field-wide">
 
-                <span>
-                  Location *
-                </span>
+                <span>Location *</span>
 
                 <input
                   id="property-location"
@@ -665,13 +520,10 @@
               </label>
 
 
-
-              <!-- PRICE -->
-
               <label class="field">
 
                 <span id="price-label">
-                  Sale price *
+                  Sale price (USD) *
                 </span>
 
                 <input
@@ -687,14 +539,9 @@
               </label>
 
 
-
-              <!-- BEDROOMS -->
-
               <label class="field">
 
-                <span>
-                  Bedrooms *
-                </span>
+                <span>Bedrooms *</span>
 
                 <input
                   id="bedrooms-input"
@@ -710,14 +557,9 @@
               </label>
 
 
-
-              <!-- BATHROOMS -->
-
               <label class="field">
 
-                <span>
-                  Bathrooms *
-                </span>
+                <span>Bathrooms *</span>
 
                 <input
                   id="bathrooms-input"
@@ -733,14 +575,9 @@
               </label>
 
 
-
-              <!-- FLOOR AREA -->
-
               <label class="field">
 
-                <span>
-                  Floor area (sq ft) *
-                </span>
+                <span>Floor area (sq ft) *</span>
 
                 <input
                   id="size"
@@ -755,14 +592,9 @@
               </label>
 
 
-
-              <!-- DESCRIPTION -->
-
               <label class="field field-wide">
 
-                <span>
-                  Description
-                </span>
+                <span>Description</span>
 
                 <textarea
                   id="description"
@@ -773,9 +605,6 @@
 
               </label>
 
-
-
-              <!-- FEATURED PROPERTY -->
 
               <label class="toggle-field field-wide">
 
@@ -791,7 +620,6 @@
 
 
                 <span>
-
                   <strong>
                     Featured property
                   </strong>
@@ -799,28 +627,20 @@
                   <small>
                     Show this listing in the homepage featured collection.
                   </small>
-
                 </span>
 
               </label>
 
-
             </div>
-
 
           </section>
 
 
-
-          <!-- =================================================
-               PROPERTY IMAGES
-               ================================================= -->
+          <!-- PROPERTY IMAGES -->
 
           <section class="panel form-panel">
 
-
             <div class="panel-heading simple">
-
 
               <div>
 
@@ -833,24 +653,19 @@
                 </h2>
 
                 <p class="muted">
-                  Upload up to 8 JPG, PNG or WEBP images. The first image is used as the property card cover.
+                  Upload up to 8 JPG, PNG or WEBP images. The first image becomes the property card cover.
                 </p>
 
               </div>
 
-
             </div>
 
-
-
-            <!-- IMAGE UPLOAD -->
 
             <label
               class="upload-zone"
               id="upload-zone"
               for="images"
             >
-
 
               <input
                 id="images"
@@ -860,27 +675,20 @@
                 multiple
               />
 
-
               <span class="upload-icon">
                 ⇧
               </span>
-
 
               <strong>
                 Choose property images
               </strong>
 
-
               <small>
                 or drag and drop files here · maximum 8 MB each
               </small>
 
-
             </label>
 
-
-
-            <!-- EXISTING IMAGES -->
 
             <div
               class="existing-images"
@@ -888,14 +696,11 @@
               hidden
             >
 
-
               <div class="existing-heading">
-
 
                 <span>
                   Current images
                 </span>
-
 
                 <label>
 
@@ -908,9 +713,7 @@
 
                 </label>
 
-
               </div>
-
 
 
               <div
@@ -918,29 +721,18 @@
                 id="existing-image-grid"
               ></div>
 
-
             </div>
 
-
-
-            <!-- NEW IMAGE PREVIEW -->
 
             <div
               class="image-preview-grid"
               id="new-image-preview"
             ></div>
 
-
           </section>
 
 
-
-          <!-- =================================================
-               FORM ACTIONS
-               ================================================= -->
-
           <div class="form-actions">
-
 
             <button
               class="secondary-button"
@@ -959,9 +751,7 @@
               Publish property
             </button>
 
-
           </div>
-
 
 
           <p
@@ -970,22 +760,17 @@
             aria-live="polite"
           ></p>
 
-
         </form>
-
 
       </section>
 
-
     </main>
-
 
   </div>
 
 
-
   <!-- =========================================================
-       TOAST NOTIFICATIONS
+       TOAST
        ========================================================= -->
 
   <div
@@ -996,30 +781,14 @@
   ></div>
 
 
+  <!-- SUPABASE CLIENT -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- =========================================================
-       SUPABASE JAVASCRIPT CLIENT
-       ========================================================= -->
+  <!-- PROJECT CONFIG -->
+  <script src="supabase-config.js"></script>
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-  ></script>
-
-
-  <!-- Helen Estates public Supabase configuration -->
-
-  <script
-    src="supabase-config.js"
-  ></script>
-
-
-  <!-- Helen Estates admin application -->
-
-  <script
-    src="admin.js"
-  ></script>
-
+  <!-- ADMIN LOGIC -->
+  <script src="admin.js"></script>
 
 </body>
-
 </html>
