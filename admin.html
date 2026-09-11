@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex,nofollow" />
 
-  <title>Helen Estates Realtors | Property Manager</title>
+  <title>Helen Estates Realtors | Property & Request Manager</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -45,20 +45,17 @@
 
       </div>
 
-
       <p class="kicker">Secure access</p>
 
-
       <h1>
-        Property<br />
+        Property &<br />
+        request<br />
         manager
       </h1>
-
 
       <p class="login-intro">
         Only authorised Helen Estates Realtors administrators can access this dashboard.
       </p>
-
 
       <label class="field full">
         <span>Email</span>
@@ -73,7 +70,6 @@
         />
       </label>
 
-
       <label class="field full">
         <span>Password</span>
 
@@ -87,14 +83,12 @@
         />
       </label>
 
-
       <button
         class="primary-button full-button login-button"
         type="submit"
       >
         Sign in
       </button>
-
 
       <p
         class="form-message"
@@ -117,7 +111,6 @@
     hidden
   >
 
-
     <!-- =======================================================
          SIDEBAR
          ======================================================= -->
@@ -138,14 +131,12 @@
           />
         </span>
 
-
         <span class="admin-brand-copy">
           <strong>Helen Estates</strong>
           <small>Realtors · Admin</small>
         </span>
 
       </a>
-
 
       <nav
         class="side-nav"
@@ -161,6 +152,21 @@
           Dashboard
         </button>
 
+        <button
+          class="side-link"
+          type="button"
+          data-section="requests"
+        >
+          <span>✉</span>
+          Requests
+          <span
+            class="nav-count"
+            id="request-nav-count"
+            hidden
+          >
+            0
+          </span>
+        </button>
 
         <button
           class="side-link"
@@ -170,7 +176,6 @@
           <span>＋</span>
           Add property
         </button>
-
 
         <a
           class="side-link"
@@ -183,7 +188,6 @@
         </a>
 
       </nav>
-
 
       <div class="sidebar-footer">
 
@@ -208,13 +212,12 @@
 
     <main class="admin-main">
 
-
       <header class="topbar">
 
         <div>
 
           <p class="kicker">
-            Property management
+            Property & request management
           </p>
 
           <h1 id="page-title">
@@ -222,7 +225,6 @@
           </h1>
 
         </div>
-
 
         <button
           class="primary-button"
@@ -245,7 +247,6 @@
         data-view="dashboard"
       >
 
-
         <div class="stats-grid">
 
           <article class="stat-card">
@@ -254,13 +255,11 @@
             <small>All listings</small>
           </article>
 
-
           <article class="stat-card">
             <span>For sale</span>
             <strong id="stat-buy">0</strong>
             <small>Purchase listings</small>
           </article>
-
 
           <article class="stat-card">
             <span>To rent</span>
@@ -268,14 +267,68 @@
             <small>Rental listings</small>
           </article>
 
-
           <article class="stat-card">
             <span>Featured</span>
             <strong id="stat-featured">0</strong>
             <small>Homepage highlights</small>
           </article>
 
+          <article class="stat-card request-stat-card">
+            <span>New requests</span>
+            <strong id="stat-new-requests">0</strong>
+            <small>Awaiting review</small>
+          </article>
+
         </div>
+
+
+        <section class="panel dashboard-request-panel">
+
+          <div class="panel-heading">
+
+            <div>
+              <p class="kicker">Request desk</p>
+
+              <h2>
+                Latest customer requests
+              </h2>
+
+              <p class="muted">
+                New Buy, Rent and Sell / Advertise enquiries will appear here.
+              </p>
+            </div>
+
+            <button
+              class="secondary-button"
+              id="view-all-requests"
+              type="button"
+            >
+              View requests
+            </button>
+
+          </div>
+
+          <div
+            class="dashboard-request-list"
+            id="dashboard-request-list"
+          ></div>
+
+          <div
+            class="empty-state"
+            id="dashboard-request-empty"
+          >
+            <div>✉</div>
+
+            <h3>
+              No requests to review
+            </h3>
+
+            <p>
+              New customer enquiries will appear here automatically.
+            </p>
+          </div>
+
+        </section>
 
 
         <section class="panel">
@@ -292,7 +345,6 @@
               </h2>
             </div>
 
-
             <div class="panel-tools">
 
               <label class="search-control">
@@ -308,7 +360,6 @@
                 />
 
               </label>
-
 
               <select
                 id="admin-filter"
@@ -337,12 +388,10 @@
 
           </div>
 
-
           <div
             class="property-admin-list"
             id="property-admin-list"
           ></div>
-
 
           <div
             class="empty-state"
@@ -359,6 +408,432 @@
             <p>
               Add your first listing or change the current search filters.
             </p>
+
+          </div>
+
+        </section>
+
+      </section>
+
+
+      <!-- =====================================================
+           REQUESTS
+           ===================================================== -->
+
+      <section
+        class="view"
+        id="requests-view"
+        data-view="requests"
+      >
+
+        <div class="request-stats-grid">
+
+          <article class="stat-card">
+            <span>New</span>
+            <strong id="request-stat-new">0</strong>
+            <small>Awaiting review</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Contacted</span>
+            <strong id="request-stat-contacted">0</strong>
+            <small>Customer contacted</small>
+          </article>
+
+          <article class="stat-card">
+            <span>In progress</span>
+            <strong id="request-stat-progress">0</strong>
+            <small>Active requests</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Completed</span>
+            <strong id="request-stat-completed">0</strong>
+            <small>Completed requests</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Closed</span>
+            <strong id="request-stat-closed">0</strong>
+            <small>Closed requests</small>
+          </article>
+
+        </div>
+
+
+        <section class="panel request-manager-panel">
+
+          <div class="panel-heading">
+
+            <div>
+              <p class="kicker">
+                Customer enquiries
+              </p>
+
+              <h2>
+                Property requests
+              </h2>
+
+              <p class="muted">
+                Review and manage Buy, Rent and Sell / Advertise enquiries.
+              </p>
+            </div>
+
+            <div class="panel-tools">
+
+              <label class="search-control">
+
+                <span class="sr-only">
+                  Search requests
+                </span>
+
+                <input
+                  id="request-search"
+                  type="search"
+                  placeholder="Search name, reference or location"
+                />
+
+              </label>
+
+              <select
+                id="request-status-filter"
+                aria-label="Filter requests by status"
+              >
+                <option value="all">
+                  All statuses
+                </option>
+
+                <option value="new">
+                  New
+                </option>
+
+                <option value="contacted">
+                  Contacted
+                </option>
+
+                <option value="in_progress">
+                  In progress
+                </option>
+
+                <option value="completed">
+                  Completed
+                </option>
+
+                <option value="closed">
+                  Closed
+                </option>
+              </select>
+
+              <select
+                id="request-type-filter"
+                aria-label="Filter requests by type"
+              >
+                <option value="all">
+                  All requests
+                </option>
+
+                <option value="buy">
+                  Buy
+                </option>
+
+                <option value="rent">
+                  Rent
+                </option>
+
+                <option value="sell">
+                  Sell / Advertise
+                </option>
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <div class="request-manager-layout">
+
+            <!-- REQUEST LIST -->
+
+            <div class="request-list-column">
+
+              <div
+                class="request-list"
+                id="request-list"
+              ></div>
+
+              <div
+                class="empty-state"
+                id="request-empty-state"
+                hidden
+              >
+
+                <div>✉</div>
+
+                <h3>
+                  No requests found
+                </h3>
+
+                <p>
+                  New customer enquiries will appear here automatically.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <!-- REQUEST DETAILS -->
+
+            <aside
+              class="request-detail-panel"
+              id="request-detail-panel"
+            >
+
+              <div
+                class="request-detail-placeholder"
+                id="request-detail-placeholder"
+              >
+
+                <div class="request-placeholder-icon">
+                  ✉
+                </div>
+
+                <h3>
+                  Select a request
+                </h3>
+
+                <p>
+                  Choose a customer request to view their details, update its status and add private notes.
+                </p>
+
+              </div>
+
+
+              <div
+                class="request-detail-content"
+                id="request-detail-content"
+                hidden
+              >
+
+                <div class="request-detail-header">
+
+                  <div>
+
+                    <p class="kicker">
+                      Customer request
+                    </p>
+
+                    <h2 id="request-detail-reference">
+                      —
+                    </h2>
+
+                  </div>
+
+                  <span
+                    class="request-status-badge"
+                    id="request-detail-status-badge"
+                  >
+                    New
+                  </span>
+
+                </div>
+
+
+                <div class="request-detail-type-row">
+
+                  <span
+                    class="request-type-badge"
+                    id="request-detail-type"
+                  >
+                    Buy
+                  </span>
+
+                  <span
+                    id="request-detail-created"
+                    class="request-created-date"
+                  >
+                    —
+                  </span>
+
+                </div>
+
+
+                <div class="request-information-grid">
+
+                  <div class="request-info-item">
+                    <span>Customer</span>
+                    <strong id="request-detail-name">—</strong>
+                  </div>
+
+                  <div class="request-info-item">
+                    <span>Email</span>
+
+                    <a
+                      id="request-detail-email"
+                      href="#"
+                    >
+                      —
+                    </a>
+                  </div>
+
+                  <div class="request-info-item">
+                    <span>Phone / WhatsApp</span>
+
+                    <a
+                      id="request-detail-phone"
+                      href="#"
+                    >
+                      —
+                    </a>
+                  </div>
+
+                  <div class="request-info-item">
+                    <span>Preferred contact</span>
+                    <strong id="request-detail-contact">—</strong>
+                  </div>
+
+                  <div class="request-info-item">
+                    <span>Location</span>
+                    <strong id="request-detail-location">—</strong>
+                  </div>
+
+                  <div class="request-info-item">
+                    <span>Property type</span>
+                    <strong id="request-detail-property-type">—</strong>
+                  </div>
+
+                  <div class="request-info-item">
+                    <span>Budget / price</span>
+                    <strong id="request-detail-budget">—</strong>
+                  </div>
+
+                  <div class="request-info-item">
+                    <span>Bedrooms</span>
+                    <strong id="request-detail-bedrooms">—</strong>
+                  </div>
+
+                  <div class="request-info-item request-info-wide">
+                    <span>Property reference</span>
+                    <strong id="request-detail-property-reference">—</strong>
+                  </div>
+
+                </div>
+
+
+                <section class="request-message-box">
+
+                  <span class="request-section-label">
+                    Customer message
+                  </span>
+
+                  <p id="request-detail-message">
+                    —
+                  </p>
+
+                </section>
+
+
+                <section class="request-admin-section">
+
+                  <label class="field">
+
+                    <span>
+                      Request status
+                    </span>
+
+                    <select id="request-status-select">
+
+                      <option value="new">
+                        New
+                      </option>
+
+                      <option value="contacted">
+                        Contacted
+                      </option>
+
+                      <option value="in_progress">
+                        In progress
+                      </option>
+
+                      <option value="completed">
+                        Completed
+                      </option>
+
+                      <option value="closed">
+                        Closed
+                      </option>
+
+                    </select>
+
+                  </label>
+
+
+                  <label class="field">
+
+                    <span>
+                      Private admin notes
+                    </span>
+
+                    <textarea
+                      id="request-admin-notes"
+                      rows="6"
+                      placeholder="Add private notes about calls, follow-up or next steps..."
+                    ></textarea>
+
+                  </label>
+
+
+                  <button
+                    class="primary-button request-save-button"
+                    id="save-request-button"
+                    type="button"
+                  >
+                    Save request
+                  </button>
+
+
+                  <p
+                    class="form-message"
+                    id="request-save-message"
+                    aria-live="polite"
+                  ></p>
+
+                </section>
+
+
+                <div class="request-contact-actions">
+
+                  <a
+                    class="secondary-button"
+                    id="request-email-button"
+                    href="#"
+                  >
+                    Email customer
+                  </a>
+
+                  <a
+                    class="secondary-button"
+                    id="request-call-button"
+                    href="#"
+                  >
+                    Call
+                  </a>
+
+                  <a
+                    class="secondary-button"
+                    id="request-whatsapp-button"
+                    href="#"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    WhatsApp
+                  </a>
+
+                </div>
+
+              </div>
+
+            </aside>
 
           </div>
 
@@ -418,7 +893,6 @@
 
 
             <div class="form-grid">
-
 
               <label class="field field-wide">
 
@@ -617,7 +1091,6 @@
                 />
 
                 <span class="toggle"></span>
-
 
                 <span>
                   <strong>
