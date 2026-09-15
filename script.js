@@ -19,50 +19,64 @@ const confirmationReference = document.getElementById('confirmation-reference');
 const confirmationEmailNote = document.getElementById('confirmation-email-note');
 const confirmationStatusLink = document.getElementById('confirmation-status-link');
 const newRequestButton = document.getElementById('new-request-button');
-const publicConfig = window.HELEN_ESTATES_CONFIG || {};
+
+const publicConfig =
+  window.HELEN_ESTATES_CONFIG || {};
+
 
 const backendConfigured = Boolean(
   publicConfig.supabaseUrl &&
   publicConfig.supabasePublicKey &&
-  !String(publicConfig.supabaseUrl).includes('YOUR_') &&
-  !String(publicConfig.supabasePublicKey).includes('YOUR_')
+  !String(
+    publicConfig.supabaseUrl
+  ).includes('YOUR_') &&
+  !String(
+    publicConfig.supabasePublicKey
+  ).includes('YOUR_')
 );
 
 
-/*
-  ==========================================================
-  FRONTEND / BACKEND BRIDGE
-  ==========================================================
-*/
+/* =========================================================
+   FRONTEND / BACKEND BRIDGE
+   ========================================================= */
 
 const BACKEND = {
-  enabled: backendConfigured,
+
+  enabled:
+    backendConfigured,
+
 
   async getPublishedProperties() {
+
     const base =
       String(
         publicConfig.supabaseUrl
       ).replace(/\/$/, '');
+
 
     const url =
       new URL(
         `${base}/rest/v1/properties`
       );
 
+
     url.searchParams.set(
       'select',
       'id,title,purpose,property_type,location,bedrooms,bathrooms,size,price,currency,price_period,featured,status,images,created_at'
     );
+
 
     url.searchParams.set(
       'published',
       'eq.true'
     );
 
+
     url.searchParams.set(
       'order',
       'featured.desc,created_at.desc'
     );
+
 
     const response =
       await fetch(
@@ -75,36 +89,47 @@ const BACKEND = {
         }
       );
 
+
     if (!response.ok) {
+
       throw new Error(
         'Could not load published properties.'
       );
     }
 
+
     const rows =
       await response.json();
 
-    return rows.map(row => ({
-      ...row,
-      propertyType:
-        row.property_type,
-      pricePeriod:
-        row.price_period
-    }));
+
+    return rows.map(
+      row => ({
+        ...row,
+
+        propertyType:
+          row.property_type,
+
+        pricePeriod:
+          row.price_period
+      })
+    );
   },
 
 
   async createTicket(ticket) {
+
     const base =
       String(
         publicConfig.supabaseUrl
       ).replace(/\/$/, '');
 
+
     const response =
       await fetch(
         `${base}/functions/v1/create-ticket`,
         {
-          method: 'POST',
+          method:
+            'POST',
 
           headers: {
             'Content-Type':
@@ -115,24 +140,32 @@ const BACKEND = {
           },
 
           body:
-            JSON.stringify(ticket)
+            JSON.stringify(
+              ticket
+            )
         }
       );
 
+
     let payload = {};
 
+
     try {
+
       payload =
         await response.json();
+
     } catch (_error) {}
 
 
     if (!response.ok) {
+
       throw new Error(
         payload.error ||
         'Could not submit your request.'
       );
     }
+
 
     return payload;
   }
@@ -140,86 +173,189 @@ const BACKEND = {
 
 
 
-/*
-  ==========================================================
-  FALLBACK DEMO PROPERTIES
-  ==========================================================
-*/
+/* =========================================================
+   FALLBACK PROPERTIES
+   ========================================================= */
 
 const DEMO_PROPERTIES = [
+
   {
-    id: 'HER-001',
-    title: 'Contemporary Pool Villa',
-    purpose: 'buy',
-    propertyType: 'house',
-    location: 'Soufrière',
-    bedrooms: 4,
-    bathrooms: 4,
-    size: 2800,
-    price: 875000,
-    currency: 'USD',
-    featured: true,
-    status: 'Available',
+    id:
+      'HER-001',
+
+    title:
+      'Contemporary Pool Villa',
+
+    purpose:
+      'buy',
+
+    propertyType:
+      'house',
+
+    location:
+      'Soufrière',
+
+    bedrooms:
+      4,
+
+    bathrooms:
+      4,
+
+    size:
+      2800,
+
+    price:
+      875000,
+
+    currency:
+      'USD',
+
+    featured:
+      true,
+
+    status:
+      'Available',
+
     images: [
       'property-1.jpg'
     ]
   },
 
+
   {
-    id: 'HER-002',
-    title: 'Waterfront Two Bedroom Apartment',
-    purpose: 'rent',
-    propertyType: 'apartment',
-    location: 'Rodney Bay',
-    bedrooms: 2,
-    bathrooms: 2,
-    size: 1050,
-    price: 2200,
-    currency: 'USD',
-    pricePeriod: 'month',
-    featured: true,
-    status: 'Available',
+    id:
+      'HER-002',
+
+    title:
+      'Waterfront Two Bedroom Apartment',
+
+    purpose:
+      'rent',
+
+    propertyType:
+      'apartment',
+
+    location:
+      'Rodney Bay',
+
+    bedrooms:
+      2,
+
+    bathrooms:
+      2,
+
+    size:
+      1050,
+
+    price:
+      2200,
+
+    currency:
+      'USD',
+
+    pricePeriod:
+      'month',
+
+    featured:
+      true,
+
+    status:
+      'Available',
+
     images: [
       'property-2.jpg'
     ]
   },
 
+
   {
-    id: 'HER-003',
-    title: 'Family Home with Garden',
-    purpose: 'buy',
-    propertyType: 'house',
-    location: 'Gros Islet',
-    bedrooms: 3,
-    bathrooms: 2,
-    size: 1850,
-    price: 465000,
-    currency: 'USD',
-    featured: true,
-    status: 'Available',
+    id:
+      'HER-003',
+
+    title:
+      'Family Home with Garden',
+
+    purpose:
+      'buy',
+
+    propertyType:
+      'house',
+
+    location:
+      'Gros Islet',
+
+    bedrooms:
+      3,
+
+    bathrooms:
+      2,
+
+    size:
+      1850,
+
+    price:
+      465000,
+
+    currency:
+      'USD',
+
+    featured:
+      true,
+
+    status:
+      'Available',
+
     images: [
       'property-3.jpg'
     ]
   },
 
+
   {
-    id: 'HER-004',
-    title: 'Bright One Bedroom Apartment',
-    purpose: 'rent',
-    propertyType: 'apartment',
-    location: 'Marigot Bay',
-    bedrooms: 1,
-    bathrooms: 1,
-    size: 720,
-    price: 1450,
-    currency: 'USD',
-    pricePeriod: 'month',
-    featured: true,
-    status: 'Available',
+    id:
+      'HER-004',
+
+    title:
+      'Bright One Bedroom Apartment',
+
+    purpose:
+      'rent',
+
+    propertyType:
+      'apartment',
+
+    location:
+      'Marigot Bay',
+
+    bedrooms:
+      1,
+
+    bathrooms:
+      1,
+
+    size:
+      720,
+
+    price:
+      1450,
+
+    currency:
+      'USD',
+
+    pricePeriod:
+      'month',
+
+    featured:
+      true,
+
+    status:
+      'Available',
+
     images: [
       'property-4.jpg'
     ]
   }
+
 ];
 
 
@@ -237,32 +373,36 @@ let searchActive =
 
 
 
-/*
-  ==========================================================
-  HELPERS
-  ==========================================================
-*/
+/* =========================================================
+   HELPERS
+   ========================================================= */
 
 function escapeHTML(
   value = ''
 ) {
+
   return String(value)
+
     .replaceAll(
       '&',
       '&amp;'
     )
+
     .replaceAll(
       '<',
       '&lt;'
     )
+
     .replaceAll(
       '>',
       '&gt;'
     )
+
     .replaceAll(
       '"',
       '&quot;'
     )
+
     .replaceAll(
       "'",
       '&#039;'
@@ -271,35 +411,39 @@ function escapeHTML(
 
 
 
-/*
-  ==========================================================
-  NAVIGATION
-  ==========================================================
-*/
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
 
 function closeNavigation() {
+
   navToggle.classList.remove(
     'active'
   );
 
+
   mainNav.classList.remove(
     'open'
   );
+
 
   navToggle.setAttribute(
     'aria-expanded',
     'false'
   );
 
+
   navToggle.setAttribute(
     'aria-label',
     'Open navigation'
   );
 
+
   document.body.classList.remove(
     'nav-open'
   );
 }
+
 
 
 navToggle.addEventListener(
@@ -311,15 +455,18 @@ navToggle.addEventListener(
         'open'
       );
 
+
     navToggle.classList.toggle(
       'active',
       isOpen
     );
 
+
     navToggle.setAttribute(
       'aria-expanded',
       String(isOpen)
     );
+
 
     navToggle.setAttribute(
       'aria-label',
@@ -328,12 +475,14 @@ navToggle.addEventListener(
         : 'Open navigation'
     );
 
+
     document.body.classList.toggle(
       'nav-open',
       isOpen
     );
   }
 );
+
 
 
 mainNav
@@ -347,6 +496,7 @@ mainNav
   );
 
 
+
 window.addEventListener(
   'scroll',
   () => {
@@ -356,6 +506,7 @@ window.addEventListener(
       window.scrollY > 24
     );
 
+
     backToTop.classList.toggle(
       'visible',
       window.scrollY > 580
@@ -364,33 +515,39 @@ window.addEventListener(
 );
 
 
+
 backToTop.addEventListener(
   'click',
   () => {
 
     window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+      top:
+        0,
+
+      behavior:
+        'smooth'
     });
   }
 );
 
 
 
-/*
-  ==========================================================
-  PROPERTY HELPERS
-  ==========================================================
-*/
+/* =========================================================
+   PRICE
+   ========================================================= */
 
 function formatPrice(property) {
+
   const currency =
     property.currency ||
     'USD';
 
+
   let value;
 
+
   try {
+
     value =
       new Intl.NumberFormat(
         'en-US',
@@ -409,6 +566,7 @@ function formatPrice(property) {
           0
         )
       );
+
 
   } catch (_error) {
 
@@ -431,8 +589,14 @@ function formatPrice(property) {
 
 
 
+/* =========================================================
+   FAVOURITES
+   ========================================================= */
+
 function savedFavouriteIds() {
+
   try {
+
     return new Set(
       JSON.parse(
         localStorage.getItem(
@@ -441,7 +605,9 @@ function savedFavouriteIds() {
       )
     );
 
+
   } catch (_error) {
+
     return new Set();
   }
 }
@@ -452,21 +618,26 @@ function toggleFavourite(
   id,
   button
 ) {
+
   const favourites =
     savedFavouriteIds();
+
 
   if (
     favourites.has(id)
   ) {
+
     favourites.delete(id);
 
   } else {
+
     favourites.add(id);
   }
 
 
   localStorage.setItem(
     'helen-estates-favourites',
+
     JSON.stringify(
       [...favourites]
     )
@@ -497,11 +668,9 @@ function toggleFavourite(
 
 
 
-/*
-  ==========================================================
-  PROPERTY IMAGE CAROUSEL
-  ==========================================================
-*/
+/* =========================================================
+   PROPERTY CAROUSEL
+   ========================================================= */
 
 function getPropertyImages(
   property
@@ -511,12 +680,14 @@ function getPropertyImages(
     Array.isArray(
       property.images
     )
+
       ? property.images.filter(
           image =>
             typeof image ===
               'string' &&
             image.trim()
         )
+
       : [];
 
 
@@ -531,7 +702,7 @@ function getPropertyImages(
 
 function setCarouselIndex(
   carousel,
-  nextIndex,
+  requestedIndex,
   animate = true
 ) {
 
@@ -566,10 +737,8 @@ function setCarouselIndex(
 
   const index =
     (
-      (
-        nextIndex %
-        total
-      ) +
+      requestedIndex %
+        total +
       total
     ) %
     total;
@@ -600,8 +769,7 @@ function setCarouselIndex(
           Number(
             dot.dataset
               .carouselDot
-          ) ===
-          index;
+          ) === index;
 
 
         dot.classList.toggle(
@@ -627,9 +795,14 @@ function moveCarousel(
   direction
 ) {
 
+  if (!carousel) {
+    return;
+  }
+
+
   const current =
     Number(
-      carousel?.dataset
+      carousel.dataset
         .carouselIndex ||
       0
     );
@@ -644,11 +817,9 @@ function moveCarousel(
 
 
 
-/*
-  ==========================================================
-  RENDER PROPERTY CARDS
-  ==========================================================
-*/
+/* =========================================================
+   RENDER PROPERTY CARDS
+   ========================================================= */
 
 function renderPropertyCards(
   properties
@@ -686,6 +857,7 @@ function renderPropertyCards(
 
   propertyGrid.innerHTML =
     properties
+
       .map(
         property => {
 
@@ -751,23 +923,43 @@ function renderPropertyCards(
 
 
           return `
+
             <article
-              class="property-card"
+              class="property-card property-card-clickable"
+
               data-id="${escapeHTML(
                 property.id
               )}"
+
+              data-open-property="${escapeHTML(
+                property.id
+              )}"
+
+              tabindex="0"
+
+              role="link"
+
+              aria-label="View ${escapeHTML(
+                property.title
+              )}"
             >
+
 
               <div
                 class="property-image property-carousel"
+
                 data-property-carousel
+
                 data-carousel-index="0"
               >
 
+
                 <div
                   class="property-carousel-track"
+
                   data-carousel-track
                 >
+
 
                   ${images
                     .map(
@@ -775,11 +967,14 @@ function renderPropertyCards(
                         image,
                         index
                       ) => `
+
                         <img
                           class="property-carousel-slide"
+
                           src="${escapeHTML(
                             image
                           )}"
+
                           alt="${escapeHTML(
                             property.title
                           )}${
@@ -787,12 +982,16 @@ function renderPropertyCards(
                               ? ` — image ${index + 1} of ${images.length}`
                               : ''
                           }"
+
                           loading="lazy"
+
                           draggable="false"
                         />
+
                       `
                     )
                     .join('')}
+
 
                 </div>
 
@@ -804,16 +1003,19 @@ function renderPropertyCards(
                       : ''
                   }"
                 >
+
                   ${
                     isRent
                       ? 'To rent'
                       : 'For sale'
                   }
+
                 </span>
 
 
                 ${
                   property.featured
+
                     ? `
                       <span
                         class="featured-marker"
@@ -821,6 +1023,7 @@ function renderPropertyCards(
                         Featured
                       </span>
                     `
+
                     : ''
                 }
 
@@ -831,31 +1034,41 @@ function renderPropertyCards(
                       ? 'saved'
                       : ''
                   }"
+
                   type="button"
+
                   data-favourite-id="${escapeHTML(
                     property.id
                   )}"
+
                   aria-label="Save ${escapeHTML(
                     property.title
                   )}"
+
                   aria-pressed="${saved}"
                 >
+
                   ${
                     saved
                       ? '♥'
                       : '♡'
                   }
+
                 </button>
 
 
                 ${
                   multipleImages
+
                     ? `
 
                       <button
                         class="property-carousel-arrow property-carousel-prev"
+
                         type="button"
+
                         data-carousel-prev
+
                         aria-label="Previous image"
                       >
                         ‹
@@ -864,8 +1077,11 @@ function renderPropertyCards(
 
                       <button
                         class="property-carousel-arrow property-carousel-next"
+
                         type="button"
+
                         data-carousel-next
+
                         aria-label="Next image"
                       >
                         ›
@@ -874,8 +1090,10 @@ function renderPropertyCards(
 
                       <div
                         class="property-carousel-dots"
+
                         aria-label="Property images"
                       >
+
 
                         ${images
                           .map(
@@ -883,30 +1101,39 @@ function renderPropertyCards(
                               _image,
                               index
                             ) => `
+
                               <button
                                 class="property-carousel-dot ${
                                   index === 0
                                     ? 'active'
                                     : ''
                                 }"
+
                                 type="button"
+
                                 data-carousel-dot="${index}"
+
                                 aria-label="Show image ${index + 1} of ${images.length}"
+
                                 aria-current="${
                                   index === 0
                                     ? 'true'
                                     : 'false'
                                 }"
                               ></button>
+
                             `
                           )
                           .join('')}
 
+
                       </div>
 
                     `
+
                     : ''
                 }
+
 
               </div>
 
@@ -915,40 +1142,51 @@ function renderPropertyCards(
                 class="property-body"
               >
 
+
                 <p
                   class="property-kicker"
                 >
+
                   ${escapeHTML(
                     property.id
                   )}
+
                   ·
+
                   ${escapeHTML(
                     property.status ||
                     'Available'
                   )}
+
                 </p>
 
 
                 <h3>
+
                   ${escapeHTML(
                     property.title
                   )}
+
                 </h3>
 
 
                 <p
                   class="location"
                 >
+
                   ${escapeHTML(
                     property.location
                   )}
+
                 </p>
 
 
                 <ul
                   class="property-meta"
+
                   aria-label="Property features"
                 >
+
 
                   ${meta
                     .map(
@@ -959,6 +1197,7 @@ function renderPropertyCards(
                     )
                     .join('')}
 
+
                 </ul>
 
 
@@ -966,43 +1205,52 @@ function renderPropertyCards(
                   class="property-bottom"
                 >
 
+
                   <p
                     class="price"
                   >
+
                     ${formatPrice(
                       property
                     )}
+
                   </p>
 
 
                   <button
                     class="property-enquire"
+
                     type="button"
+
                     data-enquire-property="${escapeHTML(
                       property.id
                     )}"
                   >
+
                     Enquire →
+
                   </button>
+
 
                 </div>
 
+
               </div>
+
 
             </article>
           `;
         }
       )
+
       .join('');
 }
 
 
 
-/*
-  ==========================================================
-  DEFAULT / FEATURED PROPERTIES
-  ==========================================================
-*/
+/* =========================================================
+   DEFAULT PROPERTIES
+   ========================================================= */
 
 function renderDefaultProperties() {
 
@@ -1025,7 +1273,9 @@ function renderDefaultProperties() {
 
   const visible =
     showingAll
+
       ? allProperties
+
       : defaultProperties.slice(
           0,
           4
@@ -1041,22 +1291,27 @@ function renderDefaultProperties() {
 
     viewAllButton.innerHTML =
       showingAll
+
         ? 'Show featured <span aria-hidden="true">↑</span>'
+
         : 'View all properties <span aria-hidden="true">→</span>';
   }
 }
 
 
 
-/*
-  ==========================================================
-  PROPERTY CARD CLICK EVENTS
-  ==========================================================
-*/
+/* =========================================================
+   PROPERTY CARD CLICKS
+   ========================================================= */
+
+let suppressPropertyOpen =
+  false;
+
 
 propertyGrid.addEventListener(
   'click',
   event => {
+
 
     /*
       Previous image
@@ -1085,6 +1340,7 @@ propertyGrid.addEventListener(
 
       return;
     }
+
 
 
     /*
@@ -1116,8 +1372,9 @@ propertyGrid.addEventListener(
     }
 
 
+
     /*
-      Dot navigation
+      Carousel dots
     */
 
     const dotButton =
@@ -1149,6 +1406,7 @@ propertyGrid.addEventListener(
     }
 
 
+
     /*
       Favourite
     */
@@ -1161,6 +1419,11 @@ propertyGrid.addEventListener(
 
     if (favouriteButton) {
 
+      event.preventDefault();
+
+      event.stopPropagation();
+
+
       toggleFavourite(
         favouriteButton.dataset
           .favouriteId,
@@ -1171,6 +1434,7 @@ propertyGrid.addEventListener(
 
       return;
     }
+
 
 
     /*
@@ -1185,6 +1449,11 @@ propertyGrid.addEventListener(
 
     if (enquireButton) {
 
+      event.preventDefault();
+
+      event.stopPropagation();
+
+
       const id =
         enquireButton.dataset
           .enquireProperty;
@@ -1193,8 +1462,7 @@ propertyGrid.addEventListener(
       const property =
         allProperties.find(
           item =>
-            item.id ===
-            id
+            item.id === id
         );
 
 
@@ -1208,13 +1476,15 @@ propertyGrid.addEventListener(
       );
 
 
-      document.getElementById(
-        'ticket-message'
-      ).value =
-        `I'm interested in ${
-          property?.title ||
-          'this property'
-        } (${id}). Please contact me with more information.`;
+      document
+        .getElementById(
+          'ticket-message'
+        )
+        .value =
+          `I'm interested in ${
+            property?.title ||
+            'this property'
+          } (${id}). Please contact me with more information.`;
 
 
       document
@@ -1225,17 +1495,126 @@ propertyGrid.addEventListener(
           behavior:
             'smooth'
         });
+
+
+      return;
+    }
+
+
+
+    /*
+      Do not open the property page
+      immediately after a swipe / drag.
+    */
+
+    if (
+      suppressPropertyOpen
+    ) {
+
+      return;
+    }
+
+
+
+    /*
+      Open individual property page
+    */
+
+    const propertyCard =
+      event.target.closest(
+        '[data-open-property]'
+      );
+
+
+    if (propertyCard) {
+
+      const id =
+        propertyCard.dataset
+          .openProperty;
+
+
+      if (id) {
+
+        window.location.href =
+          `property.html?id=${encodeURIComponent(
+            id
+          )}`;
+      }
     }
   }
 );
 
 
 
-/*
-  ==========================================================
-  CAROUSEL SWIPE / MOUSE DRAG
-  ==========================================================
-*/
+/* =========================================================
+   KEYBOARD ACCESS
+   ========================================================= */
+
+propertyGrid.addEventListener(
+  'keydown',
+  event => {
+
+    if (
+      event.key !==
+        'Enter' &&
+      event.key !==
+        ' '
+    ) {
+
+      return;
+    }
+
+
+    /*
+      Buttons inside the property card
+      must keep their normal behaviour.
+    */
+
+    if (
+      event.target.closest(
+        'button, a, input, select, textarea'
+      )
+    ) {
+
+      return;
+    }
+
+
+    const propertyCard =
+      event.target.closest(
+        '[data-open-property]'
+      );
+
+
+    if (!propertyCard) {
+
+      return;
+    }
+
+
+    event.preventDefault();
+
+
+    const id =
+      propertyCard.dataset
+        .openProperty;
+
+
+    if (id) {
+
+      window.location.href =
+        `property.html?id=${encodeURIComponent(
+          id
+        )}`;
+    }
+  }
+);
+
+
+
+/* =========================================================
+   CAROUSEL SWIPE / MOUSE DRAG
+   ========================================================= */
 
 let carouselDrag =
   null;
@@ -1257,6 +1636,7 @@ propertyGrid.addEventListener(
         'button'
       )
     ) {
+
       return;
     }
 
@@ -1267,6 +1647,7 @@ propertyGrid.addEventListener(
       event.button !==
         0
     ) {
+
       return;
     }
 
@@ -1278,13 +1659,16 @@ propertyGrid.addEventListener(
 
 
     if (
-      slides.length <= 1
+      slides.length <=
+      1
     ) {
+
       return;
     }
 
 
     carouselDrag = {
+
       carousel,
 
       pointerId:
@@ -1301,10 +1685,12 @@ propertyGrid.addEventListener(
 
       horizontal:
         false
+
     };
 
 
     try {
+
       carousel.setPointerCapture(
         event.pointerId
       );
@@ -1324,6 +1710,7 @@ propertyGrid.addEventListener(
       carouselDrag.pointerId !==
         event.pointerId
     ) {
+
       return;
     }
 
@@ -1338,11 +1725,6 @@ propertyGrid.addEventListener(
       carouselDrag.startY;
 
 
-    /*
-      Wait until we know whether this is
-      horizontal swiping or vertical scrolling.
-    */
-
     if (
       !carouselDrag.horizontal &&
       Math.abs(deltaX) <
@@ -1350,9 +1732,14 @@ propertyGrid.addEventListener(
       Math.abs(deltaY) <
         8
     ) {
+
       return;
     }
 
+
+    /*
+      Let vertical scrolling work normally.
+    */
 
     if (
       !carouselDrag.horizontal &&
@@ -1424,6 +1811,7 @@ function finishCarouselDrag(
     carouselDrag.pointerId !==
       event.pointerId
   ) {
+
     return;
   }
 
@@ -1441,9 +1829,32 @@ function finishCarouselDrag(
   );
 
 
-  if (!drag.horizontal) {
+  if (
+    !drag.horizontal
+  ) {
+
     return;
   }
+
+
+  /*
+    Prevent the click generated after
+    dragging from opening the property.
+  */
+
+  suppressPropertyOpen =
+    true;
+
+
+  setTimeout(
+    () => {
+
+      suppressPropertyOpen =
+        false;
+
+    },
+    0
+  );
 
 
   const distance =
@@ -1477,6 +1888,7 @@ function finishCarouselDrag(
         : -1
     );
 
+
   } else {
 
     setCarouselIndex(
@@ -1508,6 +1920,7 @@ propertyGrid.addEventListener(
 );
 
 
+
 propertyGrid.addEventListener(
   'pointercancel',
   finishCarouselDrag
@@ -1515,31 +1928,28 @@ propertyGrid.addEventListener(
 
 
 
-/*
-  ==========================================================
-  VIEW ALL PROPERTIES
-  ==========================================================
-*/
+/* =========================================================
+   VIEW ALL
+   ========================================================= */
 
-viewAllButton?.addEventListener(
-  'click',
-  () => {
+viewAllButton
+  ?.addEventListener(
+    'click',
+    () => {
 
-    showingAll =
-      !showingAll;
-
-
-    renderDefaultProperties();
-  }
-);
+      showingAll =
+        !showingAll;
 
 
+      renderDefaultProperties();
+    }
+  );
 
-/*
-  ==========================================================
-  SEARCH PRICE OPTIONS
-  ==========================================================
-*/
+
+
+/* =========================================================
+   SEARCH PRICE OPTIONS
+   ========================================================= */
 
 function setPriceOptions(
   mode
@@ -1558,6 +1968,7 @@ function setPriceOptions(
 
 
   const rentMin = [
+
     [
       0,
       'No min'
@@ -1582,10 +1993,12 @@ function setPriceOptions(
       3000,
       'US$3,000'
     ]
+
   ];
 
 
   const rentMax = [
+
     [
       0,
       'No max'
@@ -1610,10 +2023,12 @@ function setPriceOptions(
       6000,
       'US$6,000'
     ]
+
   ];
 
 
   const buyMin = [
+
     [
       0,
       'No min'
@@ -1638,10 +2053,12 @@ function setPriceOptions(
       750000,
       'US$750,000'
     ]
+
   ];
 
 
   const buyMax = [
+
     [
       0,
       'No max'
@@ -1666,27 +2083,31 @@ function setPriceOptions(
       2000000,
       'US$2,000,000'
     ]
+
   ];
 
 
   const makeOptions =
     options =>
       options
+
         .map(
           (
             [
               value,
               label
             ]
-          ) =>
-            `
-              <option
-                value="${value}"
-              >
-                ${label}
-              </option>
-            `
+          ) => `
+
+            <option
+              value="${value}"
+            >
+              ${label}
+            </option>
+
+          `
         )
+
         .join('');
 
 
@@ -1708,11 +2129,9 @@ function setPriceOptions(
 
 
 
-/*
-  ==========================================================
-  SEARCH MODE
-  ==========================================================
-*/
+/* =========================================================
+   SEARCH MODE
+   ========================================================= */
 
 function setSearchMode(
   mode
@@ -1771,11 +2190,9 @@ searchTabs.forEach(
 
 
 
-/*
-  ==========================================================
-  HEADER BUY / RENT FILTER LINKS
-  ==========================================================
-*/
+/* =========================================================
+   HEADER BUY / RENT FILTERS
+   ========================================================= */
 
 document
   .querySelectorAll(
@@ -1823,11 +2240,9 @@ document
 
 
 
-/*
-  ==========================================================
-  PROPERTY SEARCH FORM
-  ==========================================================
-*/
+/* =========================================================
+   PROPERTY SEARCH
+   ========================================================= */
 
 searchForm.addEventListener(
   'submit',
@@ -1838,11 +2253,15 @@ searchForm.addEventListener(
 
     const location =
       document
+
         .getElementById(
           'location'
         )
+
         .value
+
         .trim()
+
         .toLowerCase();
 
 
@@ -1903,7 +2322,8 @@ searchForm.addEventListener(
 
 
           const matchesType =
-            type === 'any' ||
+            type ===
+              'any' ||
             property.propertyType ===
               type;
 
@@ -1962,11 +2382,13 @@ searchForm.addEventListener(
 
     searchMessage.textContent =
       matches.length
+
         ? `${matches.length} matching ${
             matches.length === 1
               ? 'property'
               : 'properties'
           } found.`
+
         : 'No exact matches found. You can open a property request and we can look for you.';
 
 
@@ -1988,11 +2410,9 @@ searchForm.addEventListener(
 
 
 
-/*
-  ==========================================================
-  REQUEST TYPE
-  ==========================================================
-*/
+/* =========================================================
+   REQUEST TYPE
+   ========================================================= */
 
 function selectRequestType(
   type
@@ -2004,7 +2424,9 @@ function selectRequestType(
       'rent',
       'sell'
     ].includes(type)
+
       ? type
+
       : 'buy';
 
 
@@ -2015,6 +2437,7 @@ function selectRequestType(
 
 
   if (input) {
+
     input.checked =
       true;
   }
@@ -2037,8 +2460,11 @@ function updateTicketLabels() {
   ticketBudgetLabel
     .childNodes[0]
     .nodeValue =
+
       type === 'sell'
+
         ? 'Expected price / valuation range'
+
         : 'Budget / target price';
 
 
@@ -2047,8 +2473,11 @@ function updateTicketLabels() {
       'ticket-location'
     )
     .placeholder =
+
       type === 'sell'
+
         ? 'Where is the property located?'
+
         : 'Where would you like to live / invest?';
 }
 
@@ -2086,11 +2515,9 @@ document
 
 
 
-/*
-  ==========================================================
-  LOCAL PREVIEW TICKET HELPERS
-  ==========================================================
-*/
+/* =========================================================
+   PREVIEW REQUEST HELPERS
+   ========================================================= */
 
 function makePreviewTicketReference() {
 
@@ -2124,11 +2551,14 @@ function makePreviewTicketReference() {
 
   const suffix =
     Math.random()
+
       .toString(36)
+
       .slice(
         2,
         8
       )
+
       .toUpperCase();
 
 
@@ -2169,11 +2599,9 @@ function savePreviewTicket(
 
 
 
-/*
-  ==========================================================
-  TICKET CONFIRMATION
-  ==========================================================
-*/
+/* =========================================================
+   REQUEST CONFIRMATION
+   ========================================================= */
 
 function showTicketConfirmation({
   name,
@@ -2240,11 +2668,9 @@ function showTicketConfirmation({
 
 
 
-/*
-  ==========================================================
-  START ANOTHER REQUEST
-  ==========================================================
-*/
+/* =========================================================
+   NEW REQUEST
+   ========================================================= */
 
 newRequestButton
   ?.addEventListener(
@@ -2291,11 +2717,9 @@ newRequestButton
 
 
 
-/*
-  ==========================================================
-  SUBMIT CUSTOMER REQUEST
-  ==========================================================
-*/
+/* =========================================================
+   SUBMIT REQUEST
+   ========================================================= */
 
 ticketForm.addEventListener(
   'submit',
@@ -2420,6 +2844,7 @@ ticketForm.addEventListener(
           ) ||
           ''
         ).trim()
+
     };
 
 
@@ -2455,23 +2880,29 @@ ticketForm.addEventListener(
 
 
         showTicketConfirmation({
+
           name:
             ticket.name,
+
 
           reference:
             result.reference,
 
+
           email:
             ticket.email,
+
 
           emailSent:
             Boolean(
               result.emailSent
             ),
 
+
           statusUrl:
             result.statusUrl ||
             ''
+
         });
 
 
@@ -2484,17 +2915,22 @@ ticketForm.addEventListener(
 
 
         savePreviewTicket({
+
           ...ticket,
+
 
           id:
             previewReference,
 
+
           status:
             'new',
+
 
           createdAt:
             new Date()
               .toISOString()
+
         });
 
 
@@ -2548,11 +2984,9 @@ ticketForm.addEventListener(
 
 
 
-/*
-  ==========================================================
-  LOAD PROPERTIES
-  ==========================================================
-*/
+/* =========================================================
+   LOAD PROPERTIES
+   ========================================================= */
 
 async function loadProperties() {
 
@@ -2593,11 +3027,9 @@ async function loadProperties() {
 
 
 
-/*
-  ==========================================================
-  INITIALISE
-  ==========================================================
-*/
+/* =========================================================
+   INITIALISE
+   ========================================================= */
 
 document
   .getElementById(
