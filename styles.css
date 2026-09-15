@@ -3632,3 +3632,16 @@ span.active::before {
   }
 
 }
+/* =========================================================
+   CLICKABLE PROPERTY CARDS
+   ========================================================= */
+
+.property-card-clickable {
+  cursor: pointer;
+}
+
+
+.property-card-clickable:focus-visible {
+  outline: 3px solid var(--lagoon);
+  outline-offset: 4px;
+}
