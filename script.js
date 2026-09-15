@@ -28,72 +28,109 @@ const backendConfigured = Boolean(
   !String(publicConfig.supabasePublicKey).includes('YOUR_')
 );
 
+
 /*
+  ==========================================================
   FRONTEND / BACKEND BRIDGE
-  -------------------------
-  The public site stays on GitHub Pages. Supabase stores published properties and
-  property-request tickets. Customer tickets are created through an Edge Function
-  so private database credentials and ticket access tokens never live in the browser.
+  ==========================================================
 */
 
 const BACKEND = {
   enabled: backendConfigured,
 
   async getPublishedProperties() {
-    const base = String(publicConfig.supabaseUrl).replace(/\/$/, '');
-    const url = new URL(`${base}/rest/v1/properties`);
+    const base =
+      String(
+        publicConfig.supabaseUrl
+      ).replace(/\/$/, '');
+
+    const url =
+      new URL(
+        `${base}/rest/v1/properties`
+      );
 
     url.searchParams.set(
       'select',
       'id,title,purpose,property_type,location,bedrooms,bathrooms,size,price,currency,price_period,featured,status,images,created_at'
     );
 
-    url.searchParams.set('published', 'eq.true');
-    url.searchParams.set('order', 'featured.desc,created_at.desc');
+    url.searchParams.set(
+      'published',
+      'eq.true'
+    );
 
-    const response = await fetch(url, {
-      headers: {
-        apikey: publicConfig.supabasePublicKey
-      }
-    });
+    url.searchParams.set(
+      'order',
+      'featured.desc,created_at.desc'
+    );
+
+    const response =
+      await fetch(
+        url,
+        {
+          headers: {
+            apikey:
+              publicConfig.supabasePublicKey
+          }
+        }
+      );
 
     if (!response.ok) {
-      throw new Error('Could not load published properties.');
+      throw new Error(
+        'Could not load published properties.'
+      );
     }
 
-    const rows = await response.json();
+    const rows =
+      await response.json();
 
     return rows.map(row => ({
       ...row,
-      propertyType: row.property_type,
-      pricePeriod: row.price_period
+      propertyType:
+        row.property_type,
+      pricePeriod:
+        row.price_period
     }));
   },
 
-  async createTicket(ticket) {
-    const base = String(publicConfig.supabaseUrl).replace(/\/$/, '');
 
-    const response = await fetch(
-      `${base}/functions/v1/create-ticket`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          apikey: publicConfig.supabasePublicKey
-        },
-        body: JSON.stringify(ticket)
-      }
-    );
+  async createTicket(ticket) {
+    const base =
+      String(
+        publicConfig.supabaseUrl
+      ).replace(/\/$/, '');
+
+    const response =
+      await fetch(
+        `${base}/functions/v1/create-ticket`,
+        {
+          method: 'POST',
+
+          headers: {
+            'Content-Type':
+              'application/json',
+
+            apikey:
+              publicConfig.supabasePublicKey
+          },
+
+          body:
+            JSON.stringify(ticket)
+        }
+      );
 
     let payload = {};
 
     try {
-      payload = await response.json();
+      payload =
+        await response.json();
     } catch (_error) {}
+
 
     if (!response.ok) {
       throw new Error(
-        payload.error || 'Could not submit your request.'
+        payload.error ||
+        'Could not submit your request.'
       );
     }
 
@@ -101,6 +138,13 @@ const BACKEND = {
   }
 };
 
+
+
+/*
+  ==========================================================
+  FALLBACK DEMO PROPERTIES
+  ==========================================================
+*/
 
 const DEMO_PROPERTIES = [
   {
@@ -116,7 +160,9 @@ const DEMO_PROPERTIES = [
     currency: 'USD',
     featured: true,
     status: 'Available',
-    images: ['property-1.jpg']
+    images: [
+      'property-1.jpg'
+    ]
   },
 
   {
@@ -133,7 +179,9 @@ const DEMO_PROPERTIES = [
     pricePeriod: 'month',
     featured: true,
     status: 'Available',
-    images: ['property-2.jpg']
+    images: [
+      'property-2.jpg'
+    ]
   },
 
   {
@@ -149,7 +197,9 @@ const DEMO_PROPERTIES = [
     currency: 'USD',
     featured: true,
     status: 'Available',
-    images: ['property-3.jpg']
+    images: [
+      'property-3.jpg'
+    ]
   },
 
   {
@@ -166,30 +216,75 @@ const DEMO_PROPERTIES = [
     pricePeriod: 'month',
     featured: true,
     status: 'Available',
-    images: ['property-4.jpg']
+    images: [
+      'property-4.jpg'
+    ]
   }
 ];
 
 
-let activeMode = 'buy';
-let allProperties = [];
-let showingAll = false;
-let searchActive = false;
+let activeMode =
+  'buy';
+
+let allProperties =
+  [];
+
+let showingAll =
+  false;
+
+let searchActive =
+  false;
 
 
-function escapeHTML(value = '') {
+
+/*
+  ==========================================================
+  HELPERS
+  ==========================================================
+*/
+
+function escapeHTML(
+  value = ''
+) {
   return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replaceAll(
+      '&',
+      '&amp;'
+    )
+    .replaceAll(
+      '<',
+      '&lt;'
+    )
+    .replaceAll(
+      '>',
+      '&gt;'
+    )
+    .replaceAll(
+      '"',
+      '&quot;'
+    )
+    .replaceAll(
+      "'",
+      '&#039;'
+    );
 }
 
 
+
+/*
+  ==========================================================
+  NAVIGATION
+  ==========================================================
+*/
+
 function closeNavigation() {
-  navToggle.classList.remove('active');
-  mainNav.classList.remove('open');
+  navToggle.classList.remove(
+    'active'
+  );
+
+  mainNav.classList.remove(
+    'open'
+  );
 
   navToggle.setAttribute(
     'aria-expanded',
@@ -201,50 +296,61 @@ function closeNavigation() {
     'Open navigation'
   );
 
-  document.body.classList.remove('nav-open');
+  document.body.classList.remove(
+    'nav-open'
+  );
 }
 
 
-navToggle.addEventListener('click', () => {
-  const isOpen = mainNav.classList.toggle('open');
+navToggle.addEventListener(
+  'click',
+  () => {
 
-  navToggle.classList.toggle(
-    'active',
-    isOpen
-  );
+    const isOpen =
+      mainNav.classList.toggle(
+        'open'
+      );
 
-  navToggle.setAttribute(
-    'aria-expanded',
-    String(isOpen)
-  );
+    navToggle.classList.toggle(
+      'active',
+      isOpen
+    );
 
-  navToggle.setAttribute(
-    'aria-label',
-    isOpen
-      ? 'Close navigation'
-      : 'Open navigation'
-  );
+    navToggle.setAttribute(
+      'aria-expanded',
+      String(isOpen)
+    );
 
-  document.body.classList.toggle(
-    'nav-open',
-    isOpen
-  );
-});
+    navToggle.setAttribute(
+      'aria-label',
+      isOpen
+        ? 'Close navigation'
+        : 'Open navigation'
+    );
+
+    document.body.classList.toggle(
+      'nav-open',
+      isOpen
+    );
+  }
+);
 
 
 mainNav
   .querySelectorAll('a')
-  .forEach(link =>
-    link.addEventListener(
-      'click',
-      closeNavigation
-    )
+  .forEach(
+    link =>
+      link.addEventListener(
+        'click',
+        closeNavigation
+      )
   );
 
 
 window.addEventListener(
   'scroll',
   () => {
+
     header.classList.toggle(
       'scrolled',
       window.scrollY > 24
@@ -261,6 +367,7 @@ window.addEventListener(
 backToTop.addEventListener(
   'click',
   () => {
+
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
@@ -269,9 +376,17 @@ backToTop.addEventListener(
 );
 
 
+
+/*
+  ==========================================================
+  PROPERTY HELPERS
+  ==========================================================
+*/
+
 function formatPrice(property) {
   const currency =
-    property.currency || 'USD';
+    property.currency ||
+    'USD';
 
   let value;
 
@@ -280,19 +395,32 @@ function formatPrice(property) {
       new Intl.NumberFormat(
         'en-US',
         {
-          style: 'currency',
+          style:
+            'currency',
+
           currency,
-          maximumFractionDigits: 0
+
+          maximumFractionDigits:
+            0
         }
       ).format(
-        Number(property.price || 0)
+        Number(
+          property.price ||
+          0
+        )
       );
+
   } catch (_error) {
+
     value =
       `${currency} ${Number(
-        property.price || 0
-      ).toLocaleString('en-US')}`;
+        property.price ||
+        0
+      ).toLocaleString(
+        'en-US'
+      )}`;
   }
+
 
   return property.pricePeriod
     ? `${value} <small>/ ${escapeHTML(
@@ -300,6 +428,7 @@ function formatPrice(property) {
       )}</small>`
     : value;
 }
+
 
 
 function savedFavouriteIds() {
@@ -311,37 +440,54 @@ function savedFavouriteIds() {
         ) || '[]'
       )
     );
+
   } catch (_error) {
     return new Set();
   }
 }
 
 
-function toggleFavourite(id, button) {
+
+function toggleFavourite(
+  id,
+  button
+) {
   const favourites =
     savedFavouriteIds();
 
-  if (favourites.has(id)) {
+  if (
+    favourites.has(id)
+  ) {
     favourites.delete(id);
+
   } else {
     favourites.add(id);
   }
 
+
   localStorage.setItem(
     'helen-estates-favourites',
-    JSON.stringify([...favourites])
+    JSON.stringify(
+      [...favourites]
+    )
   );
+
 
   const isSaved =
     favourites.has(id);
+
 
   button.classList.toggle(
     'saved',
     isSaved
   );
 
+
   button.textContent =
-    isSaved ? '♥' : '♡';
+    isSaved
+      ? '♥'
+      : '♡';
+
 
   button.setAttribute(
     'aria-pressed',
@@ -350,236 +496,61 @@ function toggleFavourite(id, button) {
 }
 
 
-function renderPropertyCards(properties) {
-  const favourites =
-    savedFavouriteIds();
 
-  if (!properties.length) {
-    propertyGrid.innerHTML = '';
+/*
+  ==========================================================
+  PROPERTY IMAGE CAROUSEL
+  ==========================================================
+*/
 
-    propertiesStatus.hidden = false;
+function getPropertyImages(
+  property
+) {
 
-    propertiesStatus.textContent =
-      searchActive
-        ? 'No exact matches found. Try widening your search or open a property request and we can look for you.'
-        : 'No properties are currently published.';
-
-    return;
-  }
-
-
-  propertiesStatus.hidden = true;
-
-  propertyGrid.innerHTML =
-    properties
-      .map(property => {
-        const image =
-          property.images?.[0] ||
-          'property-1.jpg';
-
-        const isRent =
-          property.purpose === 'rent';
-
-        const saved =
-          favourites.has(property.id);
-
-        const meta = [
-          property.bedrooms
-            ? `${Number(
-                property.bedrooms
-              )} ${
-                Number(
-                  property.bedrooms
-                ) === 1
-                  ? 'bed'
-                  : 'beds'
-              }`
-            : '',
-
-          property.bathrooms
-            ? `${Number(
-                property.bathrooms
-              )} ${
-                Number(
-                  property.bathrooms
-                ) === 1
-                  ? 'bath'
-                  : 'baths'
-              }`
-            : '',
-
-          property.size
-            ? `${Number(
-                property.size
-              ).toLocaleString(
-                'en-US'
-              )} sq ft`
-            : ''
-        ].filter(Boolean);
-
-
-        return `
-          <article
-            class="property-card"
-            data-id="${escapeHTML(
-              property.id
-            )}"
-          >
-
-            <div class="property-image">
-
-              <img
-                src="${escapeHTML(
-                  image
-                )}"
-                alt="${escapeHTML(
-                  property.title
-                )}"
-                loading="lazy"
-              />
-
-              <span
-                class="badge ${
-                  isRent
-                    ? 'badge-rent'
-                    : ''
-                }"
-              >
-                ${
-                  isRent
-                    ? 'To rent'
-                    : 'For sale'
-                }
-              </span>
-
-              ${
-                property.featured
-                  ? '<span class="featured-marker">Featured</span>'
-                  : ''
-              }
-
-              <button
-                class="favourite ${
-                  saved
-                    ? 'saved'
-                    : ''
-                }"
-                type="button"
-                data-favourite-id="${escapeHTML(
-                  property.id
-                )}"
-                aria-label="Save ${escapeHTML(
-                  property.title
-                )}"
-                aria-pressed="${saved}"
-              >
-                ${
-                  saved
-                    ? '♥'
-                    : '♡'
-                }
-              </button>
-
-            </div>
-
-            <div class="property-body">
-
-              <p class="property-kicker">
-                ${escapeHTML(
-                  property.id
-                )}
-                ·
-                ${escapeHTML(
-                  property.status ||
-                    'Available'
-                )}
-              </p>
-
-              <h3>
-                ${escapeHTML(
-                  property.title
-                )}
-              </h3>
-
-              <p class="location">
-                ${escapeHTML(
-                  property.location
-                )}
-              </p>
-
-              <ul
-                class="property-meta"
-                aria-label="Property features"
-              >
-                ${meta
-                  .map(
-                    item =>
-                      `<li>${escapeHTML(
-                        item
-                      )}</li>`
-                  )
-                  .join('')}
-              </ul>
-
-              <div class="property-bottom">
-
-                <p class="price">
-                  ${formatPrice(
-                    property
-                  )}
-                </p>
-
-                <button
-                  class="property-enquire"
-                  type="button"
-                  data-enquire-property="${escapeHTML(
-                    property.id
-                  )}"
-                >
-                  Enquire →
-                </button>
-
-              </div>
-
-            </div>
-
-          </article>
-        `;
-      })
-      .join('');
-}
-
-
-function getPropertyImages(property) {
   const images =
-    Array.isArray(property.images)
+    Array.isArray(
+      property.images
+    )
       ? property.images.filter(
           image =>
-            typeof image === 'string' &&
+            typeof image ===
+              'string' &&
             image.trim()
         )
       : [];
 
+
   return images.length
     ? images
-    : ['property-1.jpg'];
+    : [
+        'property-1.jpg'
+      ];
 }
 
 
-function setPropertyCarouselIndex(
+
+function setCarouselIndex(
   carousel,
-  requestedIndex,
+  nextIndex,
   animate = true
 ) {
+
+  if (!carousel) {
+    return;
+  }
+
+
   const track =
     carousel.querySelector(
       '[data-carousel-track]'
     );
 
+
   const slides =
     carousel.querySelectorAll(
       '.property-carousel-slide'
     );
+
 
   if (
     !track ||
@@ -595,8 +566,10 @@ function setPropertyCarouselIndex(
 
   const index =
     (
-      requestedIndex %
-        total +
+      (
+        nextIndex %
+        total
+      ) +
       total
     ) %
     total;
@@ -620,472 +593,75 @@ function setPropertyCarouselIndex(
     .querySelectorAll(
       '[data-carousel-dot]'
     )
-    .forEach(dot => {
+    .forEach(
+      dot => {
 
-      const isActive =
-        Number(
-          dot.dataset.carouselDot
-        ) === index;
-
-
-      dot.classList.toggle(
-        'active',
-        isActive
-      );
+        const active =
+          Number(
+            dot.dataset
+              .carouselDot
+          ) ===
+          index;
 
 
-      dot.setAttribute(
-        'aria-current',
-        isActive
-          ? 'true'
-          : 'false'
-      );
+        dot.classList.toggle(
+          'active',
+          active
+        );
 
-    });
+
+        dot.setAttribute(
+          'aria-current',
+          active
+            ? 'true'
+            : 'false'
+        );
+      }
+    );
 }
 
 
-function movePropertyCarousel(
+
+function moveCarousel(
   carousel,
   direction
 ) {
-  const currentIndex =
+
+  const current =
     Number(
-      carousel.dataset
-        .carouselIndex || 0
+      carousel?.dataset
+        .carouselIndex ||
+      0
     );
 
 
-  setPropertyCarouselIndex(
+  setCarouselIndex(
     carousel,
-    currentIndex +
-      direction,
-    true
+    current +
+      direction
   );
 }
 
 
-function initialisePropertyCarousels() {
-  propertyGrid
-    .querySelectorAll(
-      '[data-property-carousel]'
-    )
-    .forEach(carousel => {
 
-      const track =
-        carousel.querySelector(
-          '[data-carousel-track]'
-        );
+/*
+  ==========================================================
+  RENDER PROPERTY CARDS
+  ==========================================================
+*/
 
+function renderPropertyCards(
+  properties
+) {
 
-      const slides =
-        carousel.querySelectorAll(
-          '.property-carousel-slide'
-        );
-
-
-      if (
-        !track ||
-        slides.length <= 1
-      ) {
-        return;
-      }
-
-
-      setPropertyCarouselIndex(
-        carousel,
-        0,
-        false
-      );
-
-
-      const previousButton =
-        carousel.querySelector(
-          '[data-carousel-prev]'
-        );
-
-
-      const nextButton =
-        carousel.querySelector(
-          '[data-carousel-next]'
-        );
-
-
-      previousButton
-        ?.addEventListener(
-          'click',
-          event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            movePropertyCarousel(
-              carousel,
-              -1
-            );
-
-          }
-        );
-
-
-      nextButton
-        ?.addEventListener(
-          'click',
-          event => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            movePropertyCarousel(
-              carousel,
-              1
-            );
-
-          }
-        );
-
-
-      carousel
-        .querySelectorAll(
-          '[data-carousel-dot]'
-        )
-        .forEach(dot => {
-
-          dot.addEventListener(
-            'click',
-            event => {
-
-              event.preventDefault();
-              event.stopPropagation();
-
-
-              setPropertyCarouselIndex(
-                carousel,
-                Number(
-                  dot.dataset
-                    .carouselDot
-                ),
-                true
-              );
-
-            }
-          );
-
-        });
-
-
-      /*
-        -----------------------------------------------------
-        SWIPE + MOUSE / TRACKPAD DRAG
-        -----------------------------------------------------
-      */
-
-      let pointerDown =
-        false;
-
-      let horizontalDrag =
-        false;
-
-      let startX =
-        0;
-
-      let startY =
-        0;
-
-      let currentX =
-        0;
-
-
-      carousel.addEventListener(
-        'pointerdown',
-        event => {
-
-          /*
-            Do not begin dragging when the
-            customer presses a button.
-          */
-
-          if (
-            event.target.closest(
-              'button'
-            )
-          ) {
-            return;
-          }
-
-
-          if (
-            event.pointerType ===
-              'mouse' &&
-            event.button !== 0
-          ) {
-            return;
-          }
-
-
-          pointerDown =
-            true;
-
-          horizontalDrag =
-            false;
-
-          startX =
-            event.clientX;
-
-          startY =
-            event.clientY;
-
-          currentX =
-            startX;
-
-        }
-      );
-
-
-      carousel.addEventListener(
-        'pointermove',
-        event => {
-
-          if (!pointerDown) {
-            return;
-          }
-
-
-          const deltaX =
-            event.clientX -
-            startX;
-
-
-          const deltaY =
-            event.clientY -
-            startY;
-
-
-          /*
-            Wait briefly before deciding
-            whether the person is scrolling
-            vertically or swiping horizontally.
-          */
-
-          if (
-            !horizontalDrag &&
-            Math.abs(deltaX) < 8 &&
-            Math.abs(deltaY) < 8
-          ) {
-            return;
-          }
-
-
-          if (
-            !horizontalDrag &&
-            Math.abs(deltaY) >
-              Math.abs(deltaX)
-          ) {
-            pointerDown =
-              false;
-
-            return;
-          }
-
-
-          horizontalDrag =
-            true;
-
-          currentX =
-            event.clientX;
-
-
-          event.preventDefault();
-
-
-          carousel.classList.add(
-            'is-dragging'
-          );
-
-
-          if (
-            carousel.setPointerCapture
-          ) {
-            try {
-              carousel
-                .setPointerCapture(
-                  event.pointerId
-                );
-            } catch (_error) {}
-          }
-
-
-          const index =
-            Number(
-              carousel.dataset
-                .carouselIndex || 0
-            );
-
-
-          track.style.transition =
-            'none';
-
-
-          track.style.transform =
-            `translate3d(calc(-${index * 100}% + ${deltaX}px), 0, 0)`;
-
-        }
-      );
-
-
-      const finishDrag =
-        event => {
-
-          if (!pointerDown) {
-            return;
-          }
-
-
-          pointerDown =
-            false;
-
-
-          carousel.classList.remove(
-            'is-dragging'
-          );
-
-
-          if (
-            !horizontalDrag
-          ) {
-            return;
-          }
-
-
-          const distance =
-            currentX -
-            startX;
-
-
-          const threshold =
-            Math.min(
-              70,
-              Math.max(
-                35,
-                carousel.clientWidth *
-                  0.14
-              )
-            );
-
-
-          if (
-            Math.abs(distance) >=
-            threshold
-          ) {
-
-            movePropertyCarousel(
-              carousel,
-              distance < 0
-                ? 1
-                : -1
-            );
-
-          } else {
-
-            setPropertyCarouselIndex(
-              carousel,
-              Number(
-                carousel.dataset
-                  .carouselIndex || 0
-              ),
-              true
-            );
-
-          }
-
-
-          horizontalDrag =
-            false;
-
-
-          if (
-            carousel.releasePointerCapture
-          ) {
-            try {
-              carousel
-                .releasePointerCapture(
-                  event.pointerId
-                );
-            } catch (_error) {}
-          }
-
-        };
-
-
-      carousel.addEventListener(
-        'pointerup',
-        finishDrag
-      );
-
-
-      carousel.addEventListener(
-        'pointercancel',
-        event => {
-
-          if (!pointerDown) {
-            return;
-          }
-
-
-          pointerDown =
-            false;
-
-          horizontalDrag =
-            false;
-
-
-          carousel.classList.remove(
-            'is-dragging'
-          );
-
-
-          setPropertyCarouselIndex(
-            carousel,
-            Number(
-              carousel.dataset
-                .carouselIndex || 0
-            ),
-            true
-          );
-
-
-          if (
-            carousel.releasePointerCapture
-          ) {
-            try {
-              carousel
-                .releasePointerCapture(
-                  event.pointerId
-                );
-            } catch (_error) {}
-          }
-
-        }
-      );
-
-
-      carousel.addEventListener(
-        'dragstart',
-        event => {
-          event.preventDefault();
-        }
-      );
-
-    });
-}
-
-
-function renderPropertyCards(properties) {
   const favourites =
     savedFavouriteIds();
 
 
-  if (!properties.length) {
+  if (
+    !properties.length
+  ) {
+
     propertyGrid.innerHTML =
       '';
 
@@ -1110,355 +686,502 @@ function renderPropertyCards(properties) {
 
   propertyGrid.innerHTML =
     properties
-      .map(property => {
+      .map(
+        property => {
 
-        const images =
-          getPropertyImages(
-            property
-          );
-
-
-        const hasMultipleImages =
-          images.length > 1;
+          const images =
+            getPropertyImages(
+              property
+            );
 
 
-        const isRent =
-          property.purpose ===
-          'rent';
+          const multipleImages =
+            images.length >
+            1;
 
 
-        const saved =
-          favourites.has(
-            property.id
-          );
+          const isRent =
+            property.purpose ===
+            'rent';
 
 
-        const meta = [
-
-          property.bedrooms
-            ? `${Number(
-                property.bedrooms
-              )} ${
-                Number(
-                  property.bedrooms
-                ) === 1
-                  ? 'bed'
-                  : 'beds'
-              }`
-            : '',
-
-
-          property.bathrooms
-            ? `${Number(
-                property.bathrooms
-              )} ${
-                Number(
-                  property.bathrooms
-                ) === 1
-                  ? 'bath'
-                  : 'baths'
-              }`
-            : '',
-
-
-          property.size
-            ? `${Number(
-                property.size
-              ).toLocaleString(
-                'en-US'
-              )} sq ft`
-            : ''
-
-        ].filter(Boolean);
-
-
-        return `
-          <article
-            class="property-card"
-            data-id="${escapeHTML(
+          const saved =
+            favourites.has(
               property.id
-            )}"
-          >
+            );
 
-            <div
-              class="property-image property-carousel"
-              data-property-carousel
-              data-carousel-index="0"
+
+          const meta = [
+
+            property.bedrooms
+              ? `${Number(
+                  property.bedrooms
+                )} ${
+                  Number(
+                    property.bedrooms
+                  ) === 1
+                    ? 'bed'
+                    : 'beds'
+                }`
+              : '',
+
+
+            property.bathrooms
+              ? `${Number(
+                  property.bathrooms
+                )} ${
+                  Number(
+                    property.bathrooms
+                  ) === 1
+                    ? 'bath'
+                    : 'baths'
+                }`
+              : '',
+
+
+            property.size
+              ? `${Number(
+                  property.size
+                ).toLocaleString(
+                  'en-US'
+                )} sq ft`
+              : ''
+
+          ].filter(Boolean);
+
+
+          return `
+            <article
+              class="property-card"
+              data-id="${escapeHTML(
+                property.id
+              )}"
             >
 
               <div
-                class="property-carousel-track"
-                data-carousel-track
+                class="property-image property-carousel"
+                data-property-carousel
+                data-carousel-index="0"
               >
 
-                ${images
-                  .map(
-                    (
-                      image,
-                      index
-                    ) => `
-                      <img
-                        class="property-carousel-slide"
-                        src="${escapeHTML(
-                          image
-                        )}"
-                        alt="${escapeHTML(
-                          property.title
-                        )}${
-                          images.length >
-                          1
-                            ? ` — image ${
-                                index +
-                                1
-                              } of ${
-                                images.length
-                              }`
-                            : ''
-                        }"
-                        loading="${
-                          index === 0
-                            ? 'eager'
-                            : 'lazy'
-                        }"
-                        draggable="false"
-                      />
+                <div
+                  class="property-carousel-track"
+                  data-carousel-track
+                >
+
+                  ${images
+                    .map(
+                      (
+                        image,
+                        index
+                      ) => `
+                        <img
+                          class="property-carousel-slide"
+                          src="${escapeHTML(
+                            image
+                          )}"
+                          alt="${escapeHTML(
+                            property.title
+                          )}${
+                            multipleImages
+                              ? ` — image ${index + 1} of ${images.length}`
+                              : ''
+                          }"
+                          loading="lazy"
+                          draggable="false"
+                        />
+                      `
+                    )
+                    .join('')}
+
+                </div>
+
+
+                <span
+                  class="badge ${
+                    isRent
+                      ? 'badge-rent'
+                      : ''
+                  }"
+                >
+                  ${
+                    isRent
+                      ? 'To rent'
+                      : 'For sale'
+                  }
+                </span>
+
+
+                ${
+                  property.featured
+                    ? `
+                      <span
+                        class="featured-marker"
+                      >
+                        Featured
+                      </span>
                     `
-                  )
-                  .join('')}
+                    : ''
+                }
+
+
+                <button
+                  class="favourite ${
+                    saved
+                      ? 'saved'
+                      : ''
+                  }"
+                  type="button"
+                  data-favourite-id="${escapeHTML(
+                    property.id
+                  )}"
+                  aria-label="Save ${escapeHTML(
+                    property.title
+                  )}"
+                  aria-pressed="${saved}"
+                >
+                  ${
+                    saved
+                      ? '♥'
+                      : '♡'
+                  }
+                </button>
+
+
+                ${
+                  multipleImages
+                    ? `
+
+                      <button
+                        class="property-carousel-arrow property-carousel-prev"
+                        type="button"
+                        data-carousel-prev
+                        aria-label="Previous image"
+                      >
+                        ‹
+                      </button>
+
+
+                      <button
+                        class="property-carousel-arrow property-carousel-next"
+                        type="button"
+                        data-carousel-next
+                        aria-label="Next image"
+                      >
+                        ›
+                      </button>
+
+
+                      <div
+                        class="property-carousel-dots"
+                        aria-label="Property images"
+                      >
+
+                        ${images
+                          .map(
+                            (
+                              _image,
+                              index
+                            ) => `
+                              <button
+                                class="property-carousel-dot ${
+                                  index === 0
+                                    ? 'active'
+                                    : ''
+                                }"
+                                type="button"
+                                data-carousel-dot="${index}"
+                                aria-label="Show image ${index + 1} of ${images.length}"
+                                aria-current="${
+                                  index === 0
+                                    ? 'true'
+                                    : 'false'
+                                }"
+                              ></button>
+                            `
+                          )
+                          .join('')}
+
+                      </div>
+
+                    `
+                    : ''
+                }
 
               </div>
 
 
-              <span
-                class="badge ${
-                  isRent
-                    ? 'badge-rent'
-                    : ''
-                }"
-              >
-                ${
-                  isRent
-                    ? 'To rent'
-                    : 'For sale'
-                }
-              </span>
-
-
-              ${
-                property.featured
-                  ? `
-                    <span
-                      class="featured-marker"
-                    >
-                      Featured
-                    </span>
-                  `
-                  : ''
-              }
-
-
-              <button
-                class="favourite ${
-                  saved
-                    ? 'saved'
-                    : ''
-                }"
-                type="button"
-                data-favourite-id="${escapeHTML(
-                  property.id
-                )}"
-                aria-label="Save ${escapeHTML(
-                  property.title
-                )}"
-                aria-pressed="${saved}"
-              >
-                ${
-                  saved
-                    ? '♥'
-                    : '♡'
-                }
-              </button>
-
-
-              ${
-                hasMultipleImages
-                  ? `
-                    <button
-                      class="property-carousel-arrow property-carousel-prev"
-                      type="button"
-                      data-carousel-prev
-                      aria-label="Previous image"
-                    >
-                      ‹
-                    </button>
-
-
-                    <button
-                      class="property-carousel-arrow property-carousel-next"
-                      type="button"
-                      data-carousel-next
-                      aria-label="Next image"
-                    >
-                      ›
-                    </button>
-
-
-                    <div
-                      class="property-carousel-dots"
-                      aria-label="Property images"
-                    >
-
-                      ${images
-                        .map(
-                          (
-                            _image,
-                            index
-                          ) => `
-                            <button
-                              class="property-carousel-dot ${
-                                index === 0
-                                  ? 'active'
-                                  : ''
-                              }"
-                              type="button"
-                              data-carousel-dot="${index}"
-                              aria-label="Show image ${
-                                index +
-                                1
-                              } of ${
-                                images.length
-                              }"
-                              aria-current="${
-                                index === 0
-                                  ? 'true'
-                                  : 'false'
-                              }"
-                            ></button>
-                          `
-                        )
-                        .join('')}
-
-                    </div>
-                  `
-                  : ''
-              }
-
-            </div>
-
-
-            <div
-              class="property-body"
-            >
-
-              <p
-                class="property-kicker"
-              >
-                ${escapeHTML(
-                  property.id
-                )}
-                ·
-                ${escapeHTML(
-                  property.status ||
-                    'Available'
-                )}
-              </p>
-
-
-              <h3>
-                ${escapeHTML(
-                  property.title
-                )}
-              </h3>
-
-
-              <p
-                class="location"
-              >
-                ${escapeHTML(
-                  property.location
-                )}
-              </p>
-
-
-              <ul
-                class="property-meta"
-                aria-label="Property features"
-              >
-
-                ${meta
-                  .map(
-                    item =>
-                      `<li>${escapeHTML(
-                        item
-                      )}</li>`
-                  )
-                  .join('')}
-
-              </ul>
-
-
               <div
-                class="property-bottom"
+                class="property-body"
               >
 
                 <p
-                  class="price"
+                  class="property-kicker"
                 >
-                  ${formatPrice(
-                    property
+                  ${escapeHTML(
+                    property.id
+                  )}
+                  ·
+                  ${escapeHTML(
+                    property.status ||
+                    'Available'
                   )}
                 </p>
 
 
-                <button
-                  class="property-enquire"
-                  type="button"
-                  data-enquire-property="${escapeHTML(
-                    property.id
-                  )}"
+                <h3>
+                  ${escapeHTML(
+                    property.title
+                  )}
+                </h3>
+
+
+                <p
+                  class="location"
                 >
-                  Enquire →
-                </button>
+                  ${escapeHTML(
+                    property.location
+                  )}
+                </p>
+
+
+                <ul
+                  class="property-meta"
+                  aria-label="Property features"
+                >
+
+                  ${meta
+                    .map(
+                      item =>
+                        `<li>${escapeHTML(
+                          item
+                        )}</li>`
+                    )
+                    .join('')}
+
+                </ul>
+
+
+                <div
+                  class="property-bottom"
+                >
+
+                  <p
+                    class="price"
+                  >
+                    ${formatPrice(
+                      property
+                    )}
+                  </p>
+
+
+                  <button
+                    class="property-enquire"
+                    type="button"
+                    data-enquire-property="${escapeHTML(
+                      property.id
+                    )}"
+                  >
+                    Enquire →
+                  </button>
+
+                </div>
 
               </div>
 
-            </div>
-
-          </article>
-        `;
-      })
+            </article>
+          `;
+        }
+      )
       .join('');
-
-
-  initialisePropertyCarousels();
 }
 
+
+
+/*
+  ==========================================================
+  DEFAULT / FEATURED PROPERTIES
+  ==========================================================
+*/
+
+function renderDefaultProperties() {
+
+  searchActive =
+    false;
+
+
+  const featured =
+    allProperties.filter(
+      property =>
+        property.featured
+    );
+
+
+  const defaultProperties =
+    featured.length
+      ? featured
+      : allProperties;
+
+
+  const visible =
+    showingAll
+      ? allProperties
+      : defaultProperties.slice(
+          0,
+          4
+        );
+
+
+  renderPropertyCards(
+    visible
+  );
+
+
+  if (viewAllButton) {
+
+    viewAllButton.innerHTML =
+      showingAll
+        ? 'Show featured <span aria-hidden="true">↑</span>'
+        : 'View all properties <span aria-hidden="true">→</span>';
+  }
+}
+
+
+
+/*
+  ==========================================================
+  PROPERTY CARD CLICK EVENTS
+  ==========================================================
+*/
 
 propertyGrid.addEventListener(
   'click',
   event => {
+
+    /*
+      Previous image
+    */
+
+    const previousButton =
+      event.target.closest(
+        '[data-carousel-prev]'
+      );
+
+
+    if (previousButton) {
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+
+      moveCarousel(
+        previousButton.closest(
+          '[data-property-carousel]'
+        ),
+        -1
+      );
+
+
+      return;
+    }
+
+
+    /*
+      Next image
+    */
+
+    const nextButton =
+      event.target.closest(
+        '[data-carousel-next]'
+      );
+
+
+    if (nextButton) {
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+
+      moveCarousel(
+        nextButton.closest(
+          '[data-property-carousel]'
+        ),
+        1
+      );
+
+
+      return;
+    }
+
+
+    /*
+      Dot navigation
+    */
+
+    const dotButton =
+      event.target.closest(
+        '[data-carousel-dot]'
+      );
+
+
+    if (dotButton) {
+
+      event.preventDefault();
+
+      event.stopPropagation();
+
+
+      setCarouselIndex(
+        dotButton.closest(
+          '[data-property-carousel]'
+        ),
+
+        Number(
+          dotButton.dataset
+            .carouselDot
+        )
+      );
+
+
+      return;
+    }
+
+
+    /*
+      Favourite
+    */
 
     const favouriteButton =
       event.target.closest(
         '[data-favourite-id]'
       );
 
+
     if (favouriteButton) {
 
       toggleFavourite(
         favouriteButton.dataset
           .favouriteId,
+
         favouriteButton
       );
+
 
       return;
     }
 
 
+    /*
+      Enquire
+    */
+
     const enquireButton =
       event.target.closest(
         '[data-enquire-property]'
       );
+
 
     if (enquireButton) {
 
@@ -1466,19 +1189,24 @@ propertyGrid.addEventListener(
         enquireButton.dataset
           .enquireProperty;
 
+
       const property =
         allProperties.find(
           item =>
-            item.id === id
+            item.id ===
+            id
         );
+
 
       ticketReference.value =
         id;
 
+
       selectRequestType(
         property?.purpose ||
-          'buy'
+        'buy'
       );
+
 
       document.getElementById(
         'ticket-message'
@@ -1488,33 +1216,340 @@ propertyGrid.addEventListener(
           'this property'
         } (${id}). Please contact me with more information.`;
 
-      document.getElementById(
-        'request'
-      ).scrollIntoView({
-        behavior: 'smooth'
-      });
+
+      document
+        .getElementById(
+          'request'
+        )
+        .scrollIntoView({
+          behavior:
+            'smooth'
+        });
     }
   }
 );
 
 
-viewAllButton.addEventListener(
+
+/*
+  ==========================================================
+  CAROUSEL SWIPE / MOUSE DRAG
+  ==========================================================
+*/
+
+let carouselDrag =
+  null;
+
+
+propertyGrid.addEventListener(
+  'pointerdown',
+  event => {
+
+    const carousel =
+      event.target.closest(
+        '[data-property-carousel]'
+      );
+
+
+    if (
+      !carousel ||
+      event.target.closest(
+        'button'
+      )
+    ) {
+      return;
+    }
+
+
+    if (
+      event.pointerType ===
+        'mouse' &&
+      event.button !==
+        0
+    ) {
+      return;
+    }
+
+
+    const slides =
+      carousel.querySelectorAll(
+        '.property-carousel-slide'
+      );
+
+
+    if (
+      slides.length <= 1
+    ) {
+      return;
+    }
+
+
+    carouselDrag = {
+      carousel,
+
+      pointerId:
+        event.pointerId,
+
+      startX:
+        event.clientX,
+
+      startY:
+        event.clientY,
+
+      currentX:
+        event.clientX,
+
+      horizontal:
+        false
+    };
+
+
+    try {
+      carousel.setPointerCapture(
+        event.pointerId
+      );
+
+    } catch (_error) {}
+  }
+);
+
+
+
+propertyGrid.addEventListener(
+  'pointermove',
+  event => {
+
+    if (
+      !carouselDrag ||
+      carouselDrag.pointerId !==
+        event.pointerId
+    ) {
+      return;
+    }
+
+
+    const deltaX =
+      event.clientX -
+      carouselDrag.startX;
+
+
+    const deltaY =
+      event.clientY -
+      carouselDrag.startY;
+
+
+    /*
+      Wait until we know whether this is
+      horizontal swiping or vertical scrolling.
+    */
+
+    if (
+      !carouselDrag.horizontal &&
+      Math.abs(deltaX) <
+        8 &&
+      Math.abs(deltaY) <
+        8
+    ) {
+      return;
+    }
+
+
+    if (
+      !carouselDrag.horizontal &&
+      Math.abs(deltaY) >
+        Math.abs(deltaX)
+    ) {
+
+      carouselDrag =
+        null;
+
+      return;
+    }
+
+
+    carouselDrag.horizontal =
+      true;
+
+
+    carouselDrag.currentX =
+      event.clientX;
+
+
+    event.preventDefault();
+
+
+    const carousel =
+      carouselDrag.carousel;
+
+
+    const track =
+      carousel.querySelector(
+        '[data-carousel-track]'
+      );
+
+
+    const index =
+      Number(
+        carousel.dataset
+          .carouselIndex ||
+        0
+      );
+
+
+    carousel.classList.add(
+      'is-dragging'
+    );
+
+
+    if (track) {
+
+      track.style.transition =
+        'none';
+
+
+      track.style.transform =
+        `translate3d(calc(-${index * 100}% + ${deltaX}px), 0, 0)`;
+    }
+  }
+);
+
+
+
+function finishCarouselDrag(
+  event
+) {
+
+  if (
+    !carouselDrag ||
+    carouselDrag.pointerId !==
+      event.pointerId
+  ) {
+    return;
+  }
+
+
+  const drag =
+    carouselDrag;
+
+
+  carouselDrag =
+    null;
+
+
+  drag.carousel.classList.remove(
+    'is-dragging'
+  );
+
+
+  if (!drag.horizontal) {
+    return;
+  }
+
+
+  const distance =
+    drag.currentX -
+    drag.startX;
+
+
+  const threshold =
+    Math.min(
+      70,
+
+      Math.max(
+        35,
+
+        drag.carousel.clientWidth *
+        0.14
+      )
+    );
+
+
+  if (
+    Math.abs(distance) >=
+    threshold
+  ) {
+
+    moveCarousel(
+      drag.carousel,
+
+      distance < 0
+        ? 1
+        : -1
+    );
+
+  } else {
+
+    setCarouselIndex(
+      drag.carousel,
+
+      Number(
+        drag.carousel.dataset
+          .carouselIndex ||
+        0
+      )
+    );
+  }
+
+
+  try {
+
+    drag.carousel.releasePointerCapture(
+      event.pointerId
+    );
+
+  } catch (_error) {}
+}
+
+
+
+propertyGrid.addEventListener(
+  'pointerup',
+  finishCarouselDrag
+);
+
+
+propertyGrid.addEventListener(
+  'pointercancel',
+  finishCarouselDrag
+);
+
+
+
+/*
+  ==========================================================
+  VIEW ALL PROPERTIES
+  ==========================================================
+*/
+
+viewAllButton?.addEventListener(
   'click',
   () => {
 
     showingAll =
       !showingAll;
 
+
     renderDefaultProperties();
   }
 );
 
 
-function setPriceOptions(mode) {
+
+/*
+  ==========================================================
+  SEARCH PRICE OPTIONS
+  ==========================================================
+*/
+
+function setPriceOptions(
+  mode
+) {
+
   const minSelect =
     document.getElementById(
       'min-price'
     );
+
 
   const maxSelect =
     document.getElementById(
@@ -1523,35 +1558,114 @@ function setPriceOptions(mode) {
 
 
   const rentMin = [
-    [0, 'No min'],
-    [750, 'US$750'],
-    [1200, 'US$1,200'],
-    [2000, 'US$2,000'],
-    [3000, 'US$3,000']
+    [
+      0,
+      'No min'
+    ],
+
+    [
+      750,
+      'US$750'
+    ],
+
+    [
+      1200,
+      'US$1,200'
+    ],
+
+    [
+      2000,
+      'US$2,000'
+    ],
+
+    [
+      3000,
+      'US$3,000'
+    ]
   ];
+
 
   const rentMax = [
-    [0, 'No max'],
-    [1500, 'US$1,500'],
-    [2500, 'US$2,500'],
-    [4000, 'US$4,000'],
-    [6000, 'US$6,000']
+    [
+      0,
+      'No max'
+    ],
+
+    [
+      1500,
+      'US$1,500'
+    ],
+
+    [
+      2500,
+      'US$2,500'
+    ],
+
+    [
+      4000,
+      'US$4,000'
+    ],
+
+    [
+      6000,
+      'US$6,000'
+    ]
   ];
+
 
   const buyMin = [
-    [0, 'No min'],
-    [150000, 'US$150,000'],
-    [300000, 'US$300,000'],
-    [500000, 'US$500,000'],
-    [750000, 'US$750,000']
+    [
+      0,
+      'No min'
+    ],
+
+    [
+      150000,
+      'US$150,000'
+    ],
+
+    [
+      300000,
+      'US$300,000'
+    ],
+
+    [
+      500000,
+      'US$500,000'
+    ],
+
+    [
+      750000,
+      'US$750,000'
+    ]
   ];
 
+
   const buyMax = [
-    [0, 'No max'],
-    [350000, 'US$350,000'],
-    [600000, 'US$600,000'],
-    [1000000, 'US$1,000,000'],
-    [2000000, 'US$2,000,000']
+    [
+      0,
+      'No max'
+    ],
+
+    [
+      350000,
+      'US$350,000'
+    ],
+
+    [
+      600000,
+      'US$600,000'
+    ],
+
+    [
+      1000000,
+      'US$1,000,000'
+    ],
+
+    [
+      2000000,
+      'US$2,000,000'
+    ]
   ];
 
 
@@ -1559,10 +1673,19 @@ function setPriceOptions(mode) {
     options =>
       options
         .map(
-          ([value, label]) =>
-            `<option value="${value}">
-              ${label}
-            </option>`
+          (
+            [
+              value,
+              label
+            ]
+          ) =>
+            `
+              <option
+                value="${value}"
+              >
+                ${label}
+              </option>
+            `
         )
         .join('');
 
@@ -1584,7 +1707,16 @@ function setPriceOptions(mode) {
 }
 
 
-function setSearchMode(mode) {
+
+/*
+  ==========================================================
+  SEARCH MODE
+  ==========================================================
+*/
+
+function setSearchMode(
+  mode
+) {
 
   activeMode =
     mode === 'rent'
@@ -1599,10 +1731,12 @@ function setSearchMode(mode) {
         tab.dataset.mode ===
         activeMode;
 
+
       tab.classList.toggle(
         'active',
         isActive
       );
+
 
       tab.setAttribute(
         'aria-selected',
@@ -1616,10 +1750,12 @@ function setSearchMode(mode) {
     activeMode
   );
 
+
   searchMessage.classList.remove(
     'show'
   );
 }
+
 
 
 searchTabs.forEach(
@@ -1633,6 +1769,13 @@ searchTabs.forEach(
     )
 );
 
+
+
+/*
+  ==========================================================
+  HEADER BUY / RENT FILTER LINKS
+  ==========================================================
+*/
 
 document
   .querySelectorAll(
@@ -1650,6 +1793,7 @@ document
               .filterLink
           );
 
+
           setTimeout(
             () => {
 
@@ -1660,8 +1804,10 @@ document
                     activeMode
                 );
 
+
               searchActive =
                 true;
+
 
               renderPropertyCards(
                 matches
@@ -1675,6 +1821,13 @@ document
     }
   );
 
+
+
+/*
+  ==========================================================
+  PROPERTY SEARCH FORM
+  ==========================================================
+*/
 
 searchForm.addEventListener(
   'submit',
@@ -1694,31 +1847,39 @@ searchForm.addEventListener(
 
 
     const type =
-      document.getElementById(
-        'property-type'
-      ).value;
+      document
+        .getElementById(
+          'property-type'
+        )
+        .value;
 
 
     const minPrice =
       Number(
-        document.getElementById(
-          'min-price'
-        ).value
+        document
+          .getElementById(
+            'min-price'
+          )
+          .value
       );
 
 
     const maxPrice =
       Number(
-        document.getElementById(
-          'max-price'
-        ).value
+        document
+          .getElementById(
+            'max-price'
+          )
+          .value
       );
 
 
     const bedrooms =
-      document.getElementById(
-        'bedrooms'
-      ).value;
+      document
+        .getElementById(
+          'bedrooms'
+        )
+        .value;
 
 
     const matches =
@@ -1748,7 +1909,8 @@ searchForm.addEventListener(
 
 
           const matchesBeds =
-            bedrooms === 'any' ||
+            bedrooms ===
+              'any' ||
             Number(
               property.bedrooms ||
               0
@@ -1789,7 +1951,9 @@ searchForm.addEventListener(
       );
 
 
-    searchActive = true;
+    searchActive =
+      true;
+
 
     renderPropertyCards(
       matches
@@ -1816,17 +1980,30 @@ searchForm.addEventListener(
         'properties'
       )
       .scrollIntoView({
-        behavior: 'smooth'
+        behavior:
+          'smooth'
       });
   }
 );
 
 
-function selectRequestType(type) {
+
+/*
+  ==========================================================
+  REQUEST TYPE
+  ==========================================================
+*/
+
+function selectRequestType(
+  type
+) {
 
   const normalized =
-    ['buy', 'rent', 'sell']
-      .includes(type)
+    [
+      'buy',
+      'rent',
+      'sell'
+    ].includes(type)
       ? type
       : 'buy';
 
@@ -1838,7 +2015,8 @@ function selectRequestType(type) {
 
 
   if (input) {
-    input.checked = true;
+    input.checked =
+      true;
   }
 
 
@@ -1846,12 +2024,14 @@ function selectRequestType(type) {
 }
 
 
+
 function updateTicketLabels() {
 
   const type =
     ticketForm.querySelector(
       'input[name="requestType"]:checked'
-    )?.value || 'buy';
+    )?.value ||
+    'buy';
 
 
   ticketBudgetLabel
@@ -1862,13 +2042,16 @@ function updateTicketLabels() {
         : 'Budget / target price';
 
 
-  document.getElementById(
-    'ticket-location'
-  ).placeholder =
-    type === 'sell'
-      ? 'Where is the property located?'
-      : 'Where would you like to live / invest?';
+  document
+    .getElementById(
+      'ticket-location'
+    )
+    .placeholder =
+      type === 'sell'
+        ? 'Where is the property located?'
+        : 'Where would you like to live / invest?';
 }
+
 
 
 ticketForm
@@ -1882,6 +2065,7 @@ ticketForm
         updateTicketLabels
       )
   );
+
 
 
 document
@@ -1901,6 +2085,13 @@ document
   );
 
 
+
+/*
+  ==========================================================
+  LOCAL PREVIEW TICKET HELPERS
+  ==========================================================
+*/
+
 function makePreviewTicketReference() {
 
   const date =
@@ -1908,19 +2099,26 @@ function makePreviewTicketReference() {
 
 
   const stamp = [
+
     date.getFullYear(),
+
+
     String(
-      date.getMonth() + 1
+      date.getMonth() +
+      1
     ).padStart(
       2,
       '0'
     ),
+
+
     String(
       date.getDate()
     ).padStart(
       2,
       '0'
     )
+
   ].join('');
 
 
@@ -1938,13 +2136,17 @@ function makePreviewTicketReference() {
 }
 
 
-function savePreviewTicket(ticket) {
+
+function savePreviewTicket(
+  ticket
+) {
 
   const existing =
     JSON.parse(
       localStorage.getItem(
         'helen-estates-demo-tickets'
-      ) || '[]'
+      ) ||
+      '[]'
     );
 
 
@@ -1955,6 +2157,7 @@ function savePreviewTicket(ticket) {
 
   localStorage.setItem(
     'helen-estates-demo-tickets',
+
     JSON.stringify(
       existing.slice(
         0,
@@ -1964,6 +2167,13 @@ function savePreviewTicket(ticket) {
   );
 }
 
+
+
+/*
+  ==========================================================
+  TICKET CONFIRMATION
+  ==========================================================
+*/
 
 function showTicketConfirmation({
   name,
@@ -1976,16 +2186,19 @@ function showTicketConfirmation({
   ticketForm.hidden =
     true;
 
+
   ticketConfirmation.hidden =
     false;
 
 
   confirmationName.textContent =
-    name || 'there';
+    name ||
+    'there';
 
 
   confirmationReference.textContent =
-    reference || '—';
+    reference ||
+    '—';
 
 
   if (emailSent) {
@@ -2005,6 +2218,7 @@ function showTicketConfirmation({
     confirmationStatusLink.href =
       statusUrl;
 
+
     confirmationStatusLink.hidden =
       false;
 
@@ -2016,44 +2230,72 @@ function showTicketConfirmation({
 
 
   ticketConfirmation.scrollIntoView({
-    behavior: 'smooth',
-    block: 'center'
+    behavior:
+      'smooth',
+
+    block:
+      'center'
   });
 }
 
 
-newRequestButton?.addEventListener(
-  'click',
-  () => {
 
-    ticketConfirmation.hidden =
-      true;
+/*
+  ==========================================================
+  START ANOTHER REQUEST
+  ==========================================================
+*/
 
-    ticketForm.hidden =
-      false;
+newRequestButton
+  ?.addEventListener(
+    'click',
+    () => {
 
-    ticketStatus.className =
-      'ticket-message';
+      ticketConfirmation.hidden =
+        true;
 
-    ticketStatus.textContent =
-      '';
 
-    ticketForm.reset();
+      ticketForm.hidden =
+        false;
 
-    selectRequestType(
-      'buy'
-    );
 
-    ticketReference.value =
-      '';
+      ticketStatus.className =
+        'ticket-message';
 
-    ticketForm.scrollIntoView({
-      behavior: 'smooth',
-      block: 'center'
-    });
-  }
-);
 
+      ticketStatus.textContent =
+        '';
+
+
+      ticketForm.reset();
+
+
+      selectRequestType(
+        'buy'
+      );
+
+
+      ticketReference.value =
+        '';
+
+
+      ticketForm.scrollIntoView({
+        behavior:
+          'smooth',
+
+        block:
+          'center'
+      });
+    }
+  );
+
+
+
+/*
+  ==========================================================
+  SUBMIT CUSTOMER REQUEST
+  ==========================================================
+*/
 
 ticketForm.addEventListener(
   'submit',
@@ -2064,6 +2306,7 @@ ticketForm.addEventListener(
 
     ticketStatus.className =
       'ticket-message';
+
 
     ticketStatus.textContent =
       '';
@@ -2088,87 +2331,106 @@ ticketForm.addEventListener(
           'requestType'
         ),
 
+
       name:
         String(
           formData.get(
             'name'
-          ) || ''
+          ) ||
+          ''
         ).trim(),
+
 
       email:
         String(
           formData.get(
             'email'
-          ) || ''
+          ) ||
+          ''
         ).trim(),
+
 
       phone:
         String(
           formData.get(
             'phone'
-          ) || ''
+          ) ||
+          ''
         ).trim(),
+
 
       contactMethod:
         formData.get(
           'contactMethod'
         ),
 
+
       location:
         String(
           formData.get(
             'location'
-          ) || ''
+          ) ||
+          ''
         ).trim(),
+
 
       propertyType:
         formData.get(
           'propertyType'
         ),
 
+
       budget:
         String(
           formData.get(
             'budget'
-          ) || ''
+          ) ||
+          ''
         ).trim(),
+
 
       bedrooms:
         formData.get(
           'bedrooms'
         ),
 
+
       message:
         String(
           formData.get(
             'message'
-          ) || ''
+          ) ||
+          ''
         ).trim(),
+
 
       propertyReference:
         String(
           formData.get(
             'propertyReference'
-          ) || ''
+          ) ||
+          ''
         ).trim(),
+
 
       website:
         String(
           formData.get(
             'website'
-          ) || ''
+          ) ||
+          ''
         ).trim()
     };
 
 
     const isLocalPreview =
-      location.protocol ===
+      window.location.protocol ===
         'file:' ||
       [
         'localhost',
         '127.0.0.1'
       ].includes(
-        location.hostname
+        window.location.hostname
       );
 
 
@@ -2177,11 +2439,14 @@ ticketForm.addEventListener(
       submitButton.disabled =
         true;
 
+
       submitButton.textContent =
         'Sending request…';
 
 
-      if (BACKEND.enabled) {
+      if (
+        BACKEND.enabled
+      ) {
 
         const result =
           await BACKEND.createTicket(
@@ -2209,6 +2474,7 @@ ticketForm.addEventListener(
             ''
         });
 
+
       } else if (
         isLocalPreview
       ) {
@@ -2219,10 +2485,13 @@ ticketForm.addEventListener(
 
         savePreviewTicket({
           ...ticket,
+
           id:
             previewReference,
+
           status:
             'new',
+
           createdAt:
             new Date()
               .toISOString()
@@ -2238,12 +2507,14 @@ ticketForm.addEventListener(
           'success'
         );
 
+
       } else {
 
         throw new Error(
           'The online request desk is not connected yet. Please try again once the service is enabled.'
         );
       }
+
 
     } catch (error) {
 
@@ -2262,6 +2533,7 @@ ticketForm.addEventListener(
         'error'
       );
 
+
     } finally {
 
       submitButton.disabled =
@@ -2275,11 +2547,20 @@ ticketForm.addEventListener(
 );
 
 
+
+/*
+  ==========================================================
+  LOAD PROPERTIES
+  ==========================================================
+*/
+
 async function loadProperties() {
 
   try {
 
-    if (BACKEND.enabled) {
+    if (
+      BACKEND.enabled
+    ) {
 
       allProperties =
         await BACKEND
@@ -2291,11 +2572,13 @@ async function loadProperties() {
         DEMO_PROPERTIES;
     }
 
+
   } catch (error) {
 
     console.error(
       error
     );
+
 
     allProperties =
       DEMO_PROPERTIES;
@@ -2304,15 +2587,25 @@ async function loadProperties() {
 
   propertiesLoading?.remove();
 
+
   renderDefaultProperties();
 }
 
 
-document.getElementById(
-  'current-year'
-).textContent =
-  new Date()
-    .getFullYear();
+
+/*
+  ==========================================================
+  INITIALISE
+  ==========================================================
+*/
+
+document
+  .getElementById(
+    'current-year'
+  )
+  .textContent =
+    new Date()
+      .getFullYear();
 
 
 setPriceOptions(
