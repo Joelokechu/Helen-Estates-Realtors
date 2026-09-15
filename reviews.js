@@ -460,8 +460,12 @@
               'GET',
 
             headers: {
+
               apikey:
-                supabasePublicKey
+                supabasePublicKey,
+
+              Authorization:
+                `Bearer ${supabasePublicKey}`
             }
           }
         );
@@ -470,6 +474,17 @@
       if (
         !response.ok
       ) {
+
+        const errorText =
+          await response.text();
+
+
+        console.error(
+          'Reviews API response:',
+          response.status,
+          errorText
+        );
+
 
         throw new Error(
           `Reviews request failed with ${response.status}`
@@ -673,11 +688,15 @@
                 'POST',
 
               headers: {
+
                 'Content-Type':
                   'application/json',
 
                 apikey:
-                  supabasePublicKey
+                  supabasePublicKey,
+
+                Authorization:
+                  `Bearer ${supabasePublicKey}`
               },
 
               body:
@@ -706,9 +725,16 @@
           !response.ok
         ) {
 
+          console.error(
+            'Create review response:',
+            response.status,
+            result
+          );
+
+
           throw new Error(
             result.error ||
-            'We could not submit your review.'
+            `We could not submit your review. Error ${response.status}.`
           );
         }
 
