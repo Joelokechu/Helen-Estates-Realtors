@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <meta
+    name="description"
+    content="View property details from Helen Estates Realtors."
+  >
+
+  <title>
+    Property | Helen Estates Realtors
+  </title>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  >
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  >
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+    rel="stylesheet"
+  >
+
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  >
+
+  <script src="supabase-config.js"></script>
+
+
+  <style>
+
+    /* =====================================================
+       INDIVIDUAL PROPERTY PAGE
+       ===================================================== */
+
+    .property-page {
+      min-height: 100vh;
+
+      background:
+        linear-gradient(
+          180deg,
+          #fffaf2 0%,
+          #f6fcf9 55%,
+          #ffffff 100%
+        );
+    }
+
+
+    .property-main {
+      padding:
+        160px 0 100px;
+    }
+
+
+    .property-back {
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      margin-bottom: 28px;
+
+      color: var(--sea);
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.07em;
+
+      font-size: 0.76rem;
+
+      font-weight: 700;
+    }
+
+
+    .property-loading,
+    .property-error {
+      padding:
+        70px 30px;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 24px;
+
+      background: var(--white);
+
+      box-shadow: var(--shadow);
+
+      text-align: center;
+    }
+
+
+    .property-loading {
+      color: var(--muted);
+    }
+
+
+    .property-error {
+      color: var(--danger);
+    }
+
+
+    .property-detail[hidden],
+    .property-error[hidden] {
+      display: none;
+    }
+
+
+    /* =====================================================
+       IMAGE GALLERY
+       ===================================================== */
+
+    .detail-gallery {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr) 112px;
+
+      gap: 14px;
+
+      margin-bottom: 46px;
+    }
+
+
+    .detail-main-image {
+      position: relative;
+
+      min-height: 570px;
+
+      overflow: hidden;
+
+      border-radius: 26px;
+
+      background: #dcefe9;
+
+      box-shadow:
+        0 20px 52px
+        rgba(
+          15,
+          94,
+          84,
+          0.11
+        );
+
+      touch-action: pan-y;
+
+      user-select: none;
+
+      cursor: grab;
+    }
+
+
+    .detail-main-image.is-dragging {
+      cursor: grabbing;
+    }
+
+
+    .detail-gallery-track {
+      display: flex;
+
+      width: 100%;
+      height: 100%;
+
+      min-height: 570px;
+
+      transform:
+        translate3d(0, 0, 0);
+
+      transition:
+        transform 320ms
+        cubic-bezier(
+          0.22,
+          1,
+          0.36,
+          1
+        );
+
+      will-change: transform;
+    }
+
+
+    .detail-gallery-slide {
+      width: 100%;
+      height: 570px;
+
+      flex:
+        0 0 100%;
+
+      object-fit: cover;
+
+      pointer-events: none;
+
+      user-select: none;
+    }
+
+
+    .detail-gallery-arrow {
+      position: absolute;
+
+      z-index: 5;
+
+      top: 50%;
+
+      width: 48px;
+      height: 48px;
+
+      display: grid;
+
+      place-items: center;
+
+      padding: 0;
+
+      border:
+        1px solid
+        rgba(
+          255,
+          255,
+          255,
+          0.7
+        );
+
+      border-radius: 50%;
+
+      color: #ffffff;
+
+      background:
+        rgba(
+          9,
+          72,
+          65,
+          0.52
+        );
+
+      backdrop-filter:
+        blur(8px);
+
+      font-size: 1.9rem;
+
+      line-height: 1;
+
+      opacity: 0.8;
+
+      transform:
+        translateY(-50%);
+
+      transition:
+        opacity 180ms ease,
+        background 180ms ease;
+    }
+
+
+    .detail-gallery-arrow:hover {
+      opacity: 1;
+
+      background:
+        rgba(
+          9,
+          72,
+          65,
+          0.8
+        );
+    }
+
+
+    .detail-gallery-prev {
+      left: 18px;
+    }
+
+
+    .detail-gallery-next {
+      right: 18px;
+    }
+
+
+    .detail-gallery-counter {
+      position: absolute;
+
+      z-index: 5;
+
+      right: 18px;
+      bottom: 18px;
+
+      padding:
+        7px 12px;
+
+      border-radius: 999px;
+
+      color: #ffffff;
+
+      background:
+        rgba(
+          9,
+          72,
+          65,
+          0.55
+        );
+
+      backdrop-filter:
+        blur(8px);
+
+      font-size: 0.72rem;
+
+      font-weight: 700;
+    }
+
+
+    .detail-thumbnails {
+      display: grid;
+
+      align-content: start;
+
+      gap: 10px;
+
+      max-height: 570px;
+
+      overflow-y: auto;
+
+      scrollbar-width: thin;
+    }
+
+
+    .detail-thumbnail {
+      position: relative;
+
+      width: 100%;
+
+      aspect-ratio: 1 / 0.84;
+
+      overflow: hidden;
+
+      padding: 0;
+
+      border:
+        2px solid transparent;
+
+      border-radius: 12px;
+
+      background: #e5f2ec;
+
+      opacity: 0.68;
+
+      transition:
+        opacity 180ms ease,
+        border-color 180ms ease,
+        transform 180ms ease;
+    }
+
+
+    .detail-thumbnail:hover {
+      opacity: 1;
+
+      transform:
+        translateY(-1px);
+    }
+
+
+    .detail-thumbnail.active {
+      opacity: 1;
+
+      border-color: var(--coral);
+    }
+
+
+    .detail-thumbnail img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      pointer-events: none;
+    }
+
+
+    /* =====================================================
+       PROPERTY INFORMATION
+       ===================================================== */
+
+    .detail-layout {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1.4fr)
+        minmax(320px, 0.6fr);
+
+      gap: 52px;
+
+      align-items: start;
+    }
+
+
+    .detail-heading {
+      margin-bottom: 30px;
+    }
+
+
+    .detail-topline {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      align-items: center;
+
+      gap: 10px;
+
+      margin-bottom: 12px;
+    }
+
+
+    .detail-purpose {
+      display: inline-flex;
+
+      align-items: center;
+
+      min-height: 30px;
+
+      padding:
+        0 12px;
+
+      border-radius: 999px;
+
+      color: #ffffff;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--jungle),
+          var(--sea)
+        );
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.06em;
+
+      font-size: 0.62rem;
+
+      font-weight: 700;
+    }
+
+
+    .detail-status {
+      display: inline-flex;
+
+      align-items: center;
+
+      min-height: 30px;
+
+      padding:
+        0 12px;
+
+      border-radius: 999px;
+
+      color: var(--jungle);
+
+      background: var(--foam);
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.06em;
+
+      font-size: 0.62rem;
+
+      font-weight: 700;
+    }
+
+
+    .detail-reference {
+      color: var(--muted);
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.07em;
+
+      font-size: 0.65rem;
+
+      font-weight: 700;
+    }
+
+
+    .detail-heading h1 {
+      max-width: 850px;
+
+      margin-bottom: 12px;
+
+      color: var(--jungle-deep);
+
+      font-size:
+        clamp(
+          2.8rem,
+          5.5vw,
+          5.3rem
+        );
+    }
+
+
+    .detail-location {
+      margin-bottom: 0;
+
+      color: var(--muted);
+
+      font-size: 1.03rem;
+    }
+
+
+    .detail-price {
+      margin:
+        26px 0 0;
+
+      color: var(--jungle);
+
+      font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+      font-size:
+        clamp(
+          2rem,
+          3vw,
+          3rem
+        );
+
+      font-weight: 600;
+    }
+
+
+    .detail-price small {
+      color: var(--muted);
+
+      font-family:
+        "DM Sans",
+        Arial,
+        sans-serif;
+
+      font-size: 0.82rem;
+
+      font-weight: 500;
+    }
+
+
+    .detail-specs {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap: 1px;
+
+      overflow: hidden;
+
+      margin:
+        30px 0 42px;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 17px;
+
+      background: var(--line);
+    }
+
+
+    .detail-spec {
+      padding:
+        22px 18px;
+
+      background: var(--white);
+    }
+
+
+    .detail-spec span {
+      display: block;
+
+      margin-bottom: 5px;
+
+      color: var(--muted);
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.07em;
+
+      font-size: 0.62rem;
+
+      font-weight: 700;
+    }
+
+
+    .detail-spec strong {
+      color: var(--jungle-deep);
+
+      font-size: 1rem;
+    }
+
+
+    .detail-description {
+      padding-top: 8px;
+    }
+
+
+    .detail-description h2 {
+      margin-bottom: 18px;
+
+      color: var(--jungle-deep);
+
+      font-size:
+        clamp(
+          2rem,
+          3vw,
+          2.8rem
+        );
+    }
+
+
+    .detail-description p {
+      color: var(--muted);
+
+      white-space: pre-line;
+
+      font-size: 0.97rem;
+
+      line-height: 1.85;
+    }
+
+
+    /* =====================================================
+       ENQUIRY CARD
+       ===================================================== */
+
+    .detail-sidebar {
+      position: sticky;
+
+      top: 135px;
+    }
+
+
+    .detail-action-card {
+      padding: 30px;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 24px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #ffffff,
+          #fff8ed
+        );
+
+      box-shadow:
+        0 20px 50px
+        rgba(
+          15,
+          94,
+          84,
+          0.10
+        );
+    }
+
+
+    .detail-action-card .eyebrow {
+      margin-bottom: 10px;
+    }
+
+
+    .detail-action-card h2 {
+      margin-bottom: 12px;
+
+      color: var(--jungle-deep);
+
+      font-size: 2rem;
+    }
+
+
+    .detail-action-card p {
+      margin-bottom: 24px;
+
+      color: var(--muted);
+
+      font-size: 0.88rem;
+    }
+
+
+    .detail-actions {
+      display: grid;
+
+      gap: 11px;
+    }
+
+
+    .detail-actions .button {
+      width: 100%;
+    }
+
+
+    .detail-like {
+      width: 100%;
+
+      min-height: 52px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      gap: 10px;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 999px;
+
+      color: var(--jungle);
+
+      background: var(--white);
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.055em;
+
+      font-size: 0.74rem;
+
+      font-weight: 700;
+
+      transition:
+        background 180ms ease,
+        color 180ms ease,
+        border-color 180ms ease;
+    }
+
+
+    .detail-like span {
+      color: var(--coral);
+
+      font-size: 1.2rem;
+    }
+
+
+    .detail-like.saved {
+      color: var(--white);
+
+      border-color: var(--coral);
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--coral),
+          var(--gold)
+        );
+    }
+
+
+    .detail-like.saved span {
+      color: var(--white);
+    }
+
+
+    .detail-security-note {
+      margin:
+        20px 0 0 !important;
+
+      padding-top: 18px;
+
+      border-top:
+        1px solid var(--line);
+
+      color: #81918d !important;
+
+      font-size: 0.72rem !important;
+    }
+
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 900px) {
+
+      .property-main {
+        padding-top: 130px;
+      }
+
+
+      .detail-gallery {
+        grid-template-columns: 1fr;
+      }
+
+
+      .detail-thumbnails {
+        display: flex;
+
+        max-height: none;
+
+        overflow-x: auto;
+
+        overflow-y: hidden;
+
+        padding-bottom: 4px;
+      }
+
+
+      .detail-thumbnail {
+        width: 88px;
+
+        flex:
+          0 0 88px;
+      }
+
+
+      .detail-layout {
+        grid-template-columns: 1fr;
+      }
+
+
+      .detail-sidebar {
+        position: static;
+      }
+
+    }
+
+
+    @media (max-width: 650px) {
+
+      .property-main {
+        padding:
+          115px 0 70px;
+      }
+
+
+      .detail-main-image,
+      .detail-gallery-track {
+        min-height: 400px;
+      }
+
+
+      .detail-gallery-slide {
+        height: 400px;
+      }
+
+
+      .detail-gallery-arrow {
+        width: 40px;
+        height: 40px;
+
+        font-size: 1.6rem;
+      }
+
+
+      .detail-gallery-prev {
+        left: 12px;
+      }
+
+
+      .detail-gallery-next {
+        right: 12px;
+      }
+
+
+      .detail-gallery-counter {
+        right: 12px;
+        bottom: 12px;
+      }
+
+
+      .detail-specs {
+        grid-template-columns: 1fr;
+      }
+
+
+      .detail-action-card {
+        padding: 24px 20px;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body class="property-page">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header
+    class="site-header"
+    id="top"
+  >
+
+    <div class="container nav-wrap">
+
+      <a
+        class="brand"
+        href="index.html"
+        aria-label="Helen Estates Realtors home"
+      >
+
+        <span class="brand-badge">
+
+          <img
+            class="brand-logo brand-logo-header"
+            src="Helen Estates Realtors Logo 1.png"
+            alt="Helen Estates Realtors logo"
+          >
+
+        </span>
+
+
+        <span class="brand-wordmark">
+
+          <strong>
+            Helen Estates
+          </strong>
+
+          <small>
+            Realtors
+          </small>
+
+        </span>
+
+      </a>
+
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="main-navigation"
+        aria-label="Open navigation"
+      >
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </button>
+
+
+      <nav
+        class="main-nav"
+        id="main-navigation"
+        aria-label="Main navigation"
+      >
+
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="index.html#properties">
+          Buy
+        </a>
+
+        <a href="index.html#properties">
+          Rent
+        </a>
+
+        <a href="index.html#request">
+          Sell
+        </a>
+
+        <a href="index.html#request">
+          Property Request
+        </a>
+
+        <a href="liked.html">
+          Liked
+        </a>
+
+        <a href="index.html#about">
+          About
+        </a>
+
+        <a href="index.html#contact">
+          Contact
+        </a>
+
+      </nav>
+
+
+      <a
+        class="button button-accent header-cta"
+        href="index.html#request"
+      >
+        Start a request
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       PROPERTY
+       ===================================================== -->
+
+  <main class="property-main">
+
+    <div class="container">
+
+      <a
+        class="property-back"
+        href="index.html#properties"
+      >
+        ← Back to properties
+      </a>
+
+
+      <div
+        class="property-loading"
+        id="property-loading"
+      >
+        Loading property...
+      </div>
+
+
+      <div
+        class="property-error"
+        id="property-error"
+        hidden
+      >
+        This property could not be found.
+      </div>
+
+
+      <article
+        class="property-detail"
+        id="property-detail"
+        hidden
+      >
+
+        <!-- Gallery -->
+
+        <section
+          class="detail-gallery"
+          aria-label="Property photographs"
+        >
+
+          <div
+            class="detail-main-image"
+            id="detail-main-image"
+            data-gallery-index="0"
+          >
+
+            <div
+              class="detail-gallery-track"
+              id="detail-gallery-track"
+            ></div>
+
+
+            <button
+              class="detail-gallery-arrow detail-gallery-prev"
+              id="detail-gallery-prev"
+              type="button"
+              aria-label="Previous property image"
+            >
+              ‹
+            </button>
+
+
+            <button
+              class="detail-gallery-arrow detail-gallery-next"
+              id="detail-gallery-next"
+              type="button"
+              aria-label="Next property image"
+            >
+              ›
+            </button>
+
+
+            <div
+              class="detail-gallery-counter"
+              id="detail-gallery-counter"
+            >
+              1 / 1
+            </div>
+
+          </div>
+
+
+          <div
+            class="detail-thumbnails"
+            id="detail-thumbnails"
+            aria-label="Property image thumbnails"
+          ></div>
+
+        </section>
+
+
+        <!-- Property information -->
+
+        <section class="detail-layout">
+
+          <div>
+
+            <header class="detail-heading">
+
+              <div class="detail-topline">
+
+                <span
+                  class="detail-purpose"
+                  id="detail-purpose"
+                ></span>
+
+                <span
+                  class="detail-status"
+                  id="detail-status"
+                ></span>
+
+                <span
+                  class="detail-reference"
+                  id="detail-reference"
+                ></span>
+
+              </div>
+
+
+              <h1 id="detail-title"></h1>
+
+
+              <p
+                class="detail-location"
+                id="detail-location"
+              ></p>
+
+
+              <p
+                class="detail-price"
+                id="detail-price"
+              ></p>
+
+            </header>
+
+
+            <div class="detail-specs">
+
+              <div class="detail-spec">
+
+                <span>
+                  Bedrooms
+                </span>
+
+                <strong id="detail-bedrooms">
+                  —
+                </strong>
+
+              </div>
+
+
+              <div class="detail-spec">
+
+                <span>
+                  Bathrooms
+                </span>
+
+                <strong id="detail-bathrooms">
+                  —
+                </strong>
+
+              </div>
+
+
+              <div class="detail-spec">
+
+                <span>
+                  Property size
+                </span>
+
+                <strong id="detail-size">
+                  —
+                </strong>
+
+              </div>
+
+            </div>
+
+
+            <section class="detail-description">
+
+              <p class="eyebrow">
+                Property Details
+              </p>
+
+              <h2>
+                About this property
+              </h2>
+
+              <p id="detail-description">
+                Property information will appear here.
+              </p>
+
+            </section>
+
+          </div>
+
+
+          <!-- Sidebar -->
+
+          <aside class="detail-sidebar">
+
+            <div class="detail-action-card">
+
+              <p class="eyebrow">
+                Interested?
+              </p>
+
+              <h2>
+                Ask about this property.
+              </h2>
+
+              <p>
+                Send Helen Estates Realtors a request and
+                we will know exactly which property you are
+                interested in.
+              </p>
+
+
+              <div class="detail-actions">
+
+                <button
+                  class="button button-accent"
+                  id="detail-enquire"
+                  type="button"
+                >
+                  Enquire about this property
+                  <span aria-hidden="true">
+                    →
+                  </span>
+                </button>
+
+
+                <button
+                  class="detail-like"
+                  id="detail-like"
+                  type="button"
+                  aria-pressed="false"
+                >
+
+                  <span aria-hidden="true">
+                    ♡
+                  </span>
+
+                  Save property
+
+                </button>
+
+
+                <a
+                  class="button button-dark"
+                  href="liked.html"
+                >
+                  View liked properties
+                </a>
+
+              </div>
+
+
+              <p class="detail-security-note">
+                Helen Estates Realtors aims to contact you
+                within two working days after receiving your
+                request.
+              </p>
+
+            </div>
+
+          </aside>
+
+        </section>
+
+      </article>
+
+    </div>
+
+  </main>
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer
+    class="site-footer"
+    id="contact"
+  >
+
+    <div class="container footer-grid">
+
+      <div class="footer-brand">
+
+        <a
+          class="brand brand-footer"
+          href="index.html"
+        >
+
+          <span
+            class="brand-badge brand-badge-footer"
+          >
+
+            <img
+              class="brand-logo brand-logo-footer"
+              src="Helen Estates Realtors Logo 1.png"
+              alt="Helen Estates Realtors logo"
+            >
+
+          </span>
+
+
+          <span
+            class="brand-wordmark brand-wordmark-footer"
+          >
+
+            <strong>
+              Helen Estates
+            </strong>
+
+            <small>
+              Realtors
+            </small>
+
+          </span>
+
+        </a>
+
+
+        <p>
+          Property made more personal in Saint Lucia.
+        </p>
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          Property
+        </h3>
+
+        <a href="index.html#properties">
+          Buy
+        </a>
+
+        <a href="index.html#properties">
+          Rent
+        </a>
+
+        <a href="liked.html">
+          Liked properties
+        </a>
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          Services
+        </h3>
+
+        <a href="index.html#request">
+          Sell / Advertise
+        </a>
+
+        <a href="index.html#request">
+          Property request
+        </a>
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          Company
+        </h3>
+
+        <a href="index.html#about">
+          About
+        </a>
+
+        <a href="index.html#contact">
+          Contact
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div class="container footer-bottom">
+
+      <p>
+        © <span id="current-year"></span>
+        Helen Estates Realtors.
+        All rights reserved.
+      </p>
+
+    </div>
+
+  </footer>
+
+
+  <script>
+    /*
+      Basic navigation for this page.
+      Property data will be loaded by property.js.
+    */
+
+    const navToggle =
+      document.querySelector(
+        '.nav-toggle'
+      );
+
+    const mainNav =
+      document.querySelector(
+        '.main-nav'
+      );
+
+
+    function closePropertyNavigation() {
+
+      navToggle.classList.remove(
+        'active'
+      );
+
+      mainNav.classList.remove(
+        'open'
+      );
+
+      navToggle.setAttribute(
+        'aria-expanded',
+        'false'
+      );
+
+      navToggle.setAttribute(
+        'aria-label',
+        'Open navigation'
+      );
+
+      document.body.classList.remove(
+        'nav-open'
+      );
+    }
+
+
+    navToggle.addEventListener(
+      'click',
+      () => {
+
+        const isOpen =
+          mainNav.classList.toggle(
+            'open'
+          );
+
+        navToggle.classList.toggle(
+          'active',
+          isOpen
+        );
+
+        navToggle.setAttribute(
+          'aria-expanded',
+          String(isOpen)
+        );
+
+        navToggle.setAttribute(
+          'aria-label',
+          isOpen
+            ? 'Close navigation'
+            : 'Open navigation'
+        );
+
+        document.body.classList.toggle(
+          'nav-open',
+          isOpen
+        );
+      }
+    );
+
+
+    mainNav
+      .querySelectorAll('a')
+      .forEach(
+        link =>
+          link.addEventListener(
+            'click',
+            closePropertyNavigation
+          )
+      );
+
+
+    document
+      .getElementById(
+        'current-year'
+      )
+      .textContent =
+        new Date()
+          .getFullYear();
+
+  </script>
+
+
+  <script src="property.js"></script>
+
+</body>
+
+</html>
