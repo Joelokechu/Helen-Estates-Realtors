@@ -2,6 +2,10 @@
   'use strict';
 
 
+  /* =========================================================
+     CONFIG
+     ========================================================= */
+
   const config =
     window.HELEN_ESTATES_CONFIG || {};
 
@@ -17,6 +21,10 @@
       config.supabasePublicKey || ''
     );
 
+
+  /* =========================================================
+     ELEMENTS
+     ========================================================= */
 
   const likedGrid =
     document.getElementById(
@@ -42,20 +50,42 @@
     );
 
 
+  /* =========================================================
+     HELPERS
+     ========================================================= */
+
   function escapeHTML(
     value = ''
   ) {
+
     return String(value)
-      .replaceAll('&', '&amp;')
-      .replaceAll('<', '&lt;')
-      .replaceAll('>', '&gt;')
-      .replaceAll('"', '&quot;')
-      .replaceAll("'", '&#039;');
+      .replaceAll(
+        '&',
+        '&amp;'
+      )
+      .replaceAll(
+        '<',
+        '&lt;'
+      )
+      .replaceAll(
+        '>',
+        '&gt;'
+      )
+      .replaceAll(
+        '"',
+        '&quot;'
+      )
+      .replaceAll(
+        "'",
+        '&#039;'
+      );
   }
 
 
   function savedFavouriteIds() {
+
     try {
+
       return new Set(
         JSON.parse(
           localStorage.getItem(
@@ -63,7 +93,9 @@
           ) || '[]'
         )
       );
+
     } catch (_error) {
+
       return new Set();
     }
   }
@@ -72,6 +104,7 @@
   function saveFavouriteIds(
     favourites
   ) {
+
     localStorage.setItem(
       'helen-estates-favourites',
       JSON.stringify(
@@ -84,6 +117,7 @@
   function formatPropertyType(
     value = ''
   ) {
+
     return String(value)
       .split('-')
       .map(
@@ -99,6 +133,7 @@
   function formatPrice(
     property
   ) {
+
     const currency =
       property.currency ||
       'USD';
@@ -108,6 +143,7 @@
 
 
     try {
+
       formattedPrice =
         new Intl.NumberFormat(
           'en-GB',
@@ -122,20 +158,29 @@
           }
         ).format(
           Number(
-            property.price || 0
+            property.price ||
+            0
           )
         );
+
     } catch (_error) {
+
       formattedPrice =
-        `${escapeHTML(currency)} ${Number(
-          property.price || 0
-        ).toLocaleString('en-GB')}`;
+        `${escapeHTML(
+          currency
+        )} ${Number(
+          property.price ||
+          0
+        ).toLocaleString(
+          'en-GB'
+        )}`;
     }
 
 
     if (
       property.price_period
     ) {
+
       return (
         `${formattedPrice} ` +
         `<small>/ ${escapeHTML(
@@ -149,8 +194,14 @@
   }
 
 
+  /* =========================================================
+     EMPTY STATE
+     ========================================================= */
+
   function renderEmptyState() {
+
     likedGrid.innerHTML = `
+
       <div class="liked-empty">
 
         <div
@@ -174,10 +225,13 @@
           href="index.html#properties"
         >
           Explore properties
-          <span aria-hidden="true">→</span>
+          <span aria-hidden="true">
+            →
+          </span>
         </a>
 
       </div>
+
     `;
 
 
@@ -193,6 +247,7 @@
   function updateCount(
     count
   ) {
+
     likedCount.textContent =
       String(count);
 
@@ -202,11 +257,20 @@
   }
 
 
+  /* =========================================================
+     RENDER PROPERTIES
+     ========================================================= */
+
   function renderProperties(
     properties
   ) {
-    if (!properties.length) {
+
+    if (
+      !properties.length
+    ) {
+
       renderEmptyState();
+
       return;
     }
 
@@ -218,328 +282,529 @@
 
     likedGrid.innerHTML =
       properties
-        .map(property => {
+        .map(
+          property => {
 
-          const image =
-            Array.isArray(
-              property.images
-            ) &&
-            property.images.length
-              ? property.images[0]
-              : 'property-1.jpg';
-
-
-          const isRent =
-            property.purpose ===
-            'rent';
+            const image =
+              Array.isArray(
+                property.images
+              ) &&
+              property.images.length
+                ? property.images[0]
+                : 'property-1.jpg';
 
 
-          const bedrooms =
-            Number(
-              property.bedrooms || 0
-            );
+            const isRent =
+              property.purpose ===
+              'rent';
 
 
-          const bathrooms =
-            Number(
-              property.bathrooms || 0
-            );
+            const bedrooms =
+              Number(
+                property.bedrooms ||
+                0
+              );
 
 
-          const size =
-            Number(
-              property.size || 0
-            );
+            const bathrooms =
+              Number(
+                property.bathrooms ||
+                0
+              );
 
 
-          const metaItems = [];
+            const size =
+              Number(
+                property.size ||
+                0
+              );
 
 
-          if (bedrooms > 0) {
-            metaItems.push(
-              `${bedrooms} ${
-                bedrooms === 1
-                  ? 'bed'
-                  : 'beds'
-              }`
-            );
-          }
+            const metaItems =
+              [];
 
 
-          if (bathrooms > 0) {
-            metaItems.push(
-              `${bathrooms} ${
-                bathrooms === 1
-                  ? 'bath'
-                  : 'baths'
-              }`
-            );
-          }
+            if (
+              bedrooms > 0
+            ) {
+
+              metaItems.push(
+                `${bedrooms} ${
+                  bedrooms === 1
+                    ? 'bed'
+                    : 'beds'
+                }`
+              );
+            }
 
 
-          if (size > 0) {
-            metaItems.push(
-              `${size.toLocaleString(
-                'en-GB'
-              )} sq ft`
-            );
-          }
+            if (
+              bathrooms > 0
+            ) {
+
+              metaItems.push(
+                `${bathrooms} ${
+                  bathrooms === 1
+                    ? 'bath'
+                    : 'baths'
+                }`
+              );
+            }
 
 
-          return `
-            <article
-              class="liked-property-card"
-              data-property-id="${escapeHTML(
-                property.id
-              )}"
-            >
+            if (
+              size > 0
+            ) {
 
-              <div
-                class="liked-property-image"
+              metaItems.push(
+                `${size.toLocaleString(
+                  'en-GB'
+                )} sq ft`
+              );
+            }
+
+
+            return `
+
+              <article
+                class="liked-property-card property-card-clickable"
+
+                data-property-id="${escapeHTML(
+                  property.id
+                )}"
+
+                data-open-property="${escapeHTML(
+                  property.id
+                )}"
+
+                tabindex="0"
+
+                role="link"
+
+                aria-label="View ${escapeHTML(
+                  property.title
+                )}"
               >
-
-                <img
-                  src="${escapeHTML(image)}"
-                  alt="${escapeHTML(
-                    property.title
-                  )}"
-                  loading="lazy"
-                />
-
-                <span
-                  class="
-                    liked-property-badge
-                    ${
-                      isRent
-                        ? 'rent'
-                        : ''
-                    }
-                  "
-                >
-                  ${
-                    isRent
-                      ? 'For Rent'
-                      : 'For Sale'
-                  }
-                </span>
-
-                <button
-                  class="liked-remove"
-                  type="button"
-                  data-remove-liked="${escapeHTML(
-                    property.id
-                  )}"
-                  aria-label="Remove ${escapeHTML(
-                    property.title
-                  )} from liked properties"
-                  title="Remove from liked properties"
-                >
-                  ♥
-                </button>
-
-              </div>
-
-
-              <div
-                class="liked-property-content"
-              >
-
-                <p
-                  class="liked-property-type"
-                >
-                  ${escapeHTML(
-                    formatPropertyType(
-                      property.property_type
-                    )
-                  )}
-                </p>
-
-
-                <h2>
-                  ${escapeHTML(
-                    property.title
-                  )}
-                </h2>
-
-
-                <p
-                  class="liked-location"
-                >
-                  ${escapeHTML(
-                    property.location
-                  )}
-                </p>
-
-
-                ${
-                  metaItems.length
-                    ? `
-                      <ul
-                        class="liked-meta"
-                      >
-                        ${metaItems
-                          .map(
-                            item =>
-                              `<li>${escapeHTML(
-                                item
-                              )}</li>`
-                          )
-                          .join('')}
-                      </ul>
-                    `
-                    : ''
-                }
 
 
                 <div
-                  class="liked-property-bottom"
+                  class="liked-property-image"
                 >
 
-                  <p
-                    class="liked-price"
+                  <img
+                    src="${escapeHTML(
+                      image
+                    )}"
+
+                    alt="${escapeHTML(
+                      property.title
+                    )}"
+
+                    loading="lazy"
+                  />
+
+
+                  <span
+                    class="
+                      liked-property-badge
+                      ${
+                        isRent
+                          ? 'rent'
+                          : ''
+                      }
+                    "
                   >
-                    ${formatPrice(
-                      property
-                    )}
-                  </p>
+
+                    ${
+                      isRent
+                        ? 'For Rent'
+                        : 'For Sale'
+                    }
+
+                  </span>
 
 
-                  <a
-                    class="liked-enquire"
-                    href="index.html#request"
-                    data-liked-enquire="${escapeHTML(
+                  <button
+                    class="liked-remove"
+
+                    type="button"
+
+                    data-remove-liked="${escapeHTML(
                       property.id
                     )}"
+
+                    aria-label="Remove ${escapeHTML(
+                      property.title
+                    )} from liked properties"
+
+                    title="Remove from liked properties"
                   >
-                    Enquire →
-                  </a>
+                    ♥
+                  </button>
 
                 </div>
 
-              </div>
 
-            </article>
-          `;
-        })
+                <div
+                  class="liked-property-content"
+                >
+
+                  <p
+                    class="liked-property-type"
+                  >
+
+                    ${escapeHTML(
+                      formatPropertyType(
+                        property.property_type
+                      )
+                    )}
+
+                  </p>
+
+
+                  <h2>
+
+                    ${escapeHTML(
+                      property.title
+                    )}
+
+                  </h2>
+
+
+                  <p
+                    class="liked-location"
+                  >
+
+                    ${escapeHTML(
+                      property.location
+                    )}
+
+                  </p>
+
+
+                  ${
+                    metaItems.length
+
+                      ? `
+
+                        <ul
+                          class="liked-meta"
+                        >
+
+                          ${metaItems
+                            .map(
+                              item =>
+                                `<li>${escapeHTML(
+                                  item
+                                )}</li>`
+                            )
+                            .join('')}
+
+                        </ul>
+
+                      `
+
+                      : ''
+                  }
+
+
+                  <div
+                    class="liked-property-bottom"
+                  >
+
+                    <p
+                      class="liked-price"
+                    >
+
+                      ${formatPrice(
+                        property
+                      )}
+
+                    </p>
+
+
+                    <a
+                      class="liked-enquire"
+
+                      href="index.html#request"
+
+                      data-liked-enquire="${escapeHTML(
+                        property.id
+                      )}"
+                    >
+                      Enquire →
+                    </a>
+
+                  </div>
+
+                </div>
+
+              </article>
+            `;
+          }
+        )
         .join('');
 
 
     bindRemoveButtons();
+
     bindEnquiryLinks();
+
+    bindPropertyCards();
   }
 
 
+  /* =========================================================
+     OPEN PROPERTY PAGE
+     ========================================================= */
+
+  function bindPropertyCards() {
+
+    likedGrid
+      .querySelectorAll(
+        '[data-open-property]'
+      )
+      .forEach(
+        card => {
+
+          card.addEventListener(
+            'click',
+            event => {
+
+              if (
+                event.target.closest(
+                  'button, a'
+                )
+              ) {
+
+                return;
+              }
+
+
+              const propertyId =
+                card.dataset
+                  .openProperty;
+
+
+              if (
+                !propertyId
+              ) {
+
+                return;
+              }
+
+
+              window.location.href =
+                `property.html?id=${encodeURIComponent(
+                  propertyId
+                )}`;
+            }
+          );
+
+
+          card.addEventListener(
+            'keydown',
+            event => {
+
+              if (
+                event.key !==
+                  'Enter' &&
+                event.key !==
+                  ' '
+              ) {
+
+                return;
+              }
+
+
+              if (
+                event.target.closest(
+                  'button, a'
+                )
+              ) {
+
+                return;
+              }
+
+
+              event.preventDefault();
+
+
+              const propertyId =
+                card.dataset
+                  .openProperty;
+
+
+              if (
+                !propertyId
+              ) {
+
+                return;
+              }
+
+
+              window.location.href =
+                `property.html?id=${encodeURIComponent(
+                  propertyId
+                )}`;
+            }
+          );
+
+        }
+      );
+  }
+
+
+  /* =========================================================
+     REMOVE INDIVIDUAL LIKED PROPERTY
+     ========================================================= */
+
   function bindRemoveButtons() {
+
     likedGrid
       .querySelectorAll(
         '[data-remove-liked]'
       )
-      .forEach(button => {
+      .forEach(
+        button => {
 
-        button.addEventListener(
-          'click',
-          () => {
+          button.addEventListener(
+            'click',
+            event => {
 
-            const propertyId =
-              button.dataset
-                .removeLiked;
+              event.preventDefault();
 
-
-            if (!propertyId) {
-              return;
-            }
+              event.stopPropagation();
 
 
-            const favourites =
-              savedFavouriteIds();
+              const propertyId =
+                button.dataset
+                  .removeLiked;
 
 
-            favourites.delete(
-              propertyId
-            );
+              if (
+                !propertyId
+              ) {
+
+                return;
+              }
 
 
-            saveFavouriteIds(
-              favourites
-            );
+              const favourites =
+                savedFavouriteIds();
 
 
-            const card =
-              button.closest(
-                '.liked-property-card'
+              favourites.delete(
+                propertyId
               );
 
 
-            if (card) {
-              card.remove();
-            }
+              saveFavouriteIds(
+                favourites
+              );
 
 
-            const remainingCards =
-              likedGrid
-                .querySelectorAll(
+              const card =
+                button.closest(
                   '.liked-property-card'
-                ).length;
+                );
 
 
-            updateCount(
-              remainingCards
-            );
+              if (card) {
+
+                card.remove();
+              }
 
 
-            if (
-              remainingCards === 0
-            ) {
-              renderEmptyState();
+              const remainingCards =
+                likedGrid
+                  .querySelectorAll(
+                    '.liked-property-card'
+                  )
+                  .length;
+
+
+              updateCount(
+                remainingCards
+              );
+
+
+              if (
+                remainingCards ===
+                0
+              ) {
+
+                renderEmptyState();
+              }
             }
+          );
 
-          }
-        );
-
-      });
+        }
+      );
   }
 
 
+  /* =========================================================
+     ENQUIRY LINKS
+     ========================================================= */
+
   function bindEnquiryLinks() {
+
     likedGrid
       .querySelectorAll(
         '[data-liked-enquire]'
       )
-      .forEach(link => {
+      .forEach(
+        link => {
 
-        link.addEventListener(
-          'click',
-          () => {
+          link.addEventListener(
+            'click',
+            event => {
 
-            const propertyId =
-              link.dataset
-                .likedEnquire;
+              event.stopPropagation();
 
 
-            if (!propertyId) {
-              return;
+              const propertyId =
+                link.dataset
+                  .likedEnquire;
+
+
+              if (
+                !propertyId
+              ) {
+
+                return;
+              }
+
+
+              sessionStorage.setItem(
+                'helen-estates-enquiry-property',
+                propertyId
+              );
             }
+          );
 
-
-            sessionStorage.setItem(
-              'helen-estates-enquiry-property',
-              propertyId
-            );
-
-          }
-        );
-
-      });
+        }
+      );
   }
 
 
+  /* =========================================================
+     LOAD LIKED PROPERTIES
+     ========================================================= */
+
   async function loadLikedProperties() {
+
     const favourites =
       savedFavouriteIds();
 
 
-    if (!favourites.size) {
+    if (
+      !favourites.size
+    ) {
+
       renderEmptyState();
+
       return;
     }
 
@@ -548,7 +813,9 @@
       !supabaseUrl ||
       !supabasePublicKey
     ) {
+
       likedGrid.innerHTML = `
+
         <div class="liked-empty">
 
           <div
@@ -567,7 +834,9 @@
           </p>
 
         </div>
+
       `;
+
 
       return;
     }
@@ -583,8 +852,12 @@
         ids
           .map(
             id =>
-              `"${String(id)
-                .replaceAll('"', '')}"`
+              `"${String(
+                id
+              ).replaceAll(
+                '"',
+                ''
+              )}"`
           )
           .join(',');
 
@@ -631,7 +904,10 @@
         );
 
 
-      if (!response.ok) {
+      if (
+        !response.ok
+      ) {
+
         throw new Error(
           `Properties request failed with ${response.status}`
         );
@@ -646,17 +922,14 @@
         new Map(
           properties.map(
             property => [
-              String(property.id),
+              String(
+                property.id
+              ),
               property
             ]
           )
         );
 
-
-      /*
-        Keep the same order in which the
-        customer saved the properties.
-      */
 
       const orderedProperties =
         ids
@@ -669,17 +942,13 @@
           .filter(Boolean);
 
 
-      /*
-        If an old liked property was later
-        unpublished or deleted, remove its
-        old ID from localStorage.
-      */
-
       const validIds =
         new Set(
           orderedProperties.map(
             property =>
-              String(property.id)
+              String(
+                property.id
+              )
           )
         );
 
@@ -688,6 +957,7 @@
         validIds.size !==
         favourites.size
       ) {
+
         saveFavouriteIds(
           validIds
         );
@@ -698,6 +968,7 @@
         orderedProperties
       );
 
+
     } catch (error) {
 
       console.error(
@@ -707,6 +978,7 @@
 
 
       likedGrid.innerHTML = `
+
         <div class="liked-empty">
 
           <div
@@ -732,6 +1004,7 @@
           </button>
 
         </div>
+
       `;
 
 
@@ -741,16 +1014,21 @@
         );
 
 
-      retryButton?.addEventListener(
-        'click',
-        () => {
-          window.location.reload();
-        }
-      );
+      retryButton
+        ?.addEventListener(
+          'click',
+          () => {
 
+            window.location.reload();
+          }
+        );
     }
   }
 
+
+  /* =========================================================
+     CLEAR ALL LIKED PROPERTIES
+     ========================================================= */
 
   clearLikedButton
     ?.addEventListener(
@@ -761,7 +1039,10 @@
           savedFavouriteIds();
 
 
-        if (!favourites.size) {
+        if (
+          !favourites.size
+        ) {
+
           return;
         }
 
@@ -772,7 +1053,10 @@
           );
 
 
-        if (!confirmed) {
+        if (
+          !confirmed
+        ) {
+
           return;
         }
 
@@ -783,10 +1067,13 @@
 
 
         renderEmptyState();
-
       }
     );
 
+
+  /* =========================================================
+     INITIALISE
+     ========================================================= */
 
   loadLikedProperties();
 
