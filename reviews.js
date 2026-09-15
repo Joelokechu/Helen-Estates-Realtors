@@ -31,30 +31,25 @@
       'review-form'
     );
 
-
   const reviewMessage =
     document.getElementById(
       'review-message'
     );
-
 
   const reviewsList =
     document.getElementById(
       'reviews-list'
     );
 
-
   const reviewAverage =
     document.getElementById(
       'review-average'
     );
 
-
   const reviewCount =
     document.getElementById(
       'review-count'
     );
-
 
   const reviewSummaryStars =
     document.getElementById(
@@ -66,44 +61,17 @@
      HELPERS
      ========================================================= */
 
-  function escapeHTML(
-    value = ''
-  ) {
-
+  function escapeHTML(value = '') {
     return String(value)
-
-      .replaceAll(
-        '&',
-        '&amp;'
-      )
-
-      .replaceAll(
-        '<',
-        '&lt;'
-      )
-
-      .replaceAll(
-        '>',
-        '&gt;'
-      )
-
-      .replaceAll(
-        '"',
-        '&quot;'
-      )
-
-      .replaceAll(
-        "'",
-        '&#039;'
-      );
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
   }
 
 
-
-  function renderStars(
-    rating
-  ) {
-
+  function renderStars(rating) {
     const rounded =
       Math.max(
         0,
@@ -117,21 +85,13 @@
 
 
     return (
-      '★'.repeat(
-        rounded
-      ) +
-      '☆'.repeat(
-        5 - rounded
-      )
+      '★'.repeat(rounded) +
+      '☆'.repeat(5 - rounded)
     );
   }
 
 
-
-  function formatReviewDate(
-    value
-  ) {
-
+  function formatReviewDate(value) {
     if (!value) {
       return '';
     }
@@ -146,7 +106,6 @@
         date.getTime()
       )
     ) {
-
       return '';
     }
 
@@ -154,43 +113,67 @@
     return new Intl.DateTimeFormat(
       'en-GB',
       {
-        day:
-          'numeric',
-
-        month:
-          'long',
-
-        year:
-          'numeric'
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
       }
     ).format(date);
   }
 
+
+  function showReviewError(message) {
+    if (!reviewMessage) {
+      return;
+    }
+
+
+    reviewMessage.textContent =
+      message;
+
+
+    reviewMessage.className =
+      'review-message show error';
+  }
+
+
+  function showReviewSuccess(message) {
+    if (!reviewMessage) {
+      return;
+    }
+
+
+    reviewMessage.textContent =
+      message;
+
+
+    reviewMessage.className =
+      'review-message show success';
+  }
 
 
   /* =========================================================
      REVIEW SUMMARY
      ========================================================= */
 
-  function updateReviewSummary(
-    reviews
-  ) {
-
+  function updateReviewSummary(reviews) {
     if (
-      !reviews.length
+      !reviewAverage ||
+      !reviewSummaryStars ||
+      !reviewCount
     ) {
+      return;
+    }
 
+
+    if (!reviews.length) {
       reviewAverage.textContent =
         '—';
-
 
       reviewSummaryStars.textContent =
         '☆☆☆☆☆';
 
-
       reviewCount.textContent =
         'No approved reviews yet';
-
 
       return;
     }
@@ -198,14 +181,10 @@
 
     const total =
       reviews.reduce(
-        (
-          sum,
-          review
-        ) =>
+        (sum, review) =>
           sum +
           Number(
-            review.rating ||
-            0
+            review.rating || 0
           ),
         0
       );
@@ -235,26 +214,23 @@
   }
 
 
-
   /* =========================================================
-     RENDER APPROVED REVIEWS
+     RENDER REVIEWS
      ========================================================= */
 
-  function renderReviews(
-    reviews
-  ) {
+  function renderReviews(reviews) {
+    if (!reviewsList) {
+      return;
+    }
+
 
     updateReviewSummary(
       reviews
     );
 
 
-    if (
-      !reviews.length
-    ) {
-
+    if (!reviews.length) {
       reviewsList.innerHTML = `
-
         <div class="reviews-empty">
 
           <div
@@ -264,11 +240,9 @@
             ☆☆☆☆☆
           </div>
 
-
           <h3>
             No reviews published yet.
           </h3>
-
 
           <p>
             Be the first to share your experience with
@@ -276,9 +250,7 @@
           </p>
 
         </div>
-
       `;
-
 
       return;
     }
@@ -286,112 +258,86 @@
 
     reviewsList.innerHTML =
       reviews
-
-        .map(
-          review => {
-
-            const rating =
-              Number(
-                review.rating ||
-                0
-              );
+        .map(review => {
+          const rating =
+            Number(
+              review.rating || 0
+            );
 
 
-            const date =
-              formatReviewDate(
-                review.created_at
-              );
+          const date =
+            formatReviewDate(
+              review.created_at
+            );
 
 
-            return `
+          return `
+            <article class="review-card">
 
-              <article
-                class="review-card"
-              >
+              <div class="review-card-top">
 
-                <div
-                  class="review-card-top"
-                >
+                <div>
 
-                  <div>
-
-                    <div
-                      class="review-card-stars"
-                      aria-label="${rating} out of 5 stars"
-                    >
-                      ${renderStars(
-                        rating
-                      )}
-                    </div>
-
-
-                    <h3>
-                      ${escapeHTML(
-                        review.name
-                      )}
-                    </h3>
-
+                  <div
+                    class="review-card-stars"
+                    aria-label="${rating} out of 5 stars"
+                  >
+                    ${renderStars(rating)}
                   </div>
 
-
-                  ${
-                    date
-                      ? `
-                        <time
-                          datetime="${escapeHTML(
-                            review.created_at
-                          )}"
-                        >
-                          ${escapeHTML(
-                            date
-                          )}
-                        </time>
-                      `
-                      : ''
-                  }
+                  <h3>
+                    ${escapeHTML(
+                      review.name
+                    )}
+                  </h3>
 
                 </div>
 
-
                 ${
-                  review.review_text
-
+                  date
                     ? `
-                      <p
-                        class="review-card-text"
+                      <time
+                        datetime="${escapeHTML(
+                          review.created_at
+                        )}"
                       >
-                        ${escapeHTML(
-                          review.review_text
-                        )}
-                      </p>
+                        ${escapeHTML(date)}
+                      </time>
                     `
-
-                    : `
-                      <p
-                        class="review-card-text review-card-text-short"
-                      >
-                        Rated Helen Estates Realtors
-                        ${rating} out of 5 stars.
-                      </p>
-                    `
+                    : ''
                 }
 
+              </div>
 
-                <p
-                  class="review-verified-label"
-                >
-                  Published customer review
-                </p>
+              ${
+                review.review_text
+                  ? `
+                    <p class="review-card-text">
+                      ${escapeHTML(
+                        review.review_text
+                      )}
+                    </p>
+                  `
+                  : `
+                    <p
+                      class="review-card-text
+                      review-card-text-short"
+                    >
+                      Rated Helen Estates Realtors
+                      ${rating} out of 5 stars.
+                    </p>
+                  `
+              }
 
-              </article>
+              <p class="review-verified-label">
+                Published customer review
+              </p>
 
-            `;
-          }
-        )
-
+            </article>
+          `;
+        })
         .join('');
   }
-
 
 
   /* =========================================================
@@ -399,14 +345,16 @@
      ========================================================= */
 
   async function loadReviews() {
+    if (!reviewsList) {
+      return;
+    }
+
 
     if (
       !supabaseUrl ||
       !supabasePublicKey
     ) {
-
       reviewsList.innerHTML = `
-
         <div class="reviews-empty">
 
           <h3>
@@ -418,16 +366,13 @@
           </p>
 
         </div>
-
       `;
-
 
       return;
     }
 
 
     try {
-
       const endpoint =
         new URL(
           `${supabaseUrl}/rest/v1/reviews`
@@ -454,59 +399,51 @@
 
       const response =
         await fetch(
-          endpoint,
+          endpoint.toString(),
           {
-            method:
-              'GET',
+            method: 'GET',
 
             headers: {
-
               apikey:
                 supabasePublicKey,
 
-              Authorization:
-                `Bearer ${supabasePublicKey}`
+              Accept:
+                'application/json'
             }
           }
         );
 
 
-      if (
-        !response.ok
-      ) {
-
+      if (!response.ok) {
         const errorText =
           await response.text();
 
 
         console.error(
-          'Reviews API response:',
+          'Reviews load failed:',
           response.status,
           errorText
         );
 
 
         throw new Error(
-          `Reviews request failed with ${response.status}`
+          `Reviews request failed: ${response.status}`
         );
       }
 
 
-      const reviews =
+      const data =
         await response.json();
 
 
       renderReviews(
-        Array.isArray(
-          reviews
-        )
-          ? reviews
+        Array.isArray(data)
+          ? data
           : []
       );
 
 
     } catch (error) {
-
       console.error(
         'Reviews loading error:',
         error
@@ -514,7 +451,6 @@
 
 
       reviewsList.innerHTML = `
-
         <div class="reviews-empty">
 
           <h3>
@@ -526,23 +462,27 @@
           </p>
 
         </div>
-
       `;
 
 
-      reviewAverage.textContent =
-        '—';
+      if (reviewAverage) {
+        reviewAverage.textContent =
+          '—';
+      }
 
 
-      reviewSummaryStars.textContent =
-        '☆☆☆☆☆';
+      if (reviewSummaryStars) {
+        reviewSummaryStars.textContent =
+          '☆☆☆☆☆';
+      }
 
 
-      reviewCount.textContent =
-        'Reviews unavailable';
+      if (reviewCount) {
+        reviewCount.textContent =
+          'Reviews unavailable';
+      }
     }
   }
-
 
 
   /* =========================================================
@@ -552,16 +492,16 @@
   reviewForm?.addEventListener(
     'submit',
     async event => {
-
       event.preventDefault();
 
 
-      reviewMessage.className =
-        'review-message';
+      if (reviewMessage) {
+        reviewMessage.textContent =
+          '';
 
-
-      reviewMessage.textContent =
-        '';
+        reviewMessage.className =
+          'review-message';
+      }
 
 
       const submitButton =
@@ -578,18 +518,13 @@
 
       const name =
         String(
-          formData.get(
-            'name'
-          ) ||
-          ''
+          formData.get('name') || ''
         ).trim();
 
 
       const rating =
         Number(
-          formData.get(
-            'rating'
-          )
+          formData.get('rating')
         );
 
 
@@ -597,8 +532,7 @@
         String(
           formData.get(
             'reviewText'
-          ) ||
-          ''
+          ) || ''
         ).trim();
 
 
@@ -606,46 +540,45 @@
         String(
           formData.get(
             'website'
-          ) ||
-          ''
+          ) || ''
         ).trim();
 
 
+      /* -----------------------------------------------------
+         VALIDATION
+         ----------------------------------------------------- */
+
       if (
-        name.length < 2
+        name.length < 2 ||
+        name.length > 80
       ) {
-
-        reviewMessage.textContent =
-          'Please enter your name.';
-
-
-        reviewMessage.classList.add(
-          'show',
-          'error'
+        showReviewError(
+          'Please enter a valid name.'
         );
-
 
         return;
       }
 
 
       if (
-        !Number.isInteger(
-          rating
-        ) ||
+        !Number.isInteger(rating) ||
         rating < 1 ||
         rating > 5
       ) {
-
-        reviewMessage.textContent =
-          'Please choose a star rating.';
-
-
-        reviewMessage.classList.add(
-          'show',
-          'error'
+        showReviewError(
+          'Please choose a rating from 1 to 5 stars.'
         );
 
+        return;
+      }
+
+
+      if (
+        reviewText.length > 1500
+      ) {
+        showReviewError(
+          'Please keep your review under 1,500 characters.'
+        );
 
         return;
       }
@@ -655,48 +588,40 @@
         !supabaseUrl ||
         !supabasePublicKey
       ) {
-
-        reviewMessage.textContent =
-          'The review service is temporarily unavailable.';
-
-
-        reviewMessage.classList.add(
-          'show',
-          'error'
+        showReviewError(
+          'The review service is temporarily unavailable.'
         );
-
 
         return;
       }
 
 
+      /* -----------------------------------------------------
+         SUBMIT
+         ----------------------------------------------------- */
+
       try {
+        if (submitButton) {
+          submitButton.disabled =
+            true;
 
-        submitButton.disabled =
-          true;
-
-
-        submitButton.textContent =
-          'Submitting review…';
+          submitButton.textContent =
+            'Submitting review…';
+        }
 
 
         const response =
           await fetch(
             `${supabaseUrl}/functions/v1/create-review`,
             {
-              method:
-                'POST',
+              method: 'POST',
 
               headers: {
-
                 'Content-Type':
                   'application/json',
 
                 apikey:
-                  supabasePublicKey,
-
-                Authorization:
-                  `Bearer ${supabasePublicKey}`
+                  supabasePublicKey
               },
 
               body:
@@ -714,19 +639,16 @@
 
 
         try {
-
           result =
             await response.json();
+        } catch (_error) {
+          result = {};
+        }
 
-        } catch (_error) {}
 
-
-        if (
-          !response.ok
-        ) {
-
+        if (!response.ok) {
           console.error(
-            'Create review response:',
+            'Create review failed:',
             response.status,
             result
           );
@@ -734,7 +656,7 @@
 
           throw new Error(
             result.error ||
-            `We could not submit your review. Error ${response.status}.`
+            `Review submission failed with error ${response.status}.`
           );
         }
 
@@ -742,47 +664,36 @@
         reviewForm.reset();
 
 
-        reviewMessage.textContent =
-          'Thank you. Your review has been submitted and will appear after it has been approved.';
-
-
-        reviewMessage.classList.add(
-          'show',
-          'success'
+        showReviewSuccess(
+          'Thank you. Your review has been submitted and will appear after it has been approved.'
         );
 
 
       } catch (error) {
-
         console.error(
           'Review submission error:',
           error
         );
 
 
-        reviewMessage.textContent =
+        showReviewError(
           error.message ||
-          'We could not submit your review. Please try again.';
-
-
-        reviewMessage.classList.add(
-          'show',
-          'error'
+          'We could not submit your review. Please try again.'
         );
 
 
       } finally {
+        if (submitButton) {
+          submitButton.disabled =
+            false;
 
-        submitButton.disabled =
-          false;
 
-
-        submitButton.innerHTML =
-          'Submit review <span aria-hidden="true">→</span>';
+          submitButton.innerHTML =
+            'Submit review <span aria-hidden="true">→</span>';
+        }
       }
     }
   );
-
 
 
   /* =========================================================
