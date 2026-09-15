@@ -16,6 +16,158 @@
   />
 
   <link rel="stylesheet" href="admin.css" />
+
+  <style>
+    /* =========================================================
+       ADMIN REVIEWS
+       ========================================================= */
+
+    .admin-review-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .admin-review-card {
+      padding: 22px;
+      border: 1px solid #dfe8e5;
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 8px 24px rgba(15, 78, 70, 0.05);
+    }
+
+    .admin-review-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 14px;
+    }
+
+    .admin-review-name {
+      margin: 0 0 4px;
+      color: #173e39;
+      font-size: 1.05rem;
+    }
+
+    .admin-review-date {
+      color: #71827e;
+      font-size: 0.76rem;
+    }
+
+    .admin-review-stars {
+      margin-bottom: 12px;
+      color: #d9a23a;
+      letter-spacing: 0.08em;
+      font-size: 1.12rem;
+    }
+
+    .admin-review-text {
+      margin: 0;
+      color: #536863;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .admin-review-no-text {
+      color: #879590;
+      font-style: italic;
+    }
+
+    .admin-review-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #e5ece9;
+    }
+
+    .review-status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .review-status-badge.pending {
+      color: #7b5c17;
+      background: #fff4cf;
+    }
+
+    .review-status-badge.approved {
+      color: #1f6b55;
+      background: #e7f6ef;
+    }
+
+    .review-status-badge.rejected {
+      color: #8a493d;
+      background: #fae9e4;
+    }
+
+    .admin-review-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .review-action-button {
+      min-height: 38px;
+      padding: 0 15px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+    }
+
+    .review-approve-button {
+      color: #ffffff;
+      border: 1px solid #23745d;
+      background: #23745d;
+    }
+
+    .review-approve-button:hover {
+      background: #1b604c;
+    }
+
+    .review-reject-button {
+      color: #8a493d;
+      border: 1px solid #e3b6aa;
+      background: #fff7f4;
+    }
+
+    .review-delete-button {
+      color: #8a493d;
+      border: 1px solid transparent;
+      background: transparent;
+    }
+
+    .review-delete-button:hover {
+      background: #fae9e4;
+    }
+
+    @media (max-width: 720px) {
+      .admin-review-top,
+      .admin-review-footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .admin-review-actions {
+        width: 100%;
+      }
+
+      .review-action-button {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+
 </head>
 
 <body>
@@ -171,6 +323,22 @@
         <button
           class="side-link"
           type="button"
+          data-section="reviews"
+        >
+          <span>★</span>
+          Reviews
+          <span
+            class="nav-count"
+            id="review-nav-count"
+            hidden
+          >
+            0
+          </span>
+        </button>
+
+        <button
+          class="side-link"
+          type="button"
           data-section="editor"
         >
           <span>＋</span>
@@ -277,6 +445,12 @@
             <span>New requests</span>
             <strong id="stat-new-requests">0</strong>
             <small>Awaiting review</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Pending reviews</span>
+            <strong id="stat-pending-reviews">0</strong>
+            <small>Awaiting approval</small>
           </article>
 
         </div>
@@ -834,6 +1008,139 @@
               </div>
 
             </aside>
+
+          </div>
+
+        </section>
+
+      </section>
+
+
+
+      <!-- =====================================================
+           REVIEWS
+           ===================================================== -->
+
+      <section
+        class="view"
+        id="reviews-view"
+        data-view="reviews"
+      >
+
+        <div class="request-stats-grid">
+
+          <article class="stat-card">
+            <span>All reviews</span>
+            <strong id="review-stat-all">0</strong>
+            <small>Total submissions</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Pending</span>
+            <strong id="review-stat-pending">0</strong>
+            <small>Awaiting approval</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Approved</span>
+            <strong id="review-stat-approved">0</strong>
+            <small>Visible publicly</small>
+          </article>
+
+          <article class="stat-card">
+            <span>Rejected</span>
+            <strong id="review-stat-rejected">0</strong>
+            <small>Not published</small>
+          </article>
+
+        </div>
+
+
+        <section class="panel review-manager-panel">
+
+          <div class="panel-heading">
+
+            <div>
+              <p class="kicker">
+                Customer feedback
+              </p>
+
+              <h2>
+                Review moderation
+              </h2>
+
+              <p class="muted">
+                Approve reviews before they appear on the public Helen Estates Realtors website.
+              </p>
+            </div>
+
+
+            <div class="panel-tools">
+
+              <label class="search-control">
+
+                <span class="sr-only">
+                  Search reviews
+                </span>
+
+                <input
+                  id="review-search"
+                  type="search"
+                  placeholder="Search name or review"
+                />
+
+              </label>
+
+
+              <select
+                id="review-status-filter"
+                aria-label="Filter reviews by status"
+              >
+
+                <option value="all">
+                  All statuses
+                </option>
+
+                <option value="pending">
+                  Pending
+                </option>
+
+                <option value="approved">
+                  Approved
+                </option>
+
+                <option value="rejected">
+                  Rejected
+                </option>
+
+              </select>
+
+            </div>
+
+          </div>
+
+
+          <div
+            class="admin-review-list"
+            id="admin-review-list"
+          ></div>
+
+
+          <div
+            class="empty-state"
+            id="review-empty-state"
+            hidden
+          >
+
+            <div>★</div>
+
+            <h3>
+              No reviews found
+            </h3>
+
+            <p>
+              New customer reviews will appear here for moderation.
+            </p>
 
           </div>
 
