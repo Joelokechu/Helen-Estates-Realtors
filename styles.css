@@ -462,3 +462,141 @@ h3 { line-height: 1.25; }
   .status-progress { grid-template-columns: repeat(2, 1fr); gap: 14px 8px; }
   .status-details { grid-template-columns: 1fr; }
 }
+/* =========================================================
+   MOBILE NAVIGATION — BRIGHT TROPICAL UPDATE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+  .main-nav {
+    position: fixed;
+    inset: 88px 0 0;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
+    gap: 0;
+
+    padding: 18px 24px 32px;
+
+    /* Solid background — no transparency */
+    background: #fffaf2 !important;
+
+    color: #153936;
+
+    border-top: 4px solid #56b9aa;
+
+    box-shadow:
+      0 18px 45px rgba(6, 51, 47, 0.18);
+
+    transform: translateX(100%);
+    transition: transform 220ms ease;
+
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+
+  .main-nav.open {
+    transform: translateX(0);
+  }
+
+
+  .main-nav a {
+    display: flex;
+    align-items: center;
+
+    min-height: 60px;
+
+    padding: 15px 6px;
+
+    color: #153936 !important;
+
+    border-bottom:
+      1px solid #dce9e4;
+
+    font-size: 0.96rem;
+    font-weight: 700;
+
+    letter-spacing: 0.055em;
+  }
+
+
+  .main-nav a:hover,
+  .main-nav a:focus,
+  .main-nav a.active {
+    color: #16776c !important;
+  }
+
+
+  .main-nav a.active {
+    padding-left: 14px;
+
+    border-left:
+      4px solid #ef8f69;
+  }
+
+
+  .main-nav a::after {
+    display: none;
+  }
+
+
+  .nav-toggle {
+    position: relative;
+
+    display: block;
+
+    width: 46px;
+    height: 46px;
+
+    margin-left: auto;
+
+    padding: 10px;
+
+    border:
+      1px solid rgba(255, 255, 255, 0.22);
+
+    border-radius: 12px;
+
+    background:
+      rgba(255, 255, 255, 0.1);
+  }
+
+
+  .nav-toggle span {
+    height: 2px;
+
+    margin: 6px 0;
+
+    border-radius: 10px;
+
+    background: #ffffff;
+  }
+
+
+  .nav-toggle.active {
+    background: #56b9aa;
+    border-color: #56b9aa;
+  }
+
+
+  .nav-toggle.active span:nth-child(1) {
+    transform:
+      translateY(8px)
+      rotate(45deg);
+  }
+
+
+  .nav-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+
+  .nav-toggle.active span:nth-child(3) {
+    transform:
+      translateY(-8px)
+      rotate(-45deg);
+  }
+}
