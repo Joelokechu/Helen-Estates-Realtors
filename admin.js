@@ -53,6 +53,9 @@ const views = {
   requests:
     document.getElementById('requests-view'),
 
+  reviews:
+    document.getElementById('reviews-view'),
+
   editor:
     document.getElementById('editor-view')
 };
@@ -165,12 +168,44 @@ const saveRequestButton =
 
 
 /* =========================================================
+   REVIEW ELEMENTS
+   ========================================================= */
+
+const reviewNavCount =
+  document.getElementById(
+    'review-nav-count'
+  );
+
+const adminReviewList =
+  document.getElementById(
+    'admin-review-list'
+  );
+
+const reviewEmptyState =
+  document.getElementById(
+    'review-empty-state'
+  );
+
+const reviewSearch =
+  document.getElementById(
+    'review-search'
+  );
+
+const reviewStatusFilter =
+  document.getElementById(
+    'review-status-filter'
+  );
+
+
+/* =========================================================
    STATE
    ========================================================= */
 
 let properties = [];
 
 let requests = [];
+
+let reviews = [];
 
 let editingProperty = null;
 
@@ -270,6 +305,35 @@ function requestStatusLabel(status) {
 
   return labels[status] ||
     titleCase(status);
+}
+
+
+function reviewStatusLabel(status) {
+  const labels = {
+    pending: 'Pending',
+    approved: 'Approved',
+    rejected: 'Rejected'
+  };
+
+  return labels[status] ||
+    titleCase(status);
+}
+
+
+function renderReviewStars(rating) {
+  const value =
+    Math.max(
+      0,
+      Math.min(
+        5,
+        Number(rating) || 0
+      )
+    );
+
+  return (
+    '★'.repeat(value) +
+    '☆'.repeat(5 - value)
+  );
 }
 
 
@@ -514,6 +578,9 @@ function showView(name) {
     requests:
       'Requests',
 
+    reviews:
+      'Reviews',
+
     editor:
       editingProperty
         ? 'Edit property'
@@ -663,11 +730,13 @@ async function enterAdmin() {
 async function refreshAll() {
   await Promise.all([
     loadProperties(),
-    loadRequests()
+    loadRequests(),
+    loadReviews()
   ]);
 
   updatePropertyStats();
   updateRequestStats();
+  updateReviewStats();
 }
 
 
@@ -765,6 +834,44 @@ async function loadRequests() {
       );
     }
   }
+}
+
+
+async function loadReviews() {
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from('reviews')
+      .select(`
+        id,
+        name,
+        rating,
+        review_text,
+        status,
+        created_at,
+        updated_at
+      `)
+      .order(
+        'created_at',
+        {
+          ascending: false
+        }
+      );
+
+
+  if (error) {
+    throw error;
+  }
+
+
+  reviews =
+    data || [];
+
+
+  renderReviews();
+  updateReviewStats();
 }
 
 
@@ -883,6 +990,86 @@ function updateRequestStats() {
 
     requestNavCount.hidden =
       newCount === 0;
+  }
+}
+
+
+/* =========================================================
+   REVIEW STATISTICS
+   ========================================================= */
+
+function countReviewStatus(status) {
+  return reviews.filter(
+    review =>
+      review.status === status
+  ).length;
+}
+
+
+function updateReviewStats() {
+  const pendingCount =
+    countReviewStatus(
+      'pending'
+    );
+
+
+  const dashboardStat =
+    document.getElementById(
+      'stat-pending-reviews'
+    );
+
+
+  if (dashboardStat) {
+    dashboardStat.textContent =
+      pendingCount;
+  }
+
+
+  const mappings = {
+    'review-stat-all':
+      reviews.length,
+
+    'review-stat-pending':
+      pendingCount,
+
+    'review-stat-approved':
+      countReviewStatus(
+        'approved'
+      ),
+
+    'review-stat-rejected':
+      countReviewStatus(
+        'rejected'
+      )
+  };
+
+
+  Object.entries(
+    mappings
+  ).forEach(
+    ([
+      id,
+      value
+    ]) => {
+      const element =
+        document.getElementById(
+          id
+        );
+
+      if (element) {
+        element.textContent =
+          value;
+      }
+    }
+  );
+
+
+  if (reviewNavCount) {
+    reviewNavCount.textContent =
+      pendingCount;
+
+    reviewNavCount.hidden =
+      pendingCount === 0;
   }
 }
 
@@ -2051,6 +2238,421 @@ async function deleteProperty(
 
 
 /* =========================================================
+   REVIEW FILTERING
+   ========================================================= */
+
+function getFilteredReviews() {
+  const search =
+    String(
+      reviewSearch?.value || ''
+    )
+      .trim()
+      .toLowerCase();
+
+
+  const statusFilter =
+    reviewStatusFilter?.value ||
+    'all';
+
+
+  return reviews.filter(
+    review => {
+      const haystack =
+        [
+          review.name,
+          review.review_text,
+          review.rating
+        ]
+          .join(' ')
+          .toLowerCase();
+
+
+      const matchesSearch =
+        !search ||
+        haystack.includes(
+          search
+        );
+
+
+      const matchesStatus =
+        statusFilter ===
+          'all' ||
+        review.status ===
+          statusFilter;
+
+
+      return (
+        matchesSearch &&
+        matchesStatus
+      );
+    }
+  );
+}
+
+
+/* =========================================================
+   REVIEW LIST
+   ========================================================= */
+
+function renderReviews() {
+  if (!adminReviewList) {
+    return;
+  }
+
+
+  const filtered =
+    getFilteredReviews();
+
+
+  adminReviewList.innerHTML =
+    filtered.map(
+      review => {
+
+        const rating =
+          Math.max(
+            1,
+            Math.min(
+              5,
+              Number(
+                review.rating || 0
+              )
+            )
+          );
+
+
+        const reviewText =
+          String(
+            review.review_text || ''
+          ).trim();
+
+
+        return `
+          <article
+            class="admin-review-card"
+            data-review-id="${escapeHTML(review.id)}"
+          >
+
+            <div class="admin-review-top">
+
+              <div>
+                <h3 class="admin-review-name">
+                  ${escapeHTML(review.name)}
+                </h3>
+
+                <span class="admin-review-date">
+                  Submitted ${escapeHTML(
+                    formatDate(
+                      review.created_at
+                    )
+                  )}
+                </span>
+              </div>
+
+
+              <span
+                class="review-status-badge ${escapeHTML(review.status)}"
+              >
+                ${escapeHTML(
+                  reviewStatusLabel(
+                    review.status
+                  )
+                )}
+              </span>
+
+            </div>
+
+
+            <div
+              class="admin-review-stars"
+              aria-label="${rating} out of 5 stars"
+            >
+              ${renderReviewStars(
+                rating
+              )}
+            </div>
+
+
+            ${
+              reviewText
+                ? `
+                    <p class="admin-review-text">
+                      ${escapeHTML(reviewText)}
+                    </p>
+                  `
+                : `
+                    <p class="admin-review-text admin-review-no-text">
+                      No written review was supplied.
+                    </p>
+                  `
+            }
+
+
+            <div class="admin-review-footer">
+
+              <small class="muted">
+                Last updated ${escapeHTML(
+                  formatDate(
+                    review.updated_at
+                  )
+                )}
+              </small>
+
+
+              <div class="admin-review-actions">
+
+                ${
+                  review.status !==
+                    'approved'
+                    ? `
+                        <button
+                          class="review-action-button review-approve-button"
+                          type="button"
+                          data-review-status="approved"
+                          data-review-id="${escapeHTML(review.id)}"
+                        >
+                          Approve
+                        </button>
+                      `
+                    : ''
+                }
+
+
+                ${
+                  review.status !==
+                    'rejected'
+                    ? `
+                        <button
+                          class="review-action-button review-reject-button"
+                          type="button"
+                          data-review-status="rejected"
+                          data-review-id="${escapeHTML(review.id)}"
+                        >
+                          Reject
+                        </button>
+                      `
+                    : ''
+                }
+
+
+                ${
+                  review.status !==
+                    'pending'
+                    ? `
+                        <button
+                          class="review-action-button secondary-button"
+                          type="button"
+                          data-review-status="pending"
+                          data-review-id="${escapeHTML(review.id)}"
+                        >
+                          Set pending
+                        </button>
+                      `
+                    : ''
+                }
+
+
+                <button
+                  class="review-action-button review-delete-button"
+                  type="button"
+                  data-delete-review="${escapeHTML(review.id)}"
+                >
+                  Delete
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+        `;
+      }
+    ).join('');
+
+
+  if (reviewEmptyState) {
+    reviewEmptyState.hidden =
+      filtered.length > 0;
+  }
+}
+
+
+/* =========================================================
+   REVIEW MODERATION
+   ========================================================= */
+
+async function updateReviewStatus(
+  reviewId,
+  status
+) {
+  const allowedStatuses =
+    new Set([
+      'pending',
+      'approved',
+      'rejected'
+    ]);
+
+
+  if (
+    !reviewId ||
+    !allowedStatuses.has(
+      status
+    )
+  ) {
+    return;
+  }
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('reviews')
+        .update({
+          status,
+          updated_at:
+            new Date()
+              .toISOString()
+        })
+        .eq(
+          'id',
+          reviewId
+        )
+        .select(`
+          id,
+          name,
+          rating,
+          review_text,
+          status,
+          created_at,
+          updated_at
+        `)
+        .single();
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    reviews =
+      reviews.map(
+        review =>
+          review.id === data.id
+            ? data
+            : review
+      );
+
+
+    renderReviews();
+    updateReviewStats();
+
+
+    showToast(
+      status === 'approved'
+        ? 'Review approved and published.'
+        : status === 'rejected'
+          ? 'Review rejected.'
+          : 'Review returned to pending.'
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    showToast(
+      error.message ||
+      'Could not update the review.',
+      'error'
+    );
+  }
+}
+
+
+async function deleteReview(
+  reviewId
+) {
+  const review =
+    reviews.find(
+      item =>
+        item.id === reviewId
+    );
+
+
+  if (!review) {
+    return;
+  }
+
+
+  const confirmed =
+    window.confirm(
+      `Delete the review from ${review.name}? This cannot be undone.`
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from('reviews')
+        .delete()
+        .eq(
+          'id',
+          reviewId
+        );
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    reviews =
+      reviews.filter(
+        item =>
+          item.id !== reviewId
+      );
+
+
+    renderReviews();
+    updateReviewStats();
+
+
+    showToast(
+      'Review deleted.'
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    showToast(
+      error.message ||
+      'Could not delete the review.',
+      'error'
+    );
+  }
+}
+
+
+/* =========================================================
    REQUEST FILTERING
    ========================================================= */
 
@@ -3002,6 +3604,57 @@ document
 
 
 /* =========================================================
+   REVIEW EVENTS
+   ========================================================= */
+
+adminReviewList?.addEventListener(
+  'click',
+  event => {
+
+    const statusButton =
+      event.target.closest(
+        '[data-review-status]'
+      );
+
+
+    if (statusButton) {
+      updateReviewStatus(
+        statusButton.dataset.reviewId,
+        statusButton.dataset.reviewStatus
+      );
+
+      return;
+    }
+
+
+    const deleteButton =
+      event.target.closest(
+        '[data-delete-review]'
+      );
+
+
+    if (deleteButton) {
+      deleteReview(
+        deleteButton.dataset.deleteReview
+      );
+    }
+  }
+);
+
+
+reviewSearch?.addEventListener(
+  'input',
+  renderReviews
+);
+
+
+reviewStatusFilter?.addEventListener(
+  'change',
+  renderReviews
+);
+
+
+/* =========================================================
    ADMIN NAVIGATION
    ========================================================= */
 
@@ -3051,16 +3704,37 @@ document
 
           if (
             section ===
+            'reviews'
+          ) {
+            try {
+              await loadReviews();
+            } catch (error) {
+              console.error(
+                error
+              );
+
+              showToast(
+                'Could not refresh reviews.',
+                'error'
+              );
+            }
+          }
+
+
+          if (
+            section ===
             'dashboard'
           ) {
             try {
               await Promise.all([
                 loadProperties(),
-                loadRequests()
+                loadRequests(),
+                loadReviews()
               ]);
 
               updatePropertyStats();
               updateRequestStats();
+              updateReviewStats();
 
             } catch (error) {
               console.error(
@@ -3243,6 +3917,9 @@ logoutButton?.addEventListener(
       [];
 
     requests =
+      [];
+
+    reviews =
       [];
 
     activeRequestId =
