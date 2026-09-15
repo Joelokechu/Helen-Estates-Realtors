@@ -550,36 +550,887 @@ function renderPropertyCards(properties) {
 }
 
 
-function renderDefaultProperties() {
-  searchActive = false;
+function getPropertyImages(property) {
+  const images =
+    Array.isArray(property.images)
+      ? property.images.filter(
+          image =>
+            typeof image === 'string' &&
+            image.trim()
+        )
+      : [];
 
-  const featured =
-    allProperties.filter(
-      property =>
-        property.featured
+  return images.length
+    ? images
+    : ['property-1.jpg'];
+}
+
+
+function setPropertyCarouselIndex(
+  carousel,
+  requestedIndex,
+  animate = true
+) {
+  const track =
+    carousel.querySelector(
+      '[data-carousel-track]'
     );
 
-  const defaultProperties =
-    featured.length
-      ? featured
-      : allProperties;
+  const slides =
+    carousel.querySelectorAll(
+      '.property-carousel-slide'
+    );
 
-  const visible =
-    showingAll
-      ? allProperties
-      : defaultProperties.slice(
-          0,
-          4
+  if (
+    !track ||
+    !slides.length
+  ) {
+    return;
+  }
+
+
+  const total =
+    slides.length;
+
+
+  const index =
+    (
+      requestedIndex %
+        total +
+      total
+    ) %
+    total;
+
+
+  carousel.dataset.carouselIndex =
+    String(index);
+
+
+  track.style.transition =
+    animate
+      ? 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)'
+      : 'none';
+
+
+  track.style.transform =
+    `translate3d(-${index * 100}%, 0, 0)`;
+
+
+  carousel
+    .querySelectorAll(
+      '[data-carousel-dot]'
+    )
+    .forEach(dot => {
+
+      const isActive =
+        Number(
+          dot.dataset.carouselDot
+        ) === index;
+
+
+      dot.classList.toggle(
+        'active',
+        isActive
+      );
+
+
+      dot.setAttribute(
+        'aria-current',
+        isActive
+          ? 'true'
+          : 'false'
+      );
+
+    });
+}
+
+
+function movePropertyCarousel(
+  carousel,
+  direction
+) {
+  const currentIndex =
+    Number(
+      carousel.dataset
+        .carouselIndex || 0
+    );
+
+
+  setPropertyCarouselIndex(
+    carousel,
+    currentIndex +
+      direction,
+    true
+  );
+}
+
+
+function initialisePropertyCarousels() {
+  propertyGrid
+    .querySelectorAll(
+      '[data-property-carousel]'
+    )
+    .forEach(carousel => {
+
+      const track =
+        carousel.querySelector(
+          '[data-carousel-track]'
         );
 
-  renderPropertyCards(
-    visible
-  );
 
-  viewAllButton.innerHTML =
-    showingAll
-      ? 'Show featured <span aria-hidden="true">↑</span>'
-      : 'View all properties <span aria-hidden="true">→</span>';
+      const slides =
+        carousel.querySelectorAll(
+          '.property-carousel-slide'
+        );
+
+
+      if (
+        !track ||
+        slides.length <= 1
+      ) {
+        return;
+      }
+
+
+      setPropertyCarouselIndex(
+        carousel,
+        0,
+        false
+      );
+
+
+      const previousButton =
+        carousel.querySelector(
+          '[data-carousel-prev]'
+        );
+
+
+      const nextButton =
+        carousel.querySelector(
+          '[data-carousel-next]'
+        );
+
+
+      previousButton
+        ?.addEventListener(
+          'click',
+          event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            movePropertyCarousel(
+              carousel,
+              -1
+            );
+
+          }
+        );
+
+
+      nextButton
+        ?.addEventListener(
+          'click',
+          event => {
+
+            event.preventDefault();
+            event.stopPropagation();
+
+            movePropertyCarousel(
+              carousel,
+              1
+            );
+
+          }
+        );
+
+
+      carousel
+        .querySelectorAll(
+          '[data-carousel-dot]'
+        )
+        .forEach(dot => {
+
+          dot.addEventListener(
+            'click',
+            event => {
+
+              event.preventDefault();
+              event.stopPropagation();
+
+
+              setPropertyCarouselIndex(
+                carousel,
+                Number(
+                  dot.dataset
+                    .carouselDot
+                ),
+                true
+              );
+
+            }
+          );
+
+        });
+
+
+      /*
+        -----------------------------------------------------
+        SWIPE + MOUSE / TRACKPAD DRAG
+        -----------------------------------------------------
+      */
+
+      let pointerDown =
+        false;
+
+      let horizontalDrag =
+        false;
+
+      let startX =
+        0;
+
+      let startY =
+        0;
+
+      let currentX =
+        0;
+
+
+      carousel.addEventListener(
+        'pointerdown',
+        event => {
+
+          /*
+            Do not begin dragging when the
+            customer presses a button.
+          */
+
+          if (
+            event.target.closest(
+              'button'
+            )
+          ) {
+            return;
+          }
+
+
+          if (
+            event.pointerType ===
+              'mouse' &&
+            event.button !== 0
+          ) {
+            return;
+          }
+
+
+          pointerDown =
+            true;
+
+          horizontalDrag =
+            false;
+
+          startX =
+            event.clientX;
+
+          startY =
+            event.clientY;
+
+          currentX =
+            startX;
+
+        }
+      );
+
+
+      carousel.addEventListener(
+        'pointermove',
+        event => {
+
+          if (!pointerDown) {
+            return;
+          }
+
+
+          const deltaX =
+            event.clientX -
+            startX;
+
+
+          const deltaY =
+            event.clientY -
+            startY;
+
+
+          /*
+            Wait briefly before deciding
+            whether the person is scrolling
+            vertically or swiping horizontally.
+          */
+
+          if (
+            !horizontalDrag &&
+            Math.abs(deltaX) < 8 &&
+            Math.abs(deltaY) < 8
+          ) {
+            return;
+          }
+
+
+          if (
+            !horizontalDrag &&
+            Math.abs(deltaY) >
+              Math.abs(deltaX)
+          ) {
+            pointerDown =
+              false;
+
+            return;
+          }
+
+
+          horizontalDrag =
+            true;
+
+          currentX =
+            event.clientX;
+
+
+          event.preventDefault();
+
+
+          carousel.classList.add(
+            'is-dragging'
+          );
+
+
+          if (
+            carousel.setPointerCapture
+          ) {
+            try {
+              carousel
+                .setPointerCapture(
+                  event.pointerId
+                );
+            } catch (_error) {}
+          }
+
+
+          const index =
+            Number(
+              carousel.dataset
+                .carouselIndex || 0
+            );
+
+
+          track.style.transition =
+            'none';
+
+
+          track.style.transform =
+            `translate3d(calc(-${index * 100}% + ${deltaX}px), 0, 0)`;
+
+        }
+      );
+
+
+      const finishDrag =
+        event => {
+
+          if (!pointerDown) {
+            return;
+          }
+
+
+          pointerDown =
+            false;
+
+
+          carousel.classList.remove(
+            'is-dragging'
+          );
+
+
+          if (
+            !horizontalDrag
+          ) {
+            return;
+          }
+
+
+          const distance =
+            currentX -
+            startX;
+
+
+          const threshold =
+            Math.min(
+              70,
+              Math.max(
+                35,
+                carousel.clientWidth *
+                  0.14
+              )
+            );
+
+
+          if (
+            Math.abs(distance) >=
+            threshold
+          ) {
+
+            movePropertyCarousel(
+              carousel,
+              distance < 0
+                ? 1
+                : -1
+            );
+
+          } else {
+
+            setPropertyCarouselIndex(
+              carousel,
+              Number(
+                carousel.dataset
+                  .carouselIndex || 0
+              ),
+              true
+            );
+
+          }
+
+
+          horizontalDrag =
+            false;
+
+
+          if (
+            carousel.releasePointerCapture
+          ) {
+            try {
+              carousel
+                .releasePointerCapture(
+                  event.pointerId
+                );
+            } catch (_error) {}
+          }
+
+        };
+
+
+      carousel.addEventListener(
+        'pointerup',
+        finishDrag
+      );
+
+
+      carousel.addEventListener(
+        'pointercancel',
+        event => {
+
+          if (!pointerDown) {
+            return;
+          }
+
+
+          pointerDown =
+            false;
+
+          horizontalDrag =
+            false;
+
+
+          carousel.classList.remove(
+            'is-dragging'
+          );
+
+
+          setPropertyCarouselIndex(
+            carousel,
+            Number(
+              carousel.dataset
+                .carouselIndex || 0
+            ),
+            true
+          );
+
+
+          if (
+            carousel.releasePointerCapture
+          ) {
+            try {
+              carousel
+                .releasePointerCapture(
+                  event.pointerId
+                );
+            } catch (_error) {}
+          }
+
+        }
+      );
+
+
+      carousel.addEventListener(
+        'dragstart',
+        event => {
+          event.preventDefault();
+        }
+      );
+
+    });
+}
+
+
+function renderPropertyCards(properties) {
+  const favourites =
+    savedFavouriteIds();
+
+
+  if (!properties.length) {
+    propertyGrid.innerHTML =
+      '';
+
+
+    propertiesStatus.hidden =
+      false;
+
+
+    propertiesStatus.textContent =
+      searchActive
+        ? 'No exact matches found. Try widening your search or open a property request and we can look for you.'
+        : 'No properties are currently published.';
+
+
+    return;
+  }
+
+
+  propertiesStatus.hidden =
+    true;
+
+
+  propertyGrid.innerHTML =
+    properties
+      .map(property => {
+
+        const images =
+          getPropertyImages(
+            property
+          );
+
+
+        const hasMultipleImages =
+          images.length > 1;
+
+
+        const isRent =
+          property.purpose ===
+          'rent';
+
+
+        const saved =
+          favourites.has(
+            property.id
+          );
+
+
+        const meta = [
+
+          property.bedrooms
+            ? `${Number(
+                property.bedrooms
+              )} ${
+                Number(
+                  property.bedrooms
+                ) === 1
+                  ? 'bed'
+                  : 'beds'
+              }`
+            : '',
+
+
+          property.bathrooms
+            ? `${Number(
+                property.bathrooms
+              )} ${
+                Number(
+                  property.bathrooms
+                ) === 1
+                  ? 'bath'
+                  : 'baths'
+              }`
+            : '',
+
+
+          property.size
+            ? `${Number(
+                property.size
+              ).toLocaleString(
+                'en-US'
+              )} sq ft`
+            : ''
+
+        ].filter(Boolean);
+
+
+        return `
+          <article
+            class="property-card"
+            data-id="${escapeHTML(
+              property.id
+            )}"
+          >
+
+            <div
+              class="property-image property-carousel"
+              data-property-carousel
+              data-carousel-index="0"
+            >
+
+              <div
+                class="property-carousel-track"
+                data-carousel-track
+              >
+
+                ${images
+                  .map(
+                    (
+                      image,
+                      index
+                    ) => `
+                      <img
+                        class="property-carousel-slide"
+                        src="${escapeHTML(
+                          image
+                        )}"
+                        alt="${escapeHTML(
+                          property.title
+                        )}${
+                          images.length >
+                          1
+                            ? ` — image ${
+                                index +
+                                1
+                              } of ${
+                                images.length
+                              }`
+                            : ''
+                        }"
+                        loading="${
+                          index === 0
+                            ? 'eager'
+                            : 'lazy'
+                        }"
+                        draggable="false"
+                      />
+                    `
+                  )
+                  .join('')}
+
+              </div>
+
+
+              <span
+                class="badge ${
+                  isRent
+                    ? 'badge-rent'
+                    : ''
+                }"
+              >
+                ${
+                  isRent
+                    ? 'To rent'
+                    : 'For sale'
+                }
+              </span>
+
+
+              ${
+                property.featured
+                  ? `
+                    <span
+                      class="featured-marker"
+                    >
+                      Featured
+                    </span>
+                  `
+                  : ''
+              }
+
+
+              <button
+                class="favourite ${
+                  saved
+                    ? 'saved'
+                    : ''
+                }"
+                type="button"
+                data-favourite-id="${escapeHTML(
+                  property.id
+                )}"
+                aria-label="Save ${escapeHTML(
+                  property.title
+                )}"
+                aria-pressed="${saved}"
+              >
+                ${
+                  saved
+                    ? '♥'
+                    : '♡'
+                }
+              </button>
+
+
+              ${
+                hasMultipleImages
+                  ? `
+                    <button
+                      class="property-carousel-arrow property-carousel-prev"
+                      type="button"
+                      data-carousel-prev
+                      aria-label="Previous image"
+                    >
+                      ‹
+                    </button>
+
+
+                    <button
+                      class="property-carousel-arrow property-carousel-next"
+                      type="button"
+                      data-carousel-next
+                      aria-label="Next image"
+                    >
+                      ›
+                    </button>
+
+
+                    <div
+                      class="property-carousel-dots"
+                      aria-label="Property images"
+                    >
+
+                      ${images
+                        .map(
+                          (
+                            _image,
+                            index
+                          ) => `
+                            <button
+                              class="property-carousel-dot ${
+                                index === 0
+                                  ? 'active'
+                                  : ''
+                              }"
+                              type="button"
+                              data-carousel-dot="${index}"
+                              aria-label="Show image ${
+                                index +
+                                1
+                              } of ${
+                                images.length
+                              }"
+                              aria-current="${
+                                index === 0
+                                  ? 'true'
+                                  : 'false'
+                              }"
+                            ></button>
+                          `
+                        )
+                        .join('')}
+
+                    </div>
+                  `
+                  : ''
+              }
+
+            </div>
+
+
+            <div
+              class="property-body"
+            >
+
+              <p
+                class="property-kicker"
+              >
+                ${escapeHTML(
+                  property.id
+                )}
+                ·
+                ${escapeHTML(
+                  property.status ||
+                    'Available'
+                )}
+              </p>
+
+
+              <h3>
+                ${escapeHTML(
+                  property.title
+                )}
+              </h3>
+
+
+              <p
+                class="location"
+              >
+                ${escapeHTML(
+                  property.location
+                )}
+              </p>
+
+
+              <ul
+                class="property-meta"
+                aria-label="Property features"
+              >
+
+                ${meta
+                  .map(
+                    item =>
+                      `<li>${escapeHTML(
+                        item
+                      )}</li>`
+                  )
+                  .join('')}
+
+              </ul>
+
+
+              <div
+                class="property-bottom"
+              >
+
+                <p
+                  class="price"
+                >
+                  ${formatPrice(
+                    property
+                  )}
+                </p>
+
+
+                <button
+                  class="property-enquire"
+                  type="button"
+                  data-enquire-property="${escapeHTML(
+                    property.id
+                  )}"
+                >
+                  Enquire →
+                </button>
+
+              </div>
+
+            </div>
+
+          </article>
+        `;
+      })
+      .join('');
+
+
+  initialisePropertyCarousels();
 }
 
 
