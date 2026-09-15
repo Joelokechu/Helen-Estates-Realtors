@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <meta
+    name="description"
+    content="View your saved Helen Estates Realtors properties."
+  />
+
+  <title>
+    Liked Properties | Helen Estates Realtors
+  </title>
+
+  <link
+    rel="preconnect"
+    href="https://fonts.googleapis.com"
+  />
+
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="stylesheet"
+    href="styles.css"
+  />
+
+  <script src="supabase-config.js"></script>
+
+  <style>
+
+    /* =====================================================
+       LIKED PROPERTIES PAGE
+       ===================================================== */
+
+    .liked-page {
+      min-height: 100vh;
+
+      background:
+        linear-gradient(
+          180deg,
+          #fffaf2 0%,
+          #f3fcf8 52%,
+          #ffffff 100%
+        );
+    }
+
+
+    .liked-main {
+      padding:
+        170px 0 100px;
+    }
+
+
+    .liked-intro {
+      display: grid;
+
+      grid-template-columns:
+        minmax(0, 1fr) auto;
+
+      gap: 40px;
+
+      align-items: end;
+
+      margin-bottom: 48px;
+    }
+
+
+    .liked-intro-copy {
+      max-width: 750px;
+    }
+
+
+    .liked-intro h1 {
+      margin-bottom: 18px;
+
+      color: var(--jungle-deep);
+
+      font-size:
+        clamp(
+          3rem,
+          6vw,
+          5.5rem
+        );
+    }
+
+
+    .liked-intro p:not(.eyebrow) {
+      max-width: 630px;
+
+      margin-bottom: 0;
+
+      color: var(--muted);
+
+      font-size: 1rem;
+    }
+
+
+    .liked-count-card {
+      min-width: 160px;
+
+      padding:
+        22px 26px;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 18px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.92
+        );
+
+      box-shadow:
+        0 14px 36px
+        rgba(
+          11,
+          73,
+          67,
+          0.08
+        );
+
+      text-align: center;
+    }
+
+
+    .liked-count-card strong {
+      display: block;
+
+      margin-bottom: 3px;
+
+      color: var(--sea);
+
+      font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+      font-size: 2.5rem;
+
+      line-height: 1;
+    }
+
+
+    .liked-count-card span {
+      color: var(--muted);
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.08em;
+
+      font-size: 0.66rem;
+
+      font-weight: 700;
+    }
+
+
+    .liked-toolbar {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 20px;
+
+      margin-bottom: 28px;
+
+      padding:
+        17px 20px;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 16px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.92
+        );
+    }
+
+
+    .liked-toolbar p {
+      margin: 0;
+
+      color: var(--muted);
+
+      font-size: 0.84rem;
+    }
+
+
+    .clear-liked {
+      border: 0;
+
+      padding: 0;
+
+      color: var(--coral-deep);
+
+      background: transparent;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.07em;
+
+      font-size: 0.7rem;
+
+      font-weight: 700;
+    }
+
+
+    .clear-liked:hover {
+      color: #b8563c;
+    }
+
+
+    .liked-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+      gap: 24px;
+    }
+
+
+    .liked-loading {
+      grid-column:
+        1 / -1;
+
+      padding:
+        80px 20px;
+
+      color: var(--muted);
+
+      text-align: center;
+    }
+
+
+    .liked-empty {
+      grid-column:
+        1 / -1;
+
+      padding:
+        70px 30px;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 24px;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.9
+        );
+
+      text-align: center;
+
+      box-shadow:
+        var(--shadow);
+    }
+
+
+    .liked-empty-icon {
+      width: 70px;
+      height: 70px;
+
+      display: grid;
+
+      place-items: center;
+
+      margin:
+        0 auto 22px;
+
+      border-radius: 50%;
+
+      color: var(--coral);
+
+      background:
+        #fff2ec;
+
+      font-size: 2.1rem;
+    }
+
+
+    .liked-empty h2 {
+      margin-bottom: 12px;
+
+      color: var(--jungle-deep);
+
+      font-size:
+        clamp(
+          2rem,
+          4vw,
+          3rem
+        );
+    }
+
+
+    .liked-empty p {
+      max-width: 520px;
+
+      margin:
+        0 auto 26px;
+
+      color: var(--muted);
+    }
+
+
+    .liked-property-card {
+      overflow: hidden;
+
+      border:
+        1px solid var(--line);
+
+      border-radius: 20px;
+
+      background: var(--white);
+
+      box-shadow:
+        0 12px 30px
+        rgba(
+          11,
+          73,
+          67,
+          0.07
+        );
+
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease;
+    }
+
+
+    .liked-property-card:hover {
+      transform:
+        translateY(-5px);
+
+      box-shadow:
+        0 22px 45px
+        rgba(
+          11,
+          73,
+          67,
+          0.13
+        );
+    }
+
+
+    .liked-property-image {
+      position: relative;
+
+      aspect-ratio:
+        1.45 / 1;
+
+      overflow: hidden;
+
+      background:
+        #dcefe9;
+    }
+
+
+    .liked-property-image img {
+      width: 100%;
+      height: 100%;
+
+      object-fit: cover;
+
+      transition:
+        transform 500ms ease;
+    }
+
+
+    .liked-property-card:hover
+    .liked-property-image img {
+      transform:
+        scale(1.04);
+    }
+
+
+    .liked-property-badge {
+      position: absolute;
+
+      top: 14px;
+      left: 14px;
+
+      padding:
+        7px 11px;
+
+      border-radius: 999px;
+
+      color: var(--white);
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--jungle),
+          var(--sea)
+        );
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.05em;
+
+      font-size: 0.6rem;
+
+      font-weight: 700;
+    }
+
+
+    .liked-property-badge.rent {
+      background:
+        linear-gradient(
+          135deg,
+          var(--sea),
+          var(--lagoon)
+        );
+    }
+
+
+    .liked-remove {
+      position: absolute;
+
+      top: 12px;
+      right: 12px;
+
+      width: 40px;
+      height: 40px;
+
+      display: grid;
+
+      place-items: center;
+
+      padding: 0;
+
+      border:
+        1px solid
+        rgba(
+          255,
+          255,
+          255,
+          0.85
+        );
+
+      border-radius: 50%;
+
+      color: #d59934;
+
+      background:
+        rgba(
+          255,
+          255,
+          255,
+          0.94
+        );
+
+      font-size: 1.3rem;
+
+      box-shadow:
+        0 5px 18px
+        rgba(
+          0,
+          0,
+          0,
+          0.12
+        );
+    }
+
+
+    .liked-property-content {
+      padding:
+        21px 19px 20px;
+    }
+
+
+    .liked-property-type {
+      margin:
+        0 0 5px;
+
+      color: var(--sea);
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.09em;
+
+      font-size: 0.62rem;
+
+      font-weight: 700;
+    }
+
+
+    .liked-property-content h2 {
+      margin-bottom: 5px;
+
+      color: var(--jungle-deep);
+
+      font-family:
+        "Playfair Display",
+        Georgia,
+        serif;
+
+      font-size: 1.35rem;
+
+      letter-spacing: -0.02em;
+    }
+
+
+    .liked-location {
+      min-height: 44px;
+
+      margin-bottom: 15px;
+
+      color: var(--muted);
+
+      font-size: 0.82rem;
+    }
+
+
+    .liked-meta {
+      display: flex;
+
+      flex-wrap: wrap;
+
+      gap: 9px 14px;
+
+      padding: 0;
+
+      margin:
+        0 0 17px;
+
+      list-style: none;
+
+      color: var(--muted);
+
+      font-size: 0.74rem;
+    }
+
+
+    .liked-property-bottom {
+      display: flex;
+
+      align-items: center;
+      justify-content: space-between;
+
+      gap: 14px;
+
+      padding-top: 16px;
+
+      border-top:
+        1px solid var(--line);
+    }
+
+
+    .liked-price {
+      margin: 0;
+
+      color: var(--jungle);
+
+      font-size: 1.05rem;
+
+      font-weight: 700;
+    }
+
+
+    .liked-price small {
+      color: var(--muted);
+
+      font-size: 0.65rem;
+
+      font-weight: 500;
+    }
+
+
+    .liked-enquire {
+      border: 0;
+
+      padding: 0;
+
+      color: var(--sea);
+
+      background: transparent;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.06em;
+
+      font-size: 0.67rem;
+
+      font-weight: 700;
+    }
+
+
+    .liked-back {
+      display: inline-flex;
+
+      align-items: center;
+
+      gap: 8px;
+
+      margin-bottom: 26px;
+
+      color: var(--sea);
+
+      font-size: 0.78rem;
+
+      font-weight: 700;
+
+      text-transform: uppercase;
+
+      letter-spacing: 0.07em;
+    }
+
+
+    @media (max-width: 900px) {
+
+      .liked-main {
+        padding-top: 140px;
+      }
+
+
+      .liked-intro {
+        grid-template-columns: 1fr;
+
+        align-items: start;
+      }
+
+
+      .liked-count-card {
+        justify-self: start;
+      }
+
+
+      .liked-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+    }
+
+
+    @media (max-width: 650px) {
+
+      .liked-main {
+        padding:
+          125px 0 70px;
+      }
+
+
+      .liked-intro {
+        gap: 24px;
+
+        margin-bottom: 34px;
+      }
+
+
+      .liked-intro h1 {
+        font-size:
+          clamp(
+            2.6rem,
+            13vw,
+            4rem
+          );
+      }
+
+
+      .liked-toolbar {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+
+      .liked-grid {
+        grid-template-columns: 1fr;
+      }
+
+
+      .liked-property-bottom {
+        align-items: flex-start;
+
+        flex-direction: column;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body class="liked-page">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header
+    class="site-header"
+    id="top"
+  >
+
+    <div class="container nav-wrap">
+
+      <a
+        class="brand"
+        href="index.html"
+        aria-label="Helen Estates Realtors home"
+      >
+
+        <span class="brand-badge">
+
+          <img
+            class="brand-logo brand-logo-header"
+            src="Helen Estates Realtors Logo 1.png"
+            alt="Helen Estates Realtors logo"
+          />
+
+        </span>
+
+
+        <span class="brand-wordmark">
+
+          <strong>
+            Helen Estates
+          </strong>
+
+          <small>
+            Realtors
+          </small>
+
+        </span>
+
+      </a>
+
+
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="main-navigation"
+        aria-label="Open navigation"
+      >
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </button>
+
+
+      <nav
+        class="main-nav"
+        id="main-navigation"
+        aria-label="Main navigation"
+      >
+
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="index.html#properties">
+          Buy
+        </a>
+
+        <a href="index.html#properties">
+          Rent
+        </a>
+
+        <a href="index.html#request">
+          Sell
+        </a>
+
+        <a href="index.html#request">
+          Property request
+        </a>
+
+        <a
+          class="active"
+          href="liked.html"
+        >
+          Liked
+        </a>
+
+        <a href="index.html#about">
+          About
+        </a>
+
+        <a href="index.html#contact">
+          Contact
+        </a>
+
+      </nav>
+
+
+      <a
+        class="button button-accent header-cta"
+        href="index.html#request"
+      >
+        Start a request
+      </a>
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       MAIN CONTENT
+       ===================================================== -->
+
+  <main class="liked-main">
+
+    <div class="container">
+
+      <a
+        class="liked-back"
+        href="index.html#properties"
+      >
+        ← Back to properties
+      </a>
+
+
+      <section class="liked-intro">
+
+        <div class="liked-intro-copy">
+
+          <p class="eyebrow">
+            Your Property Catalogue
+          </p>
+
+          <h1>
+            Liked properties.
+          </h1>
+
+          <p>
+            Properties you save while browsing Helen Estates
+            Realtors will appear here so you can easily return
+            to them later.
+          </p>
+
+        </div>
+
+
+        <div
+          class="liked-count-card"
+          aria-label="Number of liked properties"
+        >
+
+          <strong id="liked-count">
+            0
+          </strong>
+
+          <span>
+            Saved properties
+          </span>
+
+        </div>
+
+      </section>
+
+
+      <div
+        class="liked-toolbar"
+        id="liked-toolbar"
+      >
+
+        <p>
+          Your saved properties are stored privately on this
+          device.
+        </p>
+
+        <button
+          class="clear-liked"
+          id="clear-liked"
+          type="button"
+        >
+          Clear all
+        </button>
+
+      </div>
+
+
+      <section
+        class="liked-grid"
+        id="liked-grid"
+        aria-live="polite"
+      >
+
+        <div class="liked-loading">
+          Loading your liked properties...
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+
+  <!-- =====================================================
+       FOOTER
+       ===================================================== -->
+
+  <footer class="site-footer">
+
+    <div class="container footer-grid">
+
+      <div class="footer-brand">
+
+        <a
+          class="brand brand-footer"
+          href="index.html"
+        >
+
+          <span
+            class="brand-badge brand-badge-footer"
+          >
+
+            <img
+              class="brand-logo brand-logo-footer"
+              src="Helen Estates Realtors Logo 1.png"
+              alt="Helen Estates Realtors logo"
+            />
+
+          </span>
+
+
+          <span
+            class="brand-wordmark brand-wordmark-footer"
+          >
+
+            <strong>
+              Helen Estates
+            </strong>
+
+            <small>
+              Realtors
+            </small>
+
+          </span>
+
+        </a>
+
+
+        <p>
+          Property made more personal in Saint Lucia.
+        </p>
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          Property
+        </h3>
+
+        <a href="index.html#properties">
+          Buy
+        </a>
+
+        <a href="index.html#properties">
+          Rent
+        </a>
+
+        <a href="liked.html">
+          Liked properties
+        </a>
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          Services
+        </h3>
+
+        <a href="index.html#request">
+          Sell / Advertise
+        </a>
+
+        <a href="index.html#request">
+          Property request
+        </a>
+
+      </div>
+
+
+      <div>
+
+        <h3>
+          Company
+        </h3>
+
+        <a href="index.html#about">
+          About
+        </a>
+
+        <a href="index.html#contact">
+          Contact
+        </a>
+
+      </div>
+
+    </div>
+
+
+    <div class="container footer-bottom">
+
+      <p>
+        © <span id="current-year"></span>
+        Helen Estates Realtors.
+        All rights reserved.
+      </p>
+
+    </div>
+
+  </footer>
+
+
+  <script>
+
+    /*
+      Mobile menu only.
+      Property data will be handled by liked.js.
+    */
+
+    const navToggle =
+      document.querySelector(
+        '.nav-toggle'
+      );
+
+
+    const mainNav =
+      document.querySelector(
+        '.main-nav'
+      );
+
+
+    function closeLikedNavigation() {
+
+      navToggle.classList.remove(
+        'active'
+      );
+
+
+      mainNav.classList.remove(
+        'open'
+      );
+
+
+      navToggle.setAttribute(
+        'aria-expanded',
+        'false'
+      );
+
+
+      navToggle.setAttribute(
+        'aria-label',
+        'Open navigation'
+      );
+
+
+      document.body.classList.remove(
+        'nav-open'
+      );
+
+    }
+
+
+    navToggle.addEventListener(
+      'click',
+      () => {
+
+        const isOpen =
+          mainNav.classList.toggle(
+            'open'
+          );
+
+
+        navToggle.classList.toggle(
+          'active',
+          isOpen
+        );
+
+
+        navToggle.setAttribute(
+          'aria-expanded',
+          String(isOpen)
+        );
+
+
+        navToggle.setAttribute(
+          'aria-label',
+          isOpen
+            ? 'Close navigation'
+            : 'Open navigation'
+        );
+
+
+        document.body.classList.toggle(
+          'nav-open',
+          isOpen
+        );
+
+      }
+    );
+
+
+    mainNav
+      .querySelectorAll('a')
+      .forEach(link => {
+
+        link.addEventListener(
+          'click',
+          closeLikedNavigation
+        );
+
+      });
+
+
+    document.getElementById(
+      'current-year'
+    ).textContent =
+      new Date().getFullYear();
+
+  </script>
+
+
+  <script src="liked.js"></script>
+
+</body>
+
+</html>
