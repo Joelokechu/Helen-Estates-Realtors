@@ -1330,7 +1330,43 @@ propertyGrid.addEventListener(
         behavior:
           'smooth'
       });
+
+      return;
     }
+
+
+    if (
+      performance.now() <
+      suppressPropertyCardClickUntil
+    ) {
+      return;
+    }
+
+
+    const propertyCard =
+      event.target.closest(
+        '.property-card[data-id]'
+      );
+
+
+    if (!propertyCard) {
+      return;
+    }
+
+
+    const propertyId =
+      propertyCard.dataset.id;
+
+
+    if (!propertyId) {
+      return;
+    }
+
+
+    window.location.href =
+      `property.html?id=${encodeURIComponent(
+        propertyId
+      )}`;
   }
 );
 
@@ -1341,6 +1377,9 @@ propertyGrid.addEventListener(
 
 let carouselDrag =
   null;
+
+let suppressPropertyCardClickUntil =
+  0;
 
 
 propertyGrid.addEventListener(
@@ -1541,6 +1580,18 @@ function finishCarouselDrag(
   ) {
     return;
   }
+
+
+  /*
+    A horizontal swipe/drag normally produces
+    a click immediately after pointerup.
+    Ignore that click so swiping the carousel
+    does not open the property page.
+  */
+
+  suppressPropertyCardClickUntil =
+    performance.now() +
+    350;
 
 
   const distance =
