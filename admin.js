@@ -169,6 +169,11 @@ const saveRequestButton =
     'save-request-button'
   );
 
+const deleteRequestButton =
+  document.getElementById(
+    'delete-request-button'
+  );
+
 
 /* =========================================================
    REVIEW ELEMENTS
@@ -3309,6 +3314,143 @@ async function saveActiveRequest() {
 
 
 /* =========================================================
+   DELETE REQUEST
+   ========================================================= */
+
+async function deleteActiveRequest() {
+  const request =
+    requests.find(
+      item =>
+        item.id ===
+        activeRequestId
+    );
+
+
+  if (!request) {
+    return;
+  }
+
+
+  const confirmed =
+    window.confirm(
+      `Delete request ${request.reference} from ${request.name}?\n\n` +
+      `This will permanently remove the request, customer details, private notes and status record.\n\n` +
+      `The customer's private request-status link will also stop working.\n\n` +
+      `This action cannot be undone.`
+    );
+
+
+  if (!confirmed) {
+    return;
+  }
+
+
+  try {
+
+    deleteRequestButton.disabled =
+      true;
+
+
+    deleteRequestButton.textContent =
+      'Deleting…';
+
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from('requests')
+        .delete()
+        .eq(
+          'id',
+          request.id
+        )
+        .select('id');
+
+
+    if (error) {
+      throw error;
+    }
+
+
+    if (
+      !data ||
+      data.length === 0
+    ) {
+      throw new Error(
+        'The request could not be deleted. Please refresh and try again.'
+      );
+    }
+
+
+    requests =
+      requests.filter(
+        item =>
+          item.id !==
+          request.id
+      );
+
+
+    activeRequestId =
+      null;
+
+
+    updateRequestStats();
+
+    renderDashboardRequests();
+
+    renderRequests();
+
+
+    requestDetailContent.hidden =
+      true;
+
+
+    requestDetailPlaceholder.hidden =
+      false;
+
+
+    requestSaveMessage.textContent =
+      '';
+
+
+    requestSaveMessage.className =
+      'form-message';
+
+
+    showToast(
+      `Request ${request.reference} deleted.`
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    showToast(
+      error.message ||
+      'Could not delete the request.',
+      'error'
+    );
+
+
+  } finally {
+
+    deleteRequestButton.disabled =
+      false;
+
+
+    deleteRequestButton.textContent =
+      'Delete request';
+  }
+}
+
+
+/* =========================================================
    PROPERTY EVENTS
    ========================================================= */
 
@@ -3626,6 +3768,12 @@ requestTypeFilter?.addEventListener(
 saveRequestButton?.addEventListener(
   'click',
   saveActiveRequest
+);
+
+
+deleteRequestButton?.addEventListener(
+  'click',
+  deleteActiveRequest
 );
 
 
