@@ -30,24 +30,12 @@ const backendConfigured = Boolean(
   !String(publicConfig.supabasePublicKey).includes('YOUR_')
 );
 
-
-/* =========================================================
-   FRONTEND / BACKEND BRIDGE
-   ========================================================= */
-
 const BACKEND = {
   enabled: backendConfigured,
 
   async getPublishedProperties() {
-    const base =
-      String(
-        publicConfig.supabaseUrl
-      ).replace(/\/$/, '');
-
-    const url =
-      new URL(
-        `${base}/rest/v1/properties`
-      );
+    const base = String(publicConfig.supabaseUrl).replace(/\/$/, '');
+    const url = new URL(`${base}/rest/v1/properties`);
 
     url.searchParams.set(
       'select',
@@ -64,19 +52,15 @@ const BACKEND = {
       'featured.desc,created_at.desc'
     );
 
-
-    const response =
-      await fetch(
-        url,
-        {
-          headers: {
-            apikey:
-              publicConfig
-                .supabasePublicKey
-          }
+    const response = await fetch(
+      url,
+      {
+        headers: {
+          apikey:
+            publicConfig.supabasePublicKey
         }
-      );
-
+      }
+    );
 
     if (!response.ok) {
       throw new Error(
@@ -84,10 +68,8 @@ const BACKEND = {
       );
     }
 
-
     const rows =
       await response.json();
-
 
     return rows.map(
       row => ({
@@ -102,13 +84,11 @@ const BACKEND = {
     );
   },
 
-
   async createTicket(ticket) {
     const base =
       String(
         publicConfig.supabaseUrl
       ).replace(/\/$/, '');
-
 
     const response =
       await fetch(
@@ -122,26 +102,20 @@ const BACKEND = {
               'application/json',
 
             apikey:
-              publicConfig
-                .supabasePublicKey
+              publicConfig.supabasePublicKey
           },
 
           body:
-            JSON.stringify(
-              ticket
-            )
+            JSON.stringify(ticket)
         }
       );
 
-
     let payload = {};
-
 
     try {
       payload =
         await response.json();
     } catch (_error) {}
-
 
     if (!response.ok) {
       throw new Error(
@@ -150,15 +124,10 @@ const BACKEND = {
       );
     }
 
-
     return payload;
   }
 };
 
-
-/* =========================================================
-   DEMO PROPERTIES
-   ========================================================= */
 
 const DEMO_PROPERTIES = [
   {
@@ -201,7 +170,6 @@ const DEMO_PROPERTIES = [
     images:
       ['property-1.jpg']
   },
-
 
   {
     id:
@@ -247,7 +215,6 @@ const DEMO_PROPERTIES = [
       ['property-2.jpg']
   },
 
-
   {
     id:
       'HER-003',
@@ -288,7 +255,6 @@ const DEMO_PROPERTIES = [
     images:
       ['property-3.jpg']
   },
-
 
   {
     id:
@@ -336,10 +302,6 @@ const DEMO_PROPERTIES = [
 ];
 
 
-/* =========================================================
-   STATE
-   ========================================================= */
-
 let activeMode =
   'buy';
 
@@ -352,10 +314,12 @@ let showingAll =
 let searchActive =
   false;
 
+let carouselDrag =
+  null;
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
+let suppressPropertyCardClickUntil =
+  0;
+
 
 function escapeHTML(
   value = ''
@@ -384,10 +348,6 @@ function escapeHTML(
 }
 
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
-
 function closeNavigation() {
   navToggle.classList.remove(
     'active'
@@ -397,18 +357,15 @@ function closeNavigation() {
     'open'
   );
 
-
   navToggle.setAttribute(
     'aria-expanded',
     'false'
   );
 
-
   navToggle.setAttribute(
     'aria-label',
     'Open navigation'
   );
-
 
   document.body.classList.remove(
     'nav-open'
@@ -425,18 +382,15 @@ navToggle.addEventListener(
         'open'
       );
 
-
     navToggle.classList.toggle(
       'active',
       isOpen
     );
 
-
     navToggle.setAttribute(
       'aria-expanded',
       String(isOpen)
     );
-
 
     navToggle.setAttribute(
       'aria-label',
@@ -444,7 +398,6 @@ navToggle.addEventListener(
         ? 'Close navigation'
         : 'Open navigation'
     );
-
 
     document.body.classList.toggle(
       'nav-open',
@@ -457,11 +410,12 @@ navToggle.addEventListener(
 mainNav
   .querySelectorAll('a')
   .forEach(
-    link =>
+    link => {
       link.addEventListener(
         'click',
         closeNavigation
-      )
+      );
+    }
   );
 
 
@@ -473,7 +427,6 @@ window.addEventListener(
       'scrolled',
       window.scrollY > 24
     );
-
 
     backToTop.classList.toggle(
       'visible',
@@ -498,10 +451,6 @@ backToTop.addEventListener(
 );
 
 
-/* =========================================================
-   PRICE
-   ========================================================= */
-
 function formatPrice(
   property
 ) {
@@ -509,9 +458,7 @@ function formatPrice(
     property.currency ||
     'USD';
 
-
   let value;
-
 
   try {
     value =
@@ -546,7 +493,6 @@ function formatPrice(
       }`;
   }
 
-
   return property.pricePeriod
     ? `${value} <small>/ ${escapeHTML(
         property.pricePeriod
@@ -554,10 +500,6 @@ function formatPrice(
     : value;
 }
 
-
-/* =========================================================
-   FAVOURITES
-   ========================================================= */
 
 function savedFavouriteIds() {
   try {
@@ -583,7 +525,6 @@ function toggleFavourite(
   const favourites =
     savedFavouriteIds();
 
-
   if (
     favourites.has(id)
   ) {
@@ -594,7 +535,6 @@ function toggleFavourite(
     favourites.add(id);
   }
 
-
   localStorage.setItem(
     'helen-estates-favourites',
     JSON.stringify(
@@ -602,22 +542,18 @@ function toggleFavourite(
     )
   );
 
-
   const isSaved =
     favourites.has(id);
-
 
   button.classList.toggle(
     'saved',
     isSaved
   );
 
-
   button.textContent =
     isSaved
       ? '♥'
       : '♡';
-
 
   button.setAttribute(
     'aria-pressed',
@@ -625,10 +561,6 @@ function toggleFavourite(
   );
 }
 
-
-/* =========================================================
-   PROPERTY CAROUSEL
-   ========================================================= */
 
 function getPropertyImages(
   property
@@ -645,7 +577,6 @@ function getPropertyImages(
         )
       : [];
 
-
   return images.length
     ? images
     : ['property-1.jpg'];
@@ -661,18 +592,15 @@ function setCarouselIndex(
     return;
   }
 
-
   const track =
     carousel.querySelector(
       '[data-carousel-track]'
     );
 
-
   const slides =
     carousel.querySelectorAll(
       '.property-carousel-slide'
     );
-
 
   if (
     !track ||
@@ -681,10 +609,8 @@ function setCarouselIndex(
     return;
   }
 
-
   const total =
     slides.length;
-
 
   const index =
     (
@@ -696,23 +622,19 @@ function setCarouselIndex(
     ) %
     total;
 
-
   carousel.dataset
     .carouselIndex =
       String(index);
-
 
   track.style.transition =
     animate
       ? 'transform 320ms cubic-bezier(0.22, 1, 0.36, 1)'
       : 'none';
 
-
   track.style.transform =
     `translate3d(-${
       index * 100
     }%, 0, 0)`;
-
 
   carousel
     .querySelectorAll(
@@ -727,12 +649,10 @@ function setCarouselIndex(
               .carouselDot
           ) === index;
 
-
         dot.classList.toggle(
           'active',
           active
         );
-
 
         dot.setAttribute(
           'aria-current',
@@ -756,7 +676,6 @@ function moveCarousel(
       0
     );
 
-
   setCarouselIndex(
     carousel,
     current +
@@ -765,39 +684,29 @@ function moveCarousel(
 }
 
 
-/* =========================================================
-   PROPERTY CARDS
-   ========================================================= */
-
 function renderPropertyCards(
   properties
 ) {
   const favourites =
     savedFavouriteIds();
 
-
   if (!properties.length) {
     propertyGrid.innerHTML =
       '';
 
-
     propertiesStatus.hidden =
       false;
-
 
     propertiesStatus.textContent =
       searchActive
         ? 'No exact matches found. Try widening your search or open a property request and we can look for you.'
         : 'No properties are currently published.';
 
-
     return;
   }
 
-
   propertiesStatus.hidden =
     true;
-
 
   propertyGrid.innerHTML =
     properties
@@ -809,21 +718,17 @@ function renderPropertyCards(
               property
             );
 
-
           const multipleImages =
             images.length > 1;
-
 
           const isRent =
             property.purpose ===
             'rent';
 
-
           const saved =
             favourites.has(
               property.id
             );
-
 
           const meta = [
 
@@ -841,7 +746,6 @@ function renderPropertyCards(
                 }`
               : '',
 
-
             property.bathrooms
               ? `${
                   Number(
@@ -856,7 +760,6 @@ function renderPropertyCards(
                 }`
               : '',
 
-
             property.size
               ? `${
                   Number(
@@ -868,7 +771,6 @@ function renderPropertyCards(
               : ''
 
           ].filter(Boolean);
-
 
           return `
             <article
@@ -935,9 +837,7 @@ function renderPropertyCards(
                 ${
                   property.featured
                     ? `
-                      <span
-                        class="featured-marker"
-                      >
+                      <span class="featured-marker">
                         Featured
                       </span>
                     `
@@ -971,7 +871,6 @@ function renderPropertyCards(
                 ${
                   multipleImages
                     ? `
-
                       <button
                         class="property-carousel-arrow property-carousel-prev"
                         type="button"
@@ -1005,8 +904,7 @@ function renderPropertyCards(
                             ) => `
                               <button
                                 class="property-carousel-dot ${
-                                  index ===
-                                  0
+                                  index === 0
                                     ? 'active'
                                     : ''
                                 }"
@@ -1014,8 +912,7 @@ function renderPropertyCards(
                                 data-carousel-dot="${index}"
                                 aria-label="Show image ${index + 1} of ${images.length}"
                                 aria-current="${
-                                  index ===
-                                  0
+                                  index === 0
                                     ? 'true'
                                     : 'false'
                                 }"
@@ -1025,7 +922,6 @@ function renderPropertyCards(
                           .join('')}
 
                       </div>
-
                     `
                     : ''
                 }
@@ -1033,13 +929,9 @@ function renderPropertyCards(
               </div>
 
 
-              <div
-                class="property-body"
-              >
+              <div class="property-body">
 
-                <p
-                  class="property-kicker"
-                >
+                <p class="property-kicker">
                   ${escapeHTML(
                     property.id
                   )}
@@ -1058,9 +950,7 @@ function renderPropertyCards(
                 </h3>
 
 
-                <p
-                  class="location"
-                >
+                <p class="location">
                   ${escapeHTML(
                     property.location
                   )}
@@ -1084,13 +974,9 @@ function renderPropertyCards(
                 </ul>
 
 
-                <div
-                  class="property-bottom"
-                >
+                <div class="property-bottom">
 
-                  <p
-                    class="price"
-                  >
+                  <p class="price">
                     ${formatPrice(
                       property
                     )}
@@ -1119,14 +1005,9 @@ function renderPropertyCards(
 }
 
 
-/* =========================================================
-   DEFAULT PROPERTY DISPLAY
-   ========================================================= */
-
 function renderDefaultProperties() {
   searchActive =
     false;
-
 
   const featured =
     allProperties.filter(
@@ -1134,12 +1015,10 @@ function renderDefaultProperties() {
         property.featured
     );
 
-
   const defaultProperties =
     featured.length
       ? featured
       : allProperties;
-
 
   const visible =
     showingAll
@@ -1149,11 +1028,9 @@ function renderDefaultProperties() {
           4
         );
 
-
   renderPropertyCards(
     visible
   );
-
 
   viewAllButton.innerHTML =
     showingAll
@@ -1161,10 +1038,6 @@ function renderDefaultProperties() {
       : 'View all properties <span aria-hidden="true">→</span>';
 }
 
-
-/* =========================================================
-   PROPERTY CLICK EVENTS
-   ========================================================= */
 
 propertyGrid.addEventListener(
   'click',
@@ -1175,11 +1048,9 @@ propertyGrid.addEventListener(
         '[data-carousel-prev]'
       );
 
-
     if (previousButton) {
       event.preventDefault();
       event.stopPropagation();
-
 
       moveCarousel(
         previousButton.closest(
@@ -1187,7 +1058,6 @@ propertyGrid.addEventListener(
         ),
         -1
       );
-
 
       return;
     }
@@ -1198,11 +1068,9 @@ propertyGrid.addEventListener(
         '[data-carousel-next]'
       );
 
-
     if (nextButton) {
       event.preventDefault();
       event.stopPropagation();
-
 
       moveCarousel(
         nextButton.closest(
@@ -1210,7 +1078,6 @@ propertyGrid.addEventListener(
         ),
         1
       );
-
 
       return;
     }
@@ -1221,11 +1088,9 @@ propertyGrid.addEventListener(
         '[data-carousel-dot]'
       );
 
-
     if (dotButton) {
       event.preventDefault();
       event.stopPropagation();
-
 
       setCarouselIndex(
         dotButton.closest(
@@ -1237,7 +1102,6 @@ propertyGrid.addEventListener(
         )
       );
 
-
       return;
     }
 
@@ -1247,7 +1111,6 @@ propertyGrid.addEventListener(
         '[data-favourite-id]'
       );
 
-
     if (favouriteButton) {
 
       toggleFavourite(
@@ -1255,7 +1118,6 @@ propertyGrid.addEventListener(
           .favouriteId,
         favouriteButton
       );
-
 
       return;
     }
@@ -1266,13 +1128,11 @@ propertyGrid.addEventListener(
         '[data-enquire-property]'
       );
 
-
     if (enquireButton) {
 
       const id =
         enquireButton.dataset
           .enquireProperty;
-
 
       const property =
         allProperties.find(
@@ -1280,22 +1140,13 @@ propertyGrid.addEventListener(
             item.id === id
         );
 
-
       ticketReference.value =
         id;
-
 
       selectRequestType(
         property?.purpose ||
         'buy'
       );
-
-
-      /*
-        If the customer clicks Enquire
-        on a property, use that listing's
-        own currency automatically.
-      */
 
       if (
         ticketCurrency &&
@@ -1310,10 +1161,8 @@ propertyGrid.addEventListener(
         ticketCurrency.value =
           property.currency;
 
-
         updateTicketLabels();
       }
-
 
       document.getElementById(
         'ticket-message'
@@ -1322,8 +1171,6 @@ propertyGrid.addEventListener(
           property?.title ||
           'this property'
         } (${id}). Please contact me with more information.`;
-
-
 
       document.getElementById(
         'request'
@@ -1349,7 +1196,6 @@ propertyGrid.addEventListener(
         '.property-card[data-id]'
       );
 
-
     if (!propertyCard) {
       return;
     }
@@ -1357,7 +1203,6 @@ propertyGrid.addEventListener(
 
     const propertyId =
       propertyCard.dataset.id;
-
 
     if (!propertyId) {
       return;
@@ -1372,17 +1217,6 @@ propertyGrid.addEventListener(
 );
 
 
-/* =========================================================
-   CAROUSEL DRAG / SWIPE
-   ========================================================= */
-
-let carouselDrag =
-  null;
-
-let suppressPropertyCardClickUntil =
-  0;
-
-
 propertyGrid.addEventListener(
   'pointerdown',
   event => {
@@ -1391,7 +1225,6 @@ propertyGrid.addEventListener(
       event.target.closest(
         '[data-property-carousel]'
       );
-
 
     if (
       !carousel ||
@@ -1402,29 +1235,24 @@ propertyGrid.addEventListener(
       return;
     }
 
-
     if (
       event.pointerType ===
         'mouse' &&
-      event.button !==
-        0
+      event.button !== 0
     ) {
       return;
     }
-
 
     const slides =
       carousel.querySelectorAll(
         '.property-carousel-slide'
       );
 
-
     if (
       slides.length <= 1
     ) {
       return;
     }
-
 
     carouselDrag = {
       carousel,
@@ -1444,7 +1272,6 @@ propertyGrid.addEventListener(
       horizontal:
         false
     };
-
 
     try {
       carousel.setPointerCapture(
@@ -1468,27 +1295,21 @@ propertyGrid.addEventListener(
       return;
     }
 
-
     const deltaX =
       event.clientX -
       carouselDrag.startX;
-
 
     const deltaY =
       event.clientY -
       carouselDrag.startY;
 
-
     if (
       !carouselDrag.horizontal &&
-      Math.abs(deltaX) <
-        8 &&
-      Math.abs(deltaY) <
-        8
+      Math.abs(deltaX) < 8 &&
+      Math.abs(deltaY) < 8
     ) {
       return;
     }
-
 
     if (
       !carouselDrag.horizontal &&
@@ -1501,27 +1322,21 @@ propertyGrid.addEventListener(
       return;
     }
 
-
     carouselDrag.horizontal =
       true;
-
 
     carouselDrag.currentX =
       event.clientX;
 
-
     event.preventDefault();
-
 
     const carousel =
       carouselDrag.carousel;
-
 
     const track =
       carousel.querySelector(
         '[data-carousel-track]'
       );
-
 
     const index =
       Number(
@@ -1530,17 +1345,13 @@ propertyGrid.addEventListener(
         0
       );
 
-
     carousel.classList.add(
       'is-dragging'
     );
 
-
     if (track) {
-
       track.style.transition =
         'none';
-
 
       track.style.transform =
         `translate3d(calc(-${
@@ -1562,43 +1373,27 @@ function finishCarouselDrag(
     return;
   }
 
-
   const drag =
     carouselDrag;
 
-
   carouselDrag =
     null;
-
 
   drag.carousel.classList.remove(
     'is-dragging'
   );
 
-
-  if (
-    !drag.horizontal
-  ) {
+  if (!drag.horizontal) {
     return;
   }
-
-
-  /*
-    A horizontal swipe/drag normally produces
-    a click immediately after pointerup.
-    Ignore that click so swiping the carousel
-    does not open the property page.
-  */
 
   suppressPropertyCardClickUntil =
     performance.now() +
     350;
 
-
   const distance =
     drag.currentX -
     drag.startX;
-
 
   const threshold =
     Math.min(
@@ -1609,7 +1404,6 @@ function finishCarouselDrag(
         0.14
       )
     );
-
 
   if (
     Math.abs(
@@ -1636,7 +1430,6 @@ function finishCarouselDrag(
     );
   }
 
-
   try {
     drag.carousel.releasePointerCapture(
       event.pointerId
@@ -1651,16 +1444,11 @@ propertyGrid.addEventListener(
   finishCarouselDrag
 );
 
-
 propertyGrid.addEventListener(
   'pointercancel',
   finishCarouselDrag
 );
 
-
-/* =========================================================
-   VIEW ALL
-   ========================================================= */
 
 viewAllButton.addEventListener(
   'click',
@@ -1669,15 +1457,10 @@ viewAllButton.addEventListener(
     showingAll =
       !showingAll;
 
-
     renderDefaultProperties();
   }
 );
 
-
-/* =========================================================
-   PROPERTY SEARCH
-   ========================================================= */
 
 function normalizeSearchCurrency(
   value
@@ -1687,7 +1470,6 @@ function normalizeSearchCurrency(
       value ||
       'USD'
     ).toUpperCase();
-
 
   return [
     'XCD',
@@ -1714,7 +1496,6 @@ function formatSearchPrice(
         ? '£'
         : 'US$';
 
-
   return `${symbol}${Number(
     amount
   ).toLocaleString(
@@ -1738,18 +1519,22 @@ function setPriceOptions(
       'min-price'
     );
 
-
   const maxSelect =
     document.getElementById(
       'max-price'
     );
 
+  if (
+    !minSelect ||
+    !maxSelect
+  ) {
+    return;
+  }
 
   const selectedCurrency =
     normalizeSearchCurrency(
       currency
     );
-
 
   if (searchCurrency) {
     searchCurrency.value =
@@ -1757,78 +1542,181 @@ function setPriceOptions(
   }
 
 
-  const prices =
-    [
-      ...new Set(
-        allProperties
-          .filter(
-            property =>
-              property.purpose ===
-                mode &&
-              normalizeSearchCurrency(
-                property.currency
-              ) ===
-                selectedCurrency
-          )
-          .map(
-            property =>
-              Number(
-                property.price
-              )
-          )
-          .filter(
-            price =>
-              Number.isFinite(
-                price
-              ) &&
-              price > 0
-          )
-      )
-    ].sort(
-      (a, b) =>
-        a - b
-    );
+  const priceRanges = {
+
+    buy: {
+
+      XCD: {
+        min: [
+          0,
+          400000,
+          750000,
+          1250000,
+          2000000
+        ],
+
+        max: [
+          0,
+          750000,
+          1500000,
+          3000000,
+          5000000
+        ]
+      },
 
 
-  const makeOptions =
-    emptyLabel => {
-      const options = [
-        `
-          <option value="0">
-            ${emptyLabel}
-          </option>
-        `
-      ];
+      USD: {
+        min: [
+          0,
+          150000,
+          300000,
+          500000,
+          750000
+        ],
+
+        max: [
+          0,
+          350000,
+          600000,
+          1000000,
+          2000000
+        ]
+      },
 
 
-      prices.forEach(
-        price => {
-          options.push(
-            `
-              <option value="${price}">
-                ${formatSearchPrice(
-                  price,
+      GBP: {
+        min: [
+          0,
+          100000,
+          200000,
+          350000,
+          500000
+        ],
+
+        max: [
+          0,
+          250000,
+          500000,
+          750000,
+          1500000
+        ]
+      }
+
+    },
+
+
+    rent: {
+
+      XCD: {
+        min: [
+          0,
+          1500,
+          2500,
+          4000,
+          6000
+        ],
+
+        max: [
+          0,
+          2500,
+          4000,
+          7000,
+          10000
+        ]
+      },
+
+
+      USD: {
+        min: [
+          0,
+          750,
+          1200,
+          2000,
+          3000
+        ],
+
+        max: [
+          0,
+          1500,
+          2500,
+          4000,
+          6000
+        ]
+      },
+
+
+      GBP: {
+        min: [
+          0,
+          500,
+          1000,
+          1500,
+          2500
+        ],
+
+        max: [
+          0,
+          1000,
+          2000,
+          3000,
+          5000
+        ]
+      }
+
+    }
+
+  };
+
+
+  const normalizedMode =
+    mode ===
+      'rent'
+      ? 'rent'
+      : 'buy';
+
+  const ranges =
+    priceRanges[
+      normalizedMode
+    ][
+      selectedCurrency
+    ];
+
+
+  const makeOptions = (
+    values,
+    emptyLabel
+  ) =>
+    values
+      .map(
+        value => {
+
+          const label =
+            value === 0
+              ? emptyLabel
+              : formatSearchPrice(
+                  value,
                   selectedCurrency
-                )}
-              </option>
-            `
-          );
+                );
+
+          return `
+            <option value="${value}">
+              ${label}
+            </option>
+          `;
         }
-      );
-
-
-      return options.join('');
-    };
+      )
+      .join('');
 
 
   minSelect.innerHTML =
     makeOptions(
+      ranges.min,
       'No min'
     );
 
-
   maxSelect.innerHTML =
     makeOptions(
+      ranges.max,
       'No max'
     );
 }
@@ -1843,7 +1731,6 @@ function setSearchMode(
       ? 'rent'
       : 'buy';
 
-
   searchTabs.forEach(
     tab => {
 
@@ -1851,12 +1738,10 @@ function setSearchMode(
         tab.dataset.mode ===
         activeMode;
 
-
       tab.classList.toggle(
         'active',
         isActive
       );
-
 
       tab.setAttribute(
         'aria-selected',
@@ -1865,13 +1750,11 @@ function setSearchMode(
     }
   );
 
-
   setPriceOptions(
     activeMode,
     searchCurrency?.value ||
       'USD'
   );
-
 
   searchMessage.classList.remove(
     'show'
@@ -1882,11 +1765,11 @@ function setSearchMode(
 searchCurrency?.addEventListener(
   'change',
   () => {
+
     setPriceOptions(
       activeMode,
       searchCurrency.value
     );
-
 
     searchMessage.classList.remove(
       'show'
@@ -1896,14 +1779,18 @@ searchCurrency?.addEventListener(
 
 
 searchTabs.forEach(
-  tab =>
+  tab => {
+
     tab.addEventListener(
       'click',
-      () =>
+      () => {
+
         setSearchMode(
           tab.dataset.mode
-        )
-    )
+        );
+      }
+    );
+  }
 );
 
 
@@ -1923,7 +1810,6 @@ document
               .filterLink
           );
 
-
           setTimeout(
             () => {
 
@@ -1934,15 +1820,12 @@ document
                     activeMode
                 );
 
-
               searchActive =
                 true;
-
 
               renderPropertyCards(
                 matches
               );
-
             },
             50
           );
@@ -1958,8 +1841,7 @@ searchForm.addEventListener(
 
     event.preventDefault();
 
-
-    const location =
+    const locationValue =
       document
         .getElementById(
           'location'
@@ -1968,19 +1850,16 @@ searchForm.addEventListener(
         .trim()
         .toLowerCase();
 
-
     const type =
       document.getElementById(
         'property-type'
       ).value;
-
 
     const currency =
       normalizeSearchCurrency(
         searchCurrency?.value ||
         'USD'
       );
-
 
     const minPrice =
       Number(
@@ -1989,14 +1868,12 @@ searchForm.addEventListener(
         ).value
       );
 
-
     const maxPrice =
       Number(
         document.getElementById(
           'max-price'
         ).value
       );
-
 
     const bedrooms =
       document.getElementById(
@@ -2012,31 +1889,27 @@ searchForm.addEventListener(
             property.purpose ===
             activeMode;
 
-
           const matchesCurrency =
             normalizeSearchCurrency(
               property.currency
             ) ===
             currency;
 
-
           const matchesLocation =
-            !location ||
+            !locationValue ||
             String(
               property.location
             )
               .toLowerCase()
               .includes(
-                location
+                locationValue
               );
-
 
           const matchesType =
             type ===
               'any' ||
             property.propertyType ===
               type;
-
 
           const matchesBeds =
             bedrooms ===
@@ -2049,25 +1922,21 @@ searchForm.addEventListener(
               bedrooms
             );
 
-
           const price =
             Number(
               property.price ||
               0
             );
 
-
           const matchesMin =
             !minPrice ||
             price >=
               minPrice;
 
-
           const matchesMax =
             !maxPrice ||
             price <=
               maxPrice;
-
 
           return (
             matchesMode &&
@@ -2085,11 +1954,9 @@ searchForm.addEventListener(
     searchActive =
       true;
 
-
     renderPropertyCards(
       matches
     );
-
 
     searchMessage.textContent =
       matches.length
@@ -2103,11 +1970,9 @@ searchForm.addEventListener(
           } found.`
         : 'No exact matches found. You can open a property request and we can look for you.';
 
-
     searchMessage.classList.add(
       'show'
     );
-
 
     document
       .getElementById(
@@ -2121,10 +1986,6 @@ searchForm.addEventListener(
 );
 
 
-/* =========================================================
-   REQUEST TYPE
-   ========================================================= */
-
 function selectRequestType(
   type
 ) {
@@ -2137,26 +1998,19 @@ function selectRequestType(
       ? type
       : 'buy';
 
-
   const input =
     ticketForm.querySelector(
       `input[name="requestType"][value="${normalized}"]`
     );
-
 
   if (input) {
     input.checked =
       true;
   }
 
-
   updateTicketLabels();
 }
 
-
-/* =========================================================
-   REQUEST LABELS + CURRENCY
-   ========================================================= */
 
 function updateTicketLabels() {
   const type =
@@ -2165,11 +2019,9 @@ function updateTicketLabels() {
     )?.value ||
     'buy';
 
-
   const currency =
     ticketCurrency?.value ||
     'USD';
-
 
   ticketBudgetLabel
     .childNodes[0]
@@ -2179,12 +2031,10 @@ function updateTicketLabels() {
         ? `Expected price / valuation range (${currency})`
         : `Budget / target price (${currency})`;
 
-
   const budgetInput =
     document.getElementById(
       'ticket-budget'
     );
-
 
   if (budgetInput) {
 
@@ -2197,7 +2047,6 @@ function updateTicketLabels() {
           ? 'e.g. 275,000'
           : 'e.g. 350,000';
   }
-
 
   document.getElementById(
     'ticket-location'
@@ -2214,11 +2063,13 @@ ticketForm
     'input[name="requestType"]'
   )
   .forEach(
-    input =>
+    input => {
+
       input.addEventListener(
         'change',
         updateTicketLabels
-      )
+      );
+    }
   );
 
 
@@ -2228,35 +2079,30 @@ ticketCurrency?.addEventListener(
 );
 
 
-/* =========================================================
-   REQUEST LINKS
-   ========================================================= */
-
 document
   .querySelectorAll(
     '[data-request-link]'
   )
   .forEach(
-    link =>
+    link => {
+
       link.addEventListener(
         'click',
-        () =>
+        () => {
+
           selectRequestType(
             link.dataset
               .requestLink
-          )
-      )
+          );
+        }
+      );
+    }
   );
 
-
-/* =========================================================
-   PREVIEW REQUEST
-   ========================================================= */
 
 function makePreviewTicketReference() {
   const date =
     new Date();
-
 
   const stamp = [
     date.getFullYear(),
@@ -2278,7 +2124,6 @@ function makePreviewTicketReference() {
 
   ].join('');
 
-
   const suffix =
     Math.random()
       .toString(36)
@@ -2287,7 +2132,6 @@ function makePreviewTicketReference() {
         8
       )
       .toUpperCase();
-
 
   return `HER-${stamp}-${suffix}`;
 }
@@ -2304,11 +2148,9 @@ function savePreviewTicket(
       '[]'
     );
 
-
   existing.unshift(
     ticket
   );
-
 
   localStorage.setItem(
     'helen-estates-demo-tickets',
@@ -2322,10 +2164,6 @@ function savePreviewTicket(
 }
 
 
-/* =========================================================
-   CONFIRMATION
-   ========================================================= */
-
 function showTicketConfirmation({
   name,
   reference,
@@ -2336,38 +2174,26 @@ function showTicketConfirmation({
   ticketForm.hidden =
     true;
 
-
   ticketConfirmation.hidden =
     false;
-
 
   confirmationName.textContent =
     name ||
     'there';
 
-
   confirmationReference.textContent =
     reference ||
     '—';
 
-
-  if (emailSent) {
-
-    confirmationEmailNote.textContent =
-      `A receipt has been sent to ${email}. Keep it for your reference.`;
-
-  } else {
-
-    confirmationEmailNote.textContent =
-      'Your request is safely recorded. We could not confirm the receipt email, so please save your reference number.';
-  }
-
+  confirmationEmailNote.textContent =
+    emailSent
+      ? `A receipt has been sent to ${email}. Keep it for your reference.`
+      : 'Your request is safely recorded. We could not confirm the receipt email, so please save your reference number.';
 
   if (statusUrl) {
 
     confirmationStatusLink.href =
       statusUrl;
-
 
     confirmationStatusLink.hidden =
       false;
@@ -2377,7 +2203,6 @@ function showTicketConfirmation({
     confirmationStatusLink.hidden =
       true;
   }
-
 
   ticketConfirmation.scrollIntoView({
     behavior:
@@ -2389,10 +2214,6 @@ function showTicketConfirmation({
 }
 
 
-/* =========================================================
-   NEW REQUEST
-   ========================================================= */
-
 newRequestButton?.addEventListener(
   'click',
   () => {
@@ -2400,36 +2221,28 @@ newRequestButton?.addEventListener(
     ticketConfirmation.hidden =
       true;
 
-
     ticketForm.hidden =
       false;
-
 
     ticketStatus.className =
       'ticket-message';
 
-
     ticketStatus.textContent =
       '';
 
-
     ticketForm.reset();
-
 
     if (ticketCurrency) {
       ticketCurrency.value =
         'USD';
     }
 
-
     selectRequestType(
       'buy'
     );
 
-
     ticketReference.value =
       '';
-
 
     ticketForm.scrollIntoView({
       behavior:
@@ -2442,36 +2255,27 @@ newRequestButton?.addEventListener(
 );
 
 
-/* =========================================================
-   SUBMIT REQUEST
-   ========================================================= */
-
 ticketForm.addEventListener(
   'submit',
   async event => {
 
     event.preventDefault();
 
-
     ticketStatus.className =
       'ticket-message';
 
-
     ticketStatus.textContent =
       '';
-
 
     const submitButton =
       ticketForm.querySelector(
         '.ticket-submit'
       );
 
-
     const formData =
       new FormData(
         ticketForm
       );
-
 
     const selectedCurrency =
       String(
@@ -2480,7 +2284,6 @@ ticketForm.addEventListener(
         ) ||
         'USD'
       );
-
 
     const safeCurrency =
       [
@@ -2501,7 +2304,6 @@ ticketForm.addEventListener(
           'requestType'
         ),
 
-
       name:
         String(
           formData.get(
@@ -2509,7 +2311,6 @@ ticketForm.addEventListener(
           ) ||
           ''
         ).trim(),
-
 
       email:
         String(
@@ -2519,7 +2320,6 @@ ticketForm.addEventListener(
           ''
         ).trim(),
 
-
       phone:
         String(
           formData.get(
@@ -2528,12 +2328,10 @@ ticketForm.addEventListener(
           ''
         ).trim(),
 
-
       contactMethod:
         formData.get(
           'contactMethod'
         ),
-
 
       location:
         String(
@@ -2543,12 +2341,10 @@ ticketForm.addEventListener(
           ''
         ).trim(),
 
-
       propertyType:
         formData.get(
           'propertyType'
         ),
-
 
       budget:
         String(
@@ -2558,16 +2354,13 @@ ticketForm.addEventListener(
           ''
         ).trim(),
 
-
       budgetCurrency:
         safeCurrency,
-
 
       bedrooms:
         formData.get(
           'bedrooms'
         ),
-
 
       message:
         String(
@@ -2577,7 +2370,6 @@ ticketForm.addEventListener(
           ''
         ).trim(),
 
-
       propertyReference:
         String(
           formData.get(
@@ -2585,7 +2377,6 @@ ticketForm.addEventListener(
           ) ||
           ''
         ).trim(),
-
 
       website:
         String(
@@ -2613,7 +2404,6 @@ ticketForm.addEventListener(
       submitButton.disabled =
         true;
 
-
       submitButton.textContent =
         'Sending request…';
 
@@ -2626,7 +2416,6 @@ ticketForm.addEventListener(
           await BACKEND.createTicket(
             ticket
           );
-
 
         showTicketConfirmation({
           name:
@@ -2656,7 +2445,6 @@ ticketForm.addEventListener(
         const previewReference =
           makePreviewTicketReference();
 
-
         savePreviewTicket({
           ...ticket,
 
@@ -2671,10 +2459,8 @@ ticketForm.addEventListener(
               .toISOString()
         });
 
-
         ticketStatus.textContent =
           `Preview mode: ${previewReference} was saved only in this browser. Connect Supabase before using this form with real customers.`;
-
 
         ticketStatus.classList.add(
           'show',
@@ -2696,11 +2482,9 @@ ticketForm.addEventListener(
         error
       );
 
-
       ticketStatus.textContent =
         error.message ||
         'We could not submit your request. Please try again shortly.';
-
 
       ticketStatus.classList.add(
         'show',
@@ -2713,7 +2497,6 @@ ticketForm.addEventListener(
       submitButton.disabled =
         false;
 
-
       submitButton.innerHTML =
         'Submit property request <span aria-hidden="true">→</span>';
     }
@@ -2721,27 +2504,14 @@ ticketForm.addEventListener(
 );
 
 
-/* =========================================================
-   LOAD PROPERTIES
-   ========================================================= */
-
 async function loadProperties() {
   try {
 
-    if (
+    allProperties =
       BACKEND.enabled
-    ) {
-
-      allProperties =
-        await BACKEND
-          .getPublishedProperties();
-
-    } else {
-
-      allProperties =
-        DEMO_PROPERTIES;
-    }
-
+        ? await BACKEND
+            .getPublishedProperties()
+        : DEMO_PROPERTIES;
 
   } catch (error) {
 
@@ -2749,14 +2519,11 @@ async function loadProperties() {
       error
     );
 
-
     allProperties =
       DEMO_PROPERTIES;
   }
 
-
   propertiesLoading?.remove();
-
 
   setPriceOptions(
     activeMode,
@@ -2764,14 +2531,9 @@ async function loadProperties() {
       'USD'
   );
 
-
   renderDefaultProperties();
 }
 
-
-/* =========================================================
-   INITIALISE
-   ========================================================= */
 
 document.getElementById(
   'current-year'
