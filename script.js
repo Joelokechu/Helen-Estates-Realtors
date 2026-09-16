@@ -34,8 +34,15 @@ const BACKEND = {
   enabled: backendConfigured,
 
   async getPublishedProperties() {
-    const base = String(publicConfig.supabaseUrl).replace(/\/$/, '');
-    const url = new URL(`${base}/rest/v1/properties`);
+    const base =
+      String(
+        publicConfig.supabaseUrl
+      ).replace(/\/$/, '');
+
+    const url =
+      new URL(
+        `${base}/rest/v1/properties`
+      );
 
     url.searchParams.set(
       'select',
@@ -52,15 +59,16 @@ const BACKEND = {
       'featured.desc,created_at.desc'
     );
 
-    const response = await fetch(
-      url,
-      {
-        headers: {
-          apikey:
-            publicConfig.supabasePublicKey
+    const response =
+      await fetch(
+        url,
+        {
+          headers: {
+            apikey:
+              publicConfig.supabasePublicKey
+          }
         }
-      }
-    );
+      );
 
     if (!response.ok) {
       throw new Error(
@@ -106,7 +114,9 @@ const BACKEND = {
           },
 
           body:
-            JSON.stringify(ticket)
+            JSON.stringify(
+              ticket
+            )
         }
       );
 
@@ -411,6 +421,7 @@ mainNav
   .querySelectorAll('a')
   .forEach(
     link => {
+
       link.addEventListener(
         'click',
         closeNavigation
@@ -2504,6 +2515,137 @@ ticketForm.addEventListener(
 );
 
 
+/* =========================================================
+   LIKED / PROPERTY PAGE ENQUIRY HANDOFF
+   ========================================================= */
+
+function applyStoredPropertyEnquiry() {
+  const storedPropertyId =
+    sessionStorage.getItem(
+      'helen-estates-enquiry-property'
+    );
+
+  const storedSelectedProperty =
+    sessionStorage.getItem(
+      'helen-estates-selected-property'
+    );
+
+  let selectedPropertyData =
+    null;
+
+  if (storedSelectedProperty) {
+    try {
+      selectedPropertyData =
+        JSON.parse(
+          storedSelectedProperty
+        );
+    } catch (_error) {
+      selectedPropertyData =
+        null;
+    }
+  }
+
+  const propertyId =
+    storedPropertyId ||
+    selectedPropertyData?.id;
+
+  if (!propertyId) {
+    return;
+  }
+
+
+  /*
+    The liked page currently stores the
+    property ID. Once the homepage has
+    loaded the published properties, find
+    the matching listing so the enquiry
+    form can be completed correctly.
+  */
+
+  const property =
+    allProperties.find(
+      item =>
+        String(item.id) ===
+        String(propertyId)
+    );
+
+
+  if (!property) {
+
+    sessionStorage.removeItem(
+      'helen-estates-enquiry-property'
+    );
+
+    sessionStorage.removeItem(
+      'helen-estates-selected-property'
+    );
+
+    return;
+  }
+
+
+  ticketReference.value =
+    property.id;
+
+
+  selectRequestType(
+    property.purpose ||
+    selectedPropertyData?.purpose ||
+    'buy'
+  );
+
+
+  const propertyCurrency =
+    normalizeSearchCurrency(
+      property.currency ||
+      selectedPropertyData?.currency ||
+      'USD'
+    );
+
+
+  if (ticketCurrency) {
+
+    ticketCurrency.value =
+      propertyCurrency;
+
+    updateTicketLabels();
+  }
+
+
+  const messageInput =
+    document.getElementById(
+      'ticket-message'
+    );
+
+
+  if (messageInput) {
+
+    messageInput.value =
+      `I'm interested in ${
+        property.title ||
+        selectedPropertyData?.title ||
+        'this property'
+      } (${property.id}). Please contact me with more information.`;
+  }
+
+
+  /*
+    Remove the temporary values once they
+    have been successfully applied so an old
+    property does not appear in a later
+    unrelated request.
+  */
+
+  sessionStorage.removeItem(
+    'helen-estates-enquiry-property'
+  );
+
+  sessionStorage.removeItem(
+    'helen-estates-selected-property'
+  );
+}
+
+
 async function loadProperties() {
   try {
 
@@ -2532,6 +2674,15 @@ async function loadProperties() {
   );
 
   renderDefaultProperties();
+
+
+  /*
+    This must run AFTER the properties have
+    loaded because liked.js only hands the
+    homepage the selected property ID.
+  */
+
+  applyStoredPropertyEnquiry();
 }
 
 
