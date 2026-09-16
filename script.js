@@ -13,26 +13,20 @@ const ticketForm = document.getElementById('ticket-form');
 const ticketStatus = document.getElementById('ticket-message-status');
 const ticketReference = document.getElementById('ticket-property-reference');
 const ticketBudgetLabel = document.getElementById('ticket-budget-label');
+const ticketCurrency = document.getElementById('ticket-currency');
 const ticketConfirmation = document.getElementById('ticket-confirmation');
 const confirmationName = document.getElementById('confirmation-name');
 const confirmationReference = document.getElementById('confirmation-reference');
 const confirmationEmailNote = document.getElementById('confirmation-email-note');
 const confirmationStatusLink = document.getElementById('confirmation-status-link');
 const newRequestButton = document.getElementById('new-request-button');
-
-const publicConfig =
-  window.HELEN_ESTATES_CONFIG || {};
-
+const publicConfig = window.HELEN_ESTATES_CONFIG || {};
 
 const backendConfigured = Boolean(
   publicConfig.supabaseUrl &&
   publicConfig.supabasePublicKey &&
-  !String(
-    publicConfig.supabaseUrl
-  ).includes('YOUR_') &&
-  !String(
-    publicConfig.supabasePublicKey
-  ).includes('YOUR_')
+  !String(publicConfig.supabaseUrl).includes('YOUR_') &&
+  !String(publicConfig.supabasePublicKey).includes('YOUR_')
 );
 
 
@@ -41,36 +35,28 @@ const backendConfigured = Boolean(
    ========================================================= */
 
 const BACKEND = {
-
-  enabled:
-    backendConfigured,
-
+  enabled: backendConfigured,
 
   async getPublishedProperties() {
-
     const base =
       String(
         publicConfig.supabaseUrl
       ).replace(/\/$/, '');
-
 
     const url =
       new URL(
         `${base}/rest/v1/properties`
       );
 
-
     url.searchParams.set(
       'select',
       'id,title,purpose,property_type,location,bedrooms,bathrooms,size,price,currency,price_period,featured,status,images,created_at'
     );
 
-
     url.searchParams.set(
       'published',
       'eq.true'
     );
-
 
     url.searchParams.set(
       'order',
@@ -84,14 +70,14 @@ const BACKEND = {
         {
           headers: {
             apikey:
-              publicConfig.supabasePublicKey
+              publicConfig
+                .supabasePublicKey
           }
         }
       );
 
 
     if (!response.ok) {
-
       throw new Error(
         'Could not load published properties.'
       );
@@ -117,7 +103,6 @@ const BACKEND = {
 
 
   async createTicket(ticket) {
-
     const base =
       String(
         publicConfig.supabaseUrl
@@ -136,7 +121,8 @@ const BACKEND = {
               'application/json',
 
             apikey:
-              publicConfig.supabasePublicKey
+              publicConfig
+                .supabasePublicKey
           },
 
           body:
@@ -151,15 +137,12 @@ const BACKEND = {
 
 
     try {
-
       payload =
         await response.json();
-
     } catch (_error) {}
 
 
     if (!response.ok) {
-
       throw new Error(
         payload.error ||
         'Could not submit your request.'
@@ -172,13 +155,11 @@ const BACKEND = {
 };
 
 
-
 /* =========================================================
-   FALLBACK PROPERTIES
+   DEMO PROPERTIES
    ========================================================= */
 
 const DEMO_PROPERTIES = [
-
   {
     id:
       'HER-001',
@@ -216,9 +197,8 @@ const DEMO_PROPERTIES = [
     status:
       'Available',
 
-    images: [
-      'property-1.jpg'
-    ]
+    images:
+      ['property-1.jpg']
   },
 
 
@@ -262,9 +242,8 @@ const DEMO_PROPERTIES = [
     status:
       'Available',
 
-    images: [
-      'property-2.jpg'
-    ]
+    images:
+      ['property-2.jpg']
   },
 
 
@@ -305,9 +284,8 @@ const DEMO_PROPERTIES = [
     status:
       'Available',
 
-    images: [
-      'property-3.jpg'
-    ]
+    images:
+      ['property-3.jpg']
   },
 
 
@@ -351,13 +329,15 @@ const DEMO_PROPERTIES = [
     status:
       'Available',
 
-    images: [
-      'property-4.jpg'
-    ]
+    images:
+      ['property-4.jpg']
   }
-
 ];
 
+
+/* =========================================================
+   STATE
+   ========================================================= */
 
 let activeMode =
   'buy';
@@ -372,7 +352,6 @@ let searchActive =
   false;
 
 
-
 /* =========================================================
    HELPERS
    ========================================================= */
@@ -380,29 +359,23 @@ let searchActive =
 function escapeHTML(
   value = ''
 ) {
-
   return String(value)
-
     .replaceAll(
       '&',
       '&amp;'
     )
-
     .replaceAll(
       '<',
       '&lt;'
     )
-
     .replaceAll(
       '>',
       '&gt;'
     )
-
     .replaceAll(
       '"',
       '&quot;'
     )
-
     .replaceAll(
       "'",
       '&#039;'
@@ -410,17 +383,14 @@ function escapeHTML(
 }
 
 
-
 /* =========================================================
    NAVIGATION
    ========================================================= */
 
 function closeNavigation() {
-
   navToggle.classList.remove(
     'active'
   );
-
 
   mainNav.classList.remove(
     'open'
@@ -443,7 +413,6 @@ function closeNavigation() {
     'nav-open'
   );
 }
-
 
 
 navToggle.addEventListener(
@@ -484,7 +453,6 @@ navToggle.addEventListener(
 );
 
 
-
 mainNav
   .querySelectorAll('a')
   .forEach(
@@ -494,7 +462,6 @@ mainNav
         closeNavigation
       )
   );
-
 
 
 window.addEventListener(
@@ -515,7 +482,6 @@ window.addEventListener(
 );
 
 
-
 backToTop.addEventListener(
   'click',
   () => {
@@ -531,13 +497,13 @@ backToTop.addEventListener(
 );
 
 
-
 /* =========================================================
    PRICE
    ========================================================= */
 
-function formatPrice(property) {
-
+function formatPrice(
+  property
+) {
   const currency =
     property.currency ||
     'USD';
@@ -547,7 +513,6 @@ function formatPrice(property) {
 
 
   try {
-
     value =
       new Intl.NumberFormat(
         'en-US',
@@ -567,16 +532,17 @@ function formatPrice(property) {
         )
       );
 
-
   } catch (_error) {
 
     value =
-      `${currency} ${Number(
-        property.price ||
-        0
-      ).toLocaleString(
-        'en-US'
-      )}`;
+      `${currency} ${
+        Number(
+          property.price ||
+          0
+        ).toLocaleString(
+          'en-US'
+        )
+      }`;
   }
 
 
@@ -588,15 +554,12 @@ function formatPrice(property) {
 }
 
 
-
 /* =========================================================
    FAVOURITES
    ========================================================= */
 
 function savedFavouriteIds() {
-
   try {
-
     return new Set(
       JSON.parse(
         localStorage.getItem(
@@ -605,7 +568,6 @@ function savedFavouriteIds() {
       )
     );
 
-
   } catch (_error) {
 
     return new Set();
@@ -613,12 +575,10 @@ function savedFavouriteIds() {
 }
 
 
-
 function toggleFavourite(
   id,
   button
 ) {
-
   const favourites =
     savedFavouriteIds();
 
@@ -626,7 +586,6 @@ function toggleFavourite(
   if (
     favourites.has(id)
   ) {
-
     favourites.delete(id);
 
   } else {
@@ -637,7 +596,6 @@ function toggleFavourite(
 
   localStorage.setItem(
     'helen-estates-favourites',
-
     JSON.stringify(
       [...favourites]
     )
@@ -667,7 +625,6 @@ function toggleFavourite(
 }
 
 
-
 /* =========================================================
    PROPERTY CAROUSEL
    ========================================================= */
@@ -675,37 +632,30 @@ function toggleFavourite(
 function getPropertyImages(
   property
 ) {
-
   const images =
     Array.isArray(
       property.images
     )
-
       ? property.images.filter(
           image =>
             typeof image ===
               'string' &&
             image.trim()
         )
-
       : [];
 
 
   return images.length
     ? images
-    : [
-        'property-1.jpg'
-      ];
+    : ['property-1.jpg'];
 }
-
 
 
 function setCarouselIndex(
   carousel,
-  requestedIndex,
+  nextIndex,
   animate = true
 ) {
-
   if (!carousel) {
     return;
   }
@@ -737,15 +687,18 @@ function setCarouselIndex(
 
   const index =
     (
-      requestedIndex %
-        total +
+      (
+        nextIndex %
+        total
+      ) +
       total
     ) %
     total;
 
 
-  carousel.dataset.carouselIndex =
-    String(index);
+  carousel.dataset
+    .carouselIndex =
+      String(index);
 
 
   track.style.transition =
@@ -755,7 +708,9 @@ function setCarouselIndex(
 
 
   track.style.transform =
-    `translate3d(-${index * 100}%, 0, 0)`;
+    `translate3d(-${
+      index * 100
+    }%, 0, 0)`;
 
 
   carousel
@@ -789,20 +744,13 @@ function setCarouselIndex(
 }
 
 
-
 function moveCarousel(
   carousel,
   direction
 ) {
-
-  if (!carousel) {
-    return;
-  }
-
-
   const current =
     Number(
-      carousel.dataset
+      carousel?.dataset
         .carouselIndex ||
       0
     );
@@ -816,23 +764,18 @@ function moveCarousel(
 }
 
 
-
 /* =========================================================
-   RENDER PROPERTY CARDS
+   PROPERTY CARDS
    ========================================================= */
 
 function renderPropertyCards(
   properties
 ) {
-
   const favourites =
     savedFavouriteIds();
 
 
-  if (
-    !properties.length
-  ) {
-
+  if (!properties.length) {
     propertyGrid.innerHTML =
       '';
 
@@ -857,7 +800,6 @@ function renderPropertyCards(
 
   propertyGrid.innerHTML =
     properties
-
       .map(
         property => {
 
@@ -868,8 +810,7 @@ function renderPropertyCards(
 
 
           const multipleImages =
-            images.length >
-            1;
+            images.length > 1;
 
 
           const isRent =
@@ -886,9 +827,11 @@ function renderPropertyCards(
           const meta = [
 
             property.bedrooms
-              ? `${Number(
-                  property.bedrooms
-                )} ${
+              ? `${
+                  Number(
+                    property.bedrooms
+                  )
+                } ${
                   Number(
                     property.bedrooms
                   ) === 1
@@ -899,9 +842,11 @@ function renderPropertyCards(
 
 
             property.bathrooms
-              ? `${Number(
-                  property.bathrooms
-                )} ${
+              ? `${
+                  Number(
+                    property.bathrooms
+                  )
+                } ${
                   Number(
                     property.bathrooms
                   ) === 1
@@ -912,54 +857,36 @@ function renderPropertyCards(
 
 
             property.size
-              ? `${Number(
-                  property.size
-                ).toLocaleString(
-                  'en-US'
-                )} sq ft`
+              ? `${
+                  Number(
+                    property.size
+                  ).toLocaleString(
+                    'en-US'
+                  )
+                } sq ft`
               : ''
 
           ].filter(Boolean);
 
 
           return `
-
             <article
-              class="property-card property-card-clickable"
-
+              class="property-card"
               data-id="${escapeHTML(
                 property.id
               )}"
-
-              data-open-property="${escapeHTML(
-                property.id
-              )}"
-
-              tabindex="0"
-
-              role="link"
-
-              aria-label="View ${escapeHTML(
-                property.title
-              )}"
             >
-
 
               <div
                 class="property-image property-carousel"
-
                 data-property-carousel
-
                 data-carousel-index="0"
               >
 
-
                 <div
                   class="property-carousel-track"
-
                   data-carousel-track
                 >
-
 
                   ${images
                     .map(
@@ -967,14 +894,11 @@ function renderPropertyCards(
                         image,
                         index
                       ) => `
-
                         <img
                           class="property-carousel-slide"
-
                           src="${escapeHTML(
                             image
                           )}"
-
                           alt="${escapeHTML(
                             property.title
                           )}${
@@ -982,16 +906,12 @@ function renderPropertyCards(
                               ? ` — image ${index + 1} of ${images.length}`
                               : ''
                           }"
-
                           loading="lazy"
-
                           draggable="false"
                         />
-
                       `
                     )
                     .join('')}
-
 
                 </div>
 
@@ -1003,19 +923,16 @@ function renderPropertyCards(
                       : ''
                   }"
                 >
-
                   ${
                     isRent
                       ? 'To rent'
                       : 'For sale'
                   }
-
                 </span>
 
 
                 ${
                   property.featured
-
                     ? `
                       <span
                         class="featured-marker"
@@ -1023,7 +940,6 @@ function renderPropertyCards(
                         Featured
                       </span>
                     `
-
                     : ''
                 }
 
@@ -1034,41 +950,31 @@ function renderPropertyCards(
                       ? 'saved'
                       : ''
                   }"
-
                   type="button"
-
                   data-favourite-id="${escapeHTML(
                     property.id
                   )}"
-
                   aria-label="Save ${escapeHTML(
                     property.title
                   )}"
-
                   aria-pressed="${saved}"
                 >
-
                   ${
                     saved
                       ? '♥'
                       : '♡'
                   }
-
                 </button>
 
 
                 ${
                   multipleImages
-
                     ? `
 
                       <button
                         class="property-carousel-arrow property-carousel-prev"
-
                         type="button"
-
                         data-carousel-prev
-
                         aria-label="Previous image"
                       >
                         ‹
@@ -1077,11 +983,8 @@ function renderPropertyCards(
 
                       <button
                         class="property-carousel-arrow property-carousel-next"
-
                         type="button"
-
                         data-carousel-next
-
                         aria-label="Next image"
                       >
                         ›
@@ -1090,10 +993,8 @@ function renderPropertyCards(
 
                       <div
                         class="property-carousel-dots"
-
                         aria-label="Property images"
                       >
-
 
                         ${images
                           .map(
@@ -1101,39 +1002,32 @@ function renderPropertyCards(
                               _image,
                               index
                             ) => `
-
                               <button
                                 class="property-carousel-dot ${
-                                  index === 0
+                                  index ===
+                                  0
                                     ? 'active'
                                     : ''
                                 }"
-
                                 type="button"
-
                                 data-carousel-dot="${index}"
-
                                 aria-label="Show image ${index + 1} of ${images.length}"
-
                                 aria-current="${
-                                  index === 0
+                                  index ===
+                                  0
                                     ? 'true'
                                     : 'false'
                                 }"
                               ></button>
-
                             `
                           )
                           .join('')}
 
-
                       </div>
 
                     `
-
                     : ''
                 }
-
 
               </div>
 
@@ -1142,51 +1036,40 @@ function renderPropertyCards(
                 class="property-body"
               >
 
-
                 <p
                   class="property-kicker"
                 >
-
                   ${escapeHTML(
                     property.id
                   )}
-
                   ·
-
                   ${escapeHTML(
                     property.status ||
                     'Available'
                   )}
-
                 </p>
 
 
                 <h3>
-
                   ${escapeHTML(
                     property.title
                   )}
-
                 </h3>
 
 
                 <p
                   class="location"
                 >
-
                   ${escapeHTML(
                     property.location
                   )}
-
                 </p>
 
 
                 <ul
                   class="property-meta"
-
                   aria-label="Property features"
                 >
-
 
                   ${meta
                     .map(
@@ -1197,7 +1080,6 @@ function renderPropertyCards(
                     )
                     .join('')}
 
-
                 </ul>
 
 
@@ -1205,55 +1087,42 @@ function renderPropertyCards(
                   class="property-bottom"
                 >
 
-
                   <p
                     class="price"
                   >
-
                     ${formatPrice(
                       property
                     )}
-
                   </p>
 
 
                   <button
                     class="property-enquire"
-
                     type="button"
-
                     data-enquire-property="${escapeHTML(
                       property.id
                     )}"
                   >
-
                     Enquire →
-
                   </button>
-
 
                 </div>
 
-
               </div>
-
 
             </article>
           `;
         }
       )
-
       .join('');
 }
 
 
-
 /* =========================================================
-   DEFAULT PROPERTIES
+   DEFAULT PROPERTY DISPLAY
    ========================================================= */
 
 function renderDefaultProperties() {
-
   searchActive =
     false;
 
@@ -1273,9 +1142,7 @@ function renderDefaultProperties() {
 
   const visible =
     showingAll
-
       ? allProperties
-
       : defaultProperties.slice(
           0,
           4
@@ -1287,35 +1154,20 @@ function renderDefaultProperties() {
   );
 
 
-  if (viewAllButton) {
-
-    viewAllButton.innerHTML =
-      showingAll
-
-        ? 'Show featured <span aria-hidden="true">↑</span>'
-
-        : 'View all properties <span aria-hidden="true">→</span>';
-  }
+  viewAllButton.innerHTML =
+    showingAll
+      ? 'Show featured <span aria-hidden="true">↑</span>'
+      : 'View all properties <span aria-hidden="true">→</span>';
 }
 
 
-
 /* =========================================================
-   PROPERTY CARD CLICKS
+   PROPERTY CLICK EVENTS
    ========================================================= */
-
-let suppressPropertyOpen =
-  false;
-
 
 propertyGrid.addEventListener(
   'click',
   event => {
-
-
-    /*
-      Previous image
-    */
 
     const previousButton =
       event.target.closest(
@@ -1324,9 +1176,7 @@ propertyGrid.addEventListener(
 
 
     if (previousButton) {
-
       event.preventDefault();
-
       event.stopPropagation();
 
 
@@ -1342,11 +1192,6 @@ propertyGrid.addEventListener(
     }
 
 
-
-    /*
-      Next image
-    */
-
     const nextButton =
       event.target.closest(
         '[data-carousel-next]'
@@ -1354,9 +1199,7 @@ propertyGrid.addEventListener(
 
 
     if (nextButton) {
-
       event.preventDefault();
-
       event.stopPropagation();
 
 
@@ -1372,11 +1215,6 @@ propertyGrid.addEventListener(
     }
 
 
-
-    /*
-      Carousel dots
-    */
-
     const dotButton =
       event.target.closest(
         '[data-carousel-dot]'
@@ -1384,9 +1222,7 @@ propertyGrid.addEventListener(
 
 
     if (dotButton) {
-
       event.preventDefault();
-
       event.stopPropagation();
 
 
@@ -1394,7 +1230,6 @@ propertyGrid.addEventListener(
         dotButton.closest(
           '[data-property-carousel]'
         ),
-
         Number(
           dotButton.dataset
             .carouselDot
@@ -1406,11 +1241,6 @@ propertyGrid.addEventListener(
     }
 
 
-
-    /*
-      Favourite
-    */
-
     const favouriteButton =
       event.target.closest(
         '[data-favourite-id]'
@@ -1419,15 +1249,9 @@ propertyGrid.addEventListener(
 
     if (favouriteButton) {
 
-      event.preventDefault();
-
-      event.stopPropagation();
-
-
       toggleFavourite(
         favouriteButton.dataset
           .favouriteId,
-
         favouriteButton
       );
 
@@ -1436,11 +1260,6 @@ propertyGrid.addEventListener(
     }
 
 
-
-    /*
-      Enquire
-    */
-
     const enquireButton =
       event.target.closest(
         '[data-enquire-property]'
@@ -1448,11 +1267,6 @@ propertyGrid.addEventListener(
 
 
     if (enquireButton) {
-
-      event.preventDefault();
-
-      event.stopPropagation();
-
 
       const id =
         enquireButton.dataset
@@ -1476,144 +1290,53 @@ propertyGrid.addEventListener(
       );
 
 
-      document
-        .getElementById(
-          'ticket-message'
+      /*
+        If the customer clicks Enquire
+        on a property, use that listing's
+        own currency automatically.
+      */
+
+      if (
+        ticketCurrency &&
+        [
+          'XCD',
+          'USD',
+          'GBP'
+        ].includes(
+          property?.currency
         )
-        .value =
-          `I'm interested in ${
-            property?.title ||
-            'this property'
-          } (${id}). Please contact me with more information.`;
+      ) {
+        ticketCurrency.value =
+          property.currency;
 
 
-      document
-        .getElementById(
-          'request'
-        )
-        .scrollIntoView({
-          behavior:
-            'smooth'
-        });
-
-
-      return;
-    }
-
-
-
-    /*
-      Do not open the property page
-      immediately after a swipe / drag.
-    */
-
-    if (
-      suppressPropertyOpen
-    ) {
-
-      return;
-    }
-
-
-
-    /*
-      Open individual property page
-    */
-
-    const propertyCard =
-      event.target.closest(
-        '[data-open-property]'
-      );
-
-
-    if (propertyCard) {
-
-      const id =
-        propertyCard.dataset
-          .openProperty;
-
-
-      if (id) {
-
-        window.location.href =
-          `property.html?id=${encodeURIComponent(
-            id
-          )}`;
+        updateTicketLabels();
       }
+
+
+      document.getElementById(
+        'ticket-message'
+      ).value =
+        `I'm interested in ${
+          property?.title ||
+          'this property'
+        } (${id}). Please contact me with more information.`;
+
+
+
+      document.getElementById(
+        'request'
+      ).scrollIntoView({
+        behavior:
+          'smooth'
+      });
     }
   }
 );
 
 
-
 /* =========================================================
-   KEYBOARD ACCESS
-   ========================================================= */
-
-propertyGrid.addEventListener(
-  'keydown',
-  event => {
-
-    if (
-      event.key !==
-        'Enter' &&
-      event.key !==
-        ' '
-    ) {
-
-      return;
-    }
-
-
-    /*
-      Buttons inside the property card
-      must keep their normal behaviour.
-    */
-
-    if (
-      event.target.closest(
-        'button, a, input, select, textarea'
-      )
-    ) {
-
-      return;
-    }
-
-
-    const propertyCard =
-      event.target.closest(
-        '[data-open-property]'
-      );
-
-
-    if (!propertyCard) {
-
-      return;
-    }
-
-
-    event.preventDefault();
-
-
-    const id =
-      propertyCard.dataset
-        .openProperty;
-
-
-    if (id) {
-
-      window.location.href =
-        `property.html?id=${encodeURIComponent(
-          id
-        )}`;
-    }
-  }
-);
-
-
-
-/* =========================================================
-   CAROUSEL SWIPE / MOUSE DRAG
+   CAROUSEL DRAG / SWIPE
    ========================================================= */
 
 let carouselDrag =
@@ -1636,7 +1359,6 @@ propertyGrid.addEventListener(
         'button'
       )
     ) {
-
       return;
     }
 
@@ -1647,7 +1369,6 @@ propertyGrid.addEventListener(
       event.button !==
         0
     ) {
-
       return;
     }
 
@@ -1659,16 +1380,13 @@ propertyGrid.addEventListener(
 
 
     if (
-      slides.length <=
-      1
+      slides.length <= 1
     ) {
-
       return;
     }
 
 
     carouselDrag = {
-
       carousel,
 
       pointerId:
@@ -1685,12 +1403,10 @@ propertyGrid.addEventListener(
 
       horizontal:
         false
-
     };
 
 
     try {
-
       carousel.setPointerCapture(
         event.pointerId
       );
@@ -1698,7 +1414,6 @@ propertyGrid.addEventListener(
     } catch (_error) {}
   }
 );
-
 
 
 propertyGrid.addEventListener(
@@ -1710,7 +1425,6 @@ propertyGrid.addEventListener(
       carouselDrag.pointerId !==
         event.pointerId
     ) {
-
       return;
     }
 
@@ -1732,21 +1446,15 @@ propertyGrid.addEventListener(
       Math.abs(deltaY) <
         8
     ) {
-
       return;
     }
 
-
-    /*
-      Let vertical scrolling work normally.
-    */
 
     if (
       !carouselDrag.horizontal &&
       Math.abs(deltaY) >
         Math.abs(deltaX)
     ) {
-
       carouselDrag =
         null;
 
@@ -1795,23 +1503,22 @@ propertyGrid.addEventListener(
 
 
       track.style.transform =
-        `translate3d(calc(-${index * 100}% + ${deltaX}px), 0, 0)`;
+        `translate3d(calc(-${
+          index * 100
+        }% + ${deltaX}px), 0, 0)`;
     }
   }
 );
 
 
-
 function finishCarouselDrag(
   event
 ) {
-
   if (
     !carouselDrag ||
     carouselDrag.pointerId !==
       event.pointerId
   ) {
-
     return;
   }
 
@@ -1832,29 +1539,8 @@ function finishCarouselDrag(
   if (
     !drag.horizontal
   ) {
-
     return;
   }
-
-
-  /*
-    Prevent the click generated after
-    dragging from opening the property.
-  */
-
-  suppressPropertyOpen =
-    true;
-
-
-  setTimeout(
-    () => {
-
-      suppressPropertyOpen =
-        false;
-
-    },
-    0
-  );
 
 
   const distance =
@@ -1865,10 +1551,8 @@ function finishCarouselDrag(
   const threshold =
     Math.min(
       70,
-
       Math.max(
         35,
-
         drag.carousel.clientWidth *
         0.14
       )
@@ -1876,24 +1560,22 @@ function finishCarouselDrag(
 
 
   if (
-    Math.abs(distance) >=
-    threshold
+    Math.abs(
+      distance
+    ) >= threshold
   ) {
 
     moveCarousel(
       drag.carousel,
-
       distance < 0
         ? 1
         : -1
     );
 
-
   } else {
 
     setCarouselIndex(
       drag.carousel,
-
       Number(
         drag.carousel.dataset
           .carouselIndex ||
@@ -1904,7 +1586,6 @@ function finishCarouselDrag(
 
 
   try {
-
     drag.carousel.releasePointerCapture(
       event.pointerId
     );
@@ -1913,12 +1594,10 @@ function finishCarouselDrag(
 }
 
 
-
 propertyGrid.addEventListener(
   'pointerup',
   finishCarouselDrag
 );
-
 
 
 propertyGrid.addEventListener(
@@ -1927,34 +1606,30 @@ propertyGrid.addEventListener(
 );
 
 
-
 /* =========================================================
    VIEW ALL
    ========================================================= */
 
-viewAllButton
-  ?.addEventListener(
-    'click',
-    () => {
+viewAllButton.addEventListener(
+  'click',
+  () => {
 
-      showingAll =
-        !showingAll;
+    showingAll =
+      !showingAll;
 
 
-      renderDefaultProperties();
-    }
-  );
-
+    renderDefaultProperties();
+  }
+);
 
 
 /* =========================================================
-   SEARCH PRICE OPTIONS
+   PROPERTY SEARCH
    ========================================================= */
 
 function setPriceOptions(
   mode
 ) {
-
   const minSelect =
     document.getElementById(
       'min-price'
@@ -1968,152 +1643,126 @@ function setPriceOptions(
 
 
   const rentMin = [
-
     [
       0,
       'No min'
     ],
-
     [
       750,
       'US$750'
     ],
-
     [
       1200,
       'US$1,200'
     ],
-
     [
       2000,
       'US$2,000'
     ],
-
     [
       3000,
       'US$3,000'
     ]
-
   ];
 
 
   const rentMax = [
-
     [
       0,
       'No max'
     ],
-
     [
       1500,
       'US$1,500'
     ],
-
     [
       2500,
       'US$2,500'
     ],
-
     [
       4000,
       'US$4,000'
     ],
-
     [
       6000,
       'US$6,000'
     ]
-
   ];
 
 
   const buyMin = [
-
     [
       0,
       'No min'
     ],
-
     [
       150000,
       'US$150,000'
     ],
-
     [
       300000,
       'US$300,000'
     ],
-
     [
       500000,
       'US$500,000'
     ],
-
     [
       750000,
       'US$750,000'
     ]
-
   ];
 
 
   const buyMax = [
-
     [
       0,
       'No max'
     ],
-
     [
       350000,
       'US$350,000'
     ],
-
     [
       600000,
       'US$600,000'
     ],
-
     [
       1000000,
       'US$1,000,000'
     ],
-
     [
       2000000,
       'US$2,000,000'
     ]
-
   ];
 
 
   const makeOptions =
     options =>
       options
-
         .map(
           (
             [
               value,
               label
             ]
-          ) => `
-
-            <option
-              value="${value}"
-            >
-              ${label}
-            </option>
-
-          `
+          ) =>
+            `
+              <option
+                value="${value}"
+              >
+                ${label}
+              </option>
+            `
         )
-
         .join('');
 
 
   minSelect.innerHTML =
     makeOptions(
-      mode === 'rent'
+      mode ===
+        'rent'
         ? rentMin
         : buyMin
     );
@@ -2121,24 +1770,20 @@ function setPriceOptions(
 
   maxSelect.innerHTML =
     makeOptions(
-      mode === 'rent'
+      mode ===
+        'rent'
         ? rentMax
         : buyMax
     );
 }
 
 
-
-/* =========================================================
-   SEARCH MODE
-   ========================================================= */
-
 function setSearchMode(
   mode
 ) {
-
   activeMode =
-    mode === 'rent'
+    mode ===
+      'rent'
       ? 'rent'
       : 'buy';
 
@@ -2176,7 +1821,6 @@ function setSearchMode(
 }
 
 
-
 searchTabs.forEach(
   tab =>
     tab.addEventListener(
@@ -2188,11 +1832,6 @@ searchTabs.forEach(
     )
 );
 
-
-
-/* =========================================================
-   HEADER BUY / RENT FILTERS
-   ========================================================= */
 
 document
   .querySelectorAll(
@@ -2239,11 +1878,6 @@ document
   );
 
 
-
-/* =========================================================
-   PROPERTY SEARCH
-   ========================================================= */
-
 searchForm.addEventListener(
   'submit',
   event => {
@@ -2253,52 +1887,40 @@ searchForm.addEventListener(
 
     const location =
       document
-
         .getElementById(
           'location'
         )
-
         .value
-
         .trim()
-
         .toLowerCase();
 
 
     const type =
-      document
-        .getElementById(
-          'property-type'
-        )
-        .value;
+      document.getElementById(
+        'property-type'
+      ).value;
 
 
     const minPrice =
       Number(
-        document
-          .getElementById(
-            'min-price'
-          )
-          .value
+        document.getElementById(
+          'min-price'
+        ).value
       );
 
 
     const maxPrice =
       Number(
-        document
-          .getElementById(
-            'max-price'
-          )
-          .value
+        document.getElementById(
+          'max-price'
+        ).value
       );
 
 
     const bedrooms =
-      document
-        .getElementById(
-          'bedrooms'
-        )
-        .value;
+      document.getElementById(
+        'bedrooms'
+      ).value;
 
 
     const matches =
@@ -2335,9 +1957,9 @@ searchForm.addEventListener(
               property.bedrooms ||
               0
             ) >=
-              Number(
-                bedrooms
-              );
+            Number(
+              bedrooms
+            );
 
 
           const price =
@@ -2382,13 +2004,14 @@ searchForm.addEventListener(
 
     searchMessage.textContent =
       matches.length
-
-        ? `${matches.length} matching ${
-            matches.length === 1
+        ? `${
+            matches.length
+          } matching ${
+            matches.length ===
+              1
               ? 'property'
               : 'properties'
           } found.`
-
         : 'No exact matches found. You can open a property request and we can look for you.';
 
 
@@ -2409,7 +2032,6 @@ searchForm.addEventListener(
 );
 
 
-
 /* =========================================================
    REQUEST TYPE
    ========================================================= */
@@ -2417,16 +2039,13 @@ searchForm.addEventListener(
 function selectRequestType(
   type
 ) {
-
   const normalized =
     [
       'buy',
       'rent',
       'sell'
     ].includes(type)
-
       ? type
-
       : 'buy';
 
 
@@ -2437,7 +2056,6 @@ function selectRequestType(
 
 
   if (input) {
-
     input.checked =
       true;
   }
@@ -2447,9 +2065,11 @@ function selectRequestType(
 }
 
 
+/* =========================================================
+   REQUEST LABELS + CURRENCY
+   ========================================================= */
 
 function updateTicketLabels() {
-
   const type =
     ticketForm.querySelector(
       'input[name="requestType"]:checked'
@@ -2457,30 +2077,47 @@ function updateTicketLabels() {
     'buy';
 
 
+  const currency =
+    ticketCurrency?.value ||
+    'USD';
+
+
   ticketBudgetLabel
     .childNodes[0]
     .nodeValue =
-
-      type === 'sell'
-
-        ? 'Expected price / valuation range'
-
-        : 'Budget / target price';
+      type ===
+        'sell'
+        ? `Expected price / valuation range (${currency})`
+        : `Budget / target price (${currency})`;
 
 
-  document
-    .getElementById(
-      'ticket-location'
-    )
-    .placeholder =
+  const budgetInput =
+    document.getElementById(
+      'ticket-budget'
+    );
 
-      type === 'sell'
 
-        ? 'Where is the property located?'
+  if (budgetInput) {
 
-        : 'Where would you like to live / invest?';
+    budgetInput.placeholder =
+      currency ===
+        'XCD'
+        ? 'e.g. 950,000'
+        : currency ===
+            'GBP'
+          ? 'e.g. 275,000'
+          : 'e.g. 350,000';
+  }
+
+
+  document.getElementById(
+    'ticket-location'
+  ).placeholder =
+    type ===
+      'sell'
+      ? 'Where is the property located?'
+      : 'Where would you like to live / invest?';
 }
-
 
 
 ticketForm
@@ -2496,6 +2133,15 @@ ticketForm
   );
 
 
+ticketCurrency?.addEventListener(
+  'change',
+  updateTicketLabels
+);
+
+
+/* =========================================================
+   REQUEST LINKS
+   ========================================================= */
 
 document
   .querySelectorAll(
@@ -2514,21 +2160,17 @@ document
   );
 
 
-
 /* =========================================================
-   PREVIEW REQUEST HELPERS
+   PREVIEW REQUEST
    ========================================================= */
 
 function makePreviewTicketReference() {
-
   const date =
     new Date();
 
 
   const stamp = [
-
     date.getFullYear(),
-
 
     String(
       date.getMonth() +
@@ -2537,7 +2179,6 @@ function makePreviewTicketReference() {
       2,
       '0'
     ),
-
 
     String(
       date.getDate()
@@ -2551,14 +2192,11 @@ function makePreviewTicketReference() {
 
   const suffix =
     Math.random()
-
       .toString(36)
-
       .slice(
         2,
         8
       )
-
       .toUpperCase();
 
 
@@ -2566,11 +2204,9 @@ function makePreviewTicketReference() {
 }
 
 
-
 function savePreviewTicket(
   ticket
 ) {
-
   const existing =
     JSON.parse(
       localStorage.getItem(
@@ -2587,7 +2223,6 @@ function savePreviewTicket(
 
   localStorage.setItem(
     'helen-estates-demo-tickets',
-
     JSON.stringify(
       existing.slice(
         0,
@@ -2598,9 +2233,8 @@ function savePreviewTicket(
 }
 
 
-
 /* =========================================================
-   REQUEST CONFIRMATION
+   CONFIRMATION
    ========================================================= */
 
 function showTicketConfirmation({
@@ -2610,7 +2244,6 @@ function showTicketConfirmation({
   emailSent,
   statusUrl
 }) {
-
   ticketForm.hidden =
     true;
 
@@ -2667,54 +2300,57 @@ function showTicketConfirmation({
 }
 
 
-
 /* =========================================================
    NEW REQUEST
    ========================================================= */
 
-newRequestButton
-  ?.addEventListener(
-    'click',
-    () => {
+newRequestButton?.addEventListener(
+  'click',
+  () => {
 
-      ticketConfirmation.hidden =
-        true;
-
-
-      ticketForm.hidden =
-        false;
+    ticketConfirmation.hidden =
+      true;
 
 
-      ticketStatus.className =
-        'ticket-message';
+    ticketForm.hidden =
+      false;
 
 
-      ticketStatus.textContent =
-        '';
+    ticketStatus.className =
+      'ticket-message';
 
 
-      ticketForm.reset();
+    ticketStatus.textContent =
+      '';
 
 
-      selectRequestType(
-        'buy'
-      );
+    ticketForm.reset();
 
 
-      ticketReference.value =
-        '';
-
-
-      ticketForm.scrollIntoView({
-        behavior:
-          'smooth',
-
-        block:
-          'center'
-      });
+    if (ticketCurrency) {
+      ticketCurrency.value =
+        'USD';
     }
-  );
 
+
+    selectRequestType(
+      'buy'
+    );
+
+
+    ticketReference.value =
+      '';
+
+
+    ticketForm.scrollIntoView({
+      behavior:
+        'smooth',
+
+      block:
+        'center'
+    });
+  }
+);
 
 
 /* =========================================================
@@ -2746,6 +2382,27 @@ ticketForm.addEventListener(
       new FormData(
         ticketForm
       );
+
+
+    const selectedCurrency =
+      String(
+        formData.get(
+          'budgetCurrency'
+        ) ||
+        'USD'
+      );
+
+
+    const safeCurrency =
+      [
+        'XCD',
+        'USD',
+        'GBP'
+      ].includes(
+        selectedCurrency
+      )
+        ? selectedCurrency
+        : 'USD';
 
 
     const ticket = {
@@ -2813,6 +2470,10 @@ ticketForm.addEventListener(
         ).trim(),
 
 
+      budgetCurrency:
+        safeCurrency,
+
+
       bedrooms:
         formData.get(
           'bedrooms'
@@ -2844,18 +2505,17 @@ ticketForm.addEventListener(
           ) ||
           ''
         ).trim()
-
     };
 
 
     const isLocalPreview =
-      window.location.protocol ===
+      location.protocol ===
         'file:' ||
       [
         'localhost',
         '127.0.0.1'
       ].includes(
-        window.location.hostname
+        location.hostname
       );
 
 
@@ -2880,29 +2540,23 @@ ticketForm.addEventListener(
 
 
         showTicketConfirmation({
-
           name:
             ticket.name,
-
 
           reference:
             result.reference,
 
-
           email:
             ticket.email,
-
 
           emailSent:
             Boolean(
               result.emailSent
             ),
 
-
           statusUrl:
             result.statusUrl ||
             ''
-
         });
 
 
@@ -2915,22 +2569,17 @@ ticketForm.addEventListener(
 
 
         savePreviewTicket({
-
           ...ticket,
-
 
           id:
             previewReference,
 
-
           status:
             'new',
-
 
           createdAt:
             new Date()
               .toISOString()
-
         });
 
 
@@ -2983,13 +2632,11 @@ ticketForm.addEventListener(
 );
 
 
-
 /* =========================================================
    LOAD PROPERTIES
    ========================================================= */
 
 async function loadProperties() {
-
   try {
 
     if (
@@ -3026,18 +2673,15 @@ async function loadProperties() {
 }
 
 
-
 /* =========================================================
    INITIALISE
    ========================================================= */
 
-document
-  .getElementById(
-    'current-year'
-  )
-  .textContent =
-    new Date()
-      .getFullYear();
+document.getElementById(
+  'current-year'
+).textContent =
+  new Date()
+    .getFullYear();
 
 
 setPriceOptions(
