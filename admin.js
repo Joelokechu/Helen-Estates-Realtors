@@ -107,6 +107,9 @@ const purposeSelect =
 const priceLabel =
   document.getElementById('price-label');
 
+const currencySelect =
+  document.getElementById('currency');
+
 
 /* =========================================================
    REQUEST ELEMENTS
@@ -1317,11 +1320,16 @@ function updatePriceLabel() {
   }
 
 
+  const currency =
+    currencySelect?.value ||
+    'USD';
+
+
   priceLabel.textContent =
     purposeSelect?.value ===
     'rent'
-      ? 'Monthly rent (USD) *'
-      : 'Sale price (USD) *';
+      ? `Monthly rent (${currency}) *`
+      : `Sale price (${currency}) *`;
 }
 
 
@@ -1359,6 +1367,12 @@ function resetPropertyForm() {
 
   purposeSelect.value =
     'buy';
+
+
+  if (currencySelect) {
+    currencySelect.value =
+      'USD';
+  }
 
 
   imageInput.value =
@@ -1499,6 +1513,13 @@ function startEditProperty(
     'price'
   ).value =
     property.price ?? '';
+
+
+  if (currencySelect) {
+    currencySelect.value =
+      property.currency ||
+      'USD';
+  }
 
 
   document.getElementById(
@@ -2002,6 +2023,7 @@ propertyForm.addEventListener(
           ),
 
         currency:
+          currencySelect?.value ||
           'USD',
 
         price_period:
@@ -3338,6 +3360,12 @@ adminFilter?.addEventListener(
 
 
 purposeSelect?.addEventListener(
+  'change',
+  updatePriceLabel
+);
+
+
+currencySelect?.addEventListener(
   'change',
   updatePriceLabel
 );
