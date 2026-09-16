@@ -463,8 +463,28 @@ function formatRequestBudget(request) {
         );
 
 
+  const currency =
+    [
+      'XCD',
+      'USD',
+      'GBP'
+    ].includes(
+      request.budget_currency
+    )
+      ? request.budget_currency
+      : 'USD';
+
+
+  const symbol =
+    currency === 'XCD'
+      ? 'EC$'
+      : currency === 'GBP'
+        ? '£'
+        : 'US$';
+
+
   const money = value =>
-    `US$${Number(value)
+    `${symbol}${Number(value)
       .toLocaleString(
         'en-US',
         {
@@ -791,6 +811,7 @@ async function loadRequests() {
         property_type,
         budget_min,
         budget_max,
+        budget_currency,
         bedrooms,
         property_reference,
         message,
