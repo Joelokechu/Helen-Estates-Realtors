@@ -53,6 +53,15 @@
 
   <script src="supabase-config.js"></script>
 
+  <style>
+    /* Keep the expanded currency-aware search on one row on large screens. */
+    @media (min-width: 1141px) {
+      .search-form {
+        grid-template-columns: 1.4fr repeat(5, 1fr) auto;
+      }
+    }
+  </style>
+
 </head>
 
 
@@ -379,6 +388,33 @@
 
                 <option value="commercial">
                   Commercial
+                </option>
+
+              </select>
+
+            </label>
+
+            <label>
+
+              <span>
+                Currency
+              </span>
+
+              <select id="search-currency">
+
+                <option value="XCD">
+                  XCD — EC$
+                </option>
+
+                <option
+                  value="USD"
+                  selected
+                >
+                  USD — US$
+                </option>
+
+                <option value="GBP">
+                  GBP — £
                 </option>
 
               </select>
