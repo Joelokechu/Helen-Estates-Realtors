@@ -1309,22 +1309,50 @@
 
               <label class="field">
 
-                <span id="price-label">
-                  Sale price (USD) *
-                </span>
+  <span id="price-label">
+    Sale price *
+  </span>
 
-                <input
-                  id="price"
-                  name="price"
-                  type="number"
-                  min="0"
-                  step="1"
-                  placeholder="450000"
-                  required
-                />
+  <input
+    id="price"
+    name="price"
+    type="number"
+    min="0"
+    step="1"
+    placeholder="450000"
+    required
+  />
 
-              </label>
+</label>
 
+
+<label class="field">
+
+  <span>
+    Currency *
+  </span>
+
+  <select
+    id="currency"
+    name="currency"
+    required
+  >
+
+    <option value="XCD">
+      XCD — Eastern Caribbean Dollar
+    </option>
+
+    <option value="USD" selected>
+      USD — US Dollar
+    </option>
+
+    <option value="GBP">
+      GBP — British Pound
+    </option>
+
+  </select>
+
+</label>
 
               <label class="field">
 
