@@ -5,6 +5,7 @@ const backToTop = document.querySelector('.back-to-top');
 const searchTabs = document.querySelectorAll('.search-tab');
 const searchForm = document.getElementById('property-search-form');
 const searchMessage = document.getElementById('search-message');
+const searchCurrency = document.getElementById('search-currency');
 const propertyGrid = document.getElementById('property-grid');
 const propertiesLoading = document.getElementById('properties-loading');
 const propertiesStatus = document.getElementById('properties-status');
@@ -1678,8 +1679,59 @@ viewAllButton.addEventListener(
    PROPERTY SEARCH
    ========================================================= */
 
+function normalizeSearchCurrency(
+  value
+) {
+  const currency =
+    String(
+      value ||
+      'USD'
+    ).toUpperCase();
+
+
+  return [
+    'XCD',
+    'USD',
+    'GBP'
+  ].includes(
+    currency
+  )
+    ? currency
+    : 'USD';
+}
+
+
+function formatSearchPrice(
+  amount,
+  currency
+) {
+  const symbol =
+    currency ===
+      'XCD'
+      ? 'EC$'
+      : currency ===
+          'GBP'
+        ? '£'
+        : 'US$';
+
+
+  return `${symbol}${Number(
+    amount
+  ).toLocaleString(
+    'en-US',
+    {
+      maximumFractionDigits:
+        0
+    }
+  )}`;
+}
+
+
 function setPriceOptions(
-  mode
+  mode,
+  currency =
+    searchCurrency?.value ||
+    'USD'
 ) {
   const minSelect =
     document.getElementById(
@@ -1693,138 +1745,91 @@ function setPriceOptions(
     );
 
 
-  const rentMin = [
-    [
-      0,
-      'No min'
-    ],
-    [
-      750,
-      'US$750'
-    ],
-    [
-      1200,
-      'US$1,200'
-    ],
-    [
-      2000,
-      'US$2,000'
-    ],
-    [
-      3000,
-      'US$3,000'
-    ]
-  ];
+  const selectedCurrency =
+    normalizeSearchCurrency(
+      currency
+    );
 
 
-  const rentMax = [
-    [
-      0,
-      'No max'
-    ],
-    [
-      1500,
-      'US$1,500'
-    ],
-    [
-      2500,
-      'US$2,500'
-    ],
-    [
-      4000,
-      'US$4,000'
-    ],
-    [
-      6000,
-      'US$6,000'
-    ]
-  ];
+  if (searchCurrency) {
+    searchCurrency.value =
+      selectedCurrency;
+  }
 
 
-  const buyMin = [
+  const prices =
     [
-      0,
-      'No min'
-    ],
-    [
-      150000,
-      'US$150,000'
-    ],
-    [
-      300000,
-      'US$300,000'
-    ],
-    [
-      500000,
-      'US$500,000'
-    ],
-    [
-      750000,
-      'US$750,000'
-    ]
-  ];
-
-
-  const buyMax = [
-    [
-      0,
-      'No max'
-    ],
-    [
-      350000,
-      'US$350,000'
-    ],
-    [
-      600000,
-      'US$600,000'
-    ],
-    [
-      1000000,
-      'US$1,000,000'
-    ],
-    [
-      2000000,
-      'US$2,000,000'
-    ]
-  ];
+      ...new Set(
+        allProperties
+          .filter(
+            property =>
+              property.purpose ===
+                mode &&
+              normalizeSearchCurrency(
+                property.currency
+              ) ===
+                selectedCurrency
+          )
+          .map(
+            property =>
+              Number(
+                property.price
+              )
+          )
+          .filter(
+            price =>
+              Number.isFinite(
+                price
+              ) &&
+              price > 0
+          )
+      )
+    ].sort(
+      (a, b) =>
+        a - b
+    );
 
 
   const makeOptions =
-    options =>
-      options
-        .map(
-          (
-            [
-              value,
-              label
-            ]
-          ) =>
+    emptyLabel => {
+      const options = [
+        `
+          <option value="0">
+            ${emptyLabel}
+          </option>
+        `
+      ];
+
+
+      prices.forEach(
+        price => {
+          options.push(
             `
-              <option
-                value="${value}"
-              >
-                ${label}
+              <option value="${price}">
+                ${formatSearchPrice(
+                  price,
+                  selectedCurrency
+                )}
               </option>
             `
-        )
-        .join('');
+          );
+        }
+      );
+
+
+      return options.join('');
+    };
 
 
   minSelect.innerHTML =
     makeOptions(
-      mode ===
-        'rent'
-        ? rentMin
-        : buyMin
+      'No min'
     );
 
 
   maxSelect.innerHTML =
     makeOptions(
-      mode ===
-        'rent'
-        ? rentMax
-        : buyMax
+      'No max'
     );
 }
 
@@ -1862,7 +1867,9 @@ function setSearchMode(
 
 
   setPriceOptions(
-    activeMode
+    activeMode,
+    searchCurrency?.value ||
+      'USD'
   );
 
 
@@ -1870,6 +1877,22 @@ function setSearchMode(
     'show'
   );
 }
+
+
+searchCurrency?.addEventListener(
+  'change',
+  () => {
+    setPriceOptions(
+      activeMode,
+      searchCurrency.value
+    );
+
+
+    searchMessage.classList.remove(
+      'show'
+    );
+  }
+);
 
 
 searchTabs.forEach(
@@ -1952,6 +1975,13 @@ searchForm.addEventListener(
       ).value;
 
 
+    const currency =
+      normalizeSearchCurrency(
+        searchCurrency?.value ||
+        'USD'
+      );
+
+
     const minPrice =
       Number(
         document.getElementById(
@@ -1981,6 +2011,13 @@ searchForm.addEventListener(
           const matchesMode =
             property.purpose ===
             activeMode;
+
+
+          const matchesCurrency =
+            normalizeSearchCurrency(
+              property.currency
+            ) ===
+            currency;
 
 
           const matchesLocation =
@@ -2034,6 +2071,7 @@ searchForm.addEventListener(
 
           return (
             matchesMode &&
+            matchesCurrency &&
             matchesLocation &&
             matchesType &&
             matchesBeds &&
@@ -2057,7 +2095,7 @@ searchForm.addEventListener(
       matches.length
         ? `${
             matches.length
-          } matching ${
+          } matching ${currency} ${
             matches.length ===
               1
               ? 'property'
@@ -2720,6 +2758,13 @@ async function loadProperties() {
   propertiesLoading?.remove();
 
 
+  setPriceOptions(
+    activeMode,
+    searchCurrency?.value ||
+      'USD'
+  );
+
+
   renderDefaultProperties();
 }
 
@@ -2736,7 +2781,9 @@ document.getElementById(
 
 
 setPriceOptions(
-  'buy'
+  'buy',
+  searchCurrency?.value ||
+    'USD'
 );
 
 
