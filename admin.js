@@ -1635,7 +1635,7 @@ function renderNewImagePreviews(
 
 
   Array.from(files)
-    .slice(0, 8)
+    .slice(0, 15)
     .forEach(
       (
         file,
