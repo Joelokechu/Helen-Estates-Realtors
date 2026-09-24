@@ -1463,138 +1463,225 @@
           </section>
 
 
-          <!-- PROPERTY IMAGES -->
+         <!-- PROPERTY IMAGES -->
 
-          <section class="panel form-panel">
+<section class="panel form-panel">
 
-            <div class="panel-heading simple">
+  <div class="panel-heading simple">
 
-              <div>
+    <div>
 
-                <p class="kicker">
-                  Photography
-                </p>
+      <p class="kicker">
+        Photography
+      </p>
 
-                <h2>
-                  Property images
-                </h2>
+      <h2>
+        Property images
+      </h2>
 
-                <p class="muted">
-                  Upload up to 8 JPG, PNG or WEBP images. The first image becomes the property card cover.
-                </p>
+      <p class="muted">
+        Upload up to 15 JPG, PNG or WEBP images.
+        The first image becomes the property card cover.
+      </p>
 
-              </div>
-
-            </div>
-
-
-            <label
-              class="upload-zone"
-              id="upload-zone"
-              for="images"
-            >
-
-              <input
-                id="images"
-                name="images"
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                multiple
-              />
-
-              <span class="upload-icon">
-                ⇧
-              </span>
-
-              <strong>
-                Choose property images
-              </strong>
-
-              <small>
-                or drag and drop files here · maximum 8 MB each
-              </small>
-
-            </label>
-
-
-            <div
-              class="existing-images"
-              id="existing-images"
-              hidden
-            >
-
-              <div class="existing-heading">
-
-                <span>
-                  Current images
-                </span>
-
-                <label>
-
-                  <input
-                    id="replace-images"
-                    type="checkbox"
-                  />
-
-                  Replace existing images with newly selected files
-
-                </label>
-
-              </div>
-
-
-              <div
-                class="image-preview-grid"
-                id="existing-image-grid"
-              ></div>
-
-            </div>
-
-
-            <div
-              class="image-preview-grid"
-              id="new-image-preview"
-            ></div>
-
-          </section>
-
-
-          <div class="form-actions">
-
-            <button
-              class="secondary-button"
-              id="cancel-edit"
-              type="button"
-            >
-              Cancel
-            </button>
-
-
-            <button
-              class="primary-button"
-              id="save-property"
-              type="submit"
-            >
-              Publish property
-            </button>
-
-          </div>
-
-
-          <p
-            class="form-message"
-            id="property-form-message"
-            aria-live="polite"
-          ></p>
-
-        </form>
-
-      </section>
-
-    </main>
+    </div>
 
   </div>
 
+
+  <label
+    class="upload-zone"
+    id="upload-zone"
+    for="images"
+  >
+
+    <input
+      id="images"
+      name="images"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      multiple
+    />
+
+    <span class="upload-icon">
+      ⇧
+    </span>
+
+    <strong>
+      Choose property images
+    </strong>
+
+    <small>
+      or drag and drop files here · maximum 8 MB each
+    </small>
+
+  </label>
+
+
+  <div
+    class="existing-images"
+    id="existing-images"
+    hidden
+  >
+
+    <div class="existing-heading">
+
+      <span>
+        Current images
+      </span>
+
+      <label>
+
+        <input
+          id="replace-images"
+          type="checkbox"
+        />
+
+        Replace existing images with newly selected files
+
+      </label>
+
+    </div>
+
+
+    <div
+      class="image-preview-grid"
+      id="existing-image-grid"
+    ></div>
+
+  </div>
+
+
+  <div
+    class="image-preview-grid"
+    id="new-image-preview"
+  ></div>
+
+</section>
+
+
+<!-- PROPERTY VIDEO -->
+
+<section class="panel form-panel">
+
+  <div class="panel-heading simple">
+
+    <div>
+
+      <p class="kicker">
+        Video tour
+      </p>
+
+      <h2>
+        Property video
+      </h2>
+
+      <p class="muted">
+        Upload one optional property video.
+        MP4, WebM or MOV files are supported.
+        Maximum 50 MB.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <label
+    class="upload-zone"
+    id="video-upload-zone"
+    for="property-video"
+  >
+
+    <input
+      id="property-video"
+      name="property-video"
+      type="file"
+      accept="video/mp4,video/webm,video/quicktime"
+    />
+
+    <span class="upload-icon">
+      ▶
+    </span>
+
+    <strong>
+      Choose property video
+    </strong>
+
+    <small>
+      MP4 recommended · maximum 50 MB
+    </small>
+
+  </label>
+
+
+  <div
+    class="existing-images"
+    id="existing-video"
+    hidden
+  >
+
+    <div class="existing-heading">
+
+      <span>
+        Current video
+      </span>
+
+      <label>
+
+        <input
+          id="remove-video"
+          type="checkbox"
+        />
+
+        Remove current video
+
+      </label>
+
+    </div>
+
+
+    <video
+      id="existing-video-player"
+      controls
+      preload="metadata"
+      style="
+        width: 100%;
+        max-width: 700px;
+        margin-top: 18px;
+        border-radius: 18px;
+        background: #000;
+      "
+    ></video>
+
+  </div>
+
+
+  <div
+    id="new-video-preview"
+    hidden
+    style="margin-top: 18px;"
+  >
+
+    <p class="muted">
+      New video preview
+    </p>
+
+    <video
+      id="new-video-player"
+      controls
+      preload="metadata"
+      style="
+        width: 100%;
+        max-width: 700px;
+        border-radius: 18px;
+        background: #000;
+      "
+    ></video>
+
+  </div>
+
+</section>
 
   <!-- =========================================================
        TOAST
