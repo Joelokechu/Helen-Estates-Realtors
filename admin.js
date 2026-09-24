@@ -42,10 +42,6 @@ const pageTitle =
   document.getElementById('page-title');
 
 
-/* =========================================================
-   VIEWS
-   ========================================================= */
-
 const views = {
   dashboard:
     document.getElementById('dashboard-view'),
@@ -83,6 +79,7 @@ const propertyForm =
 const propertyFormMessage =
   document.getElementById('property-form-message');
 
+
 const imageInput =
   document.getElementById('images');
 
@@ -100,6 +97,29 @@ const existingImageGrid =
 
 const replaceImages =
   document.getElementById('replace-images');
+
+
+const videoInput =
+  document.getElementById('property-video');
+
+const videoUploadZone =
+  document.getElementById('video-upload-zone');
+
+const existingVideo =
+  document.getElementById('existing-video');
+
+const existingVideoPlayer =
+  document.getElementById('existing-video-player');
+
+const removeVideo =
+  document.getElementById('remove-video');
+
+const newVideoPreview =
+  document.getElementById('new-video-preview');
+
+const newVideoPlayer =
+  document.getElementById('new-video-player');
+
 
 const purposeSelect =
   document.getElementById('purpose');
@@ -221,18 +241,37 @@ let activeRequestId = null;
 
 let toastTimer = null;
 
+let newVideoObjectUrl = null;
+
 
 /* =========================================================
    HELPERS
    ========================================================= */
 
-function escapeHTML(value = '') {
+function escapeHTML(
+  value = ''
+) {
   return String(value)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replaceAll(
+      '&',
+      '&amp;'
+    )
+    .replaceAll(
+      '<',
+      '&lt;'
+    )
+    .replaceAll(
+      '>',
+      '&gt;'
+    )
+    .replaceAll(
+      '"',
+      '&quot;'
+    )
+    .replaceAll(
+      "'",
+      '&#039;'
+    );
 }
 
 
@@ -244,10 +283,15 @@ function showToast(
     return;
   }
 
-  clearTimeout(toastTimer);
+
+  clearTimeout(
+    toastTimer
+  );
+
 
   toast.textContent =
     message;
+
 
   toast.className =
     `toast show ${
@@ -255,6 +299,7 @@ function showToast(
         ? 'error'
         : ''
     }`;
+
 
   toastTimer =
     setTimeout(
@@ -267,10 +312,18 @@ function showToast(
 }
 
 
-function titleCase(value = '') {
+function titleCase(
+  value = ''
+) {
   return String(value)
-    .replaceAll('_', ' ')
-    .replaceAll('-', ' ')
+    .replaceAll(
+      '_',
+      ' '
+    )
+    .replaceAll(
+      '-',
+      ' '
+    )
     .replace(
       /\b\w/g,
       letter =>
@@ -282,88 +335,122 @@ function titleCase(value = '') {
 function propertyTypeLabel(
   value = ''
 ) {
-  if (!value) {
-    return 'Not specified';
-  }
-
-  return titleCase(value);
+  return value
+    ? titleCase(value)
+    : 'Not specified';
 }
 
 
-function requestTypeLabel(type) {
+function requestTypeLabel(
+  type
+) {
   const labels = {
     buy: 'Buy',
     rent: 'Rent',
     sell: 'Sell / Advertise'
   };
 
+
   return labels[type] ||
     titleCase(type);
 }
 
 
-function requestStatusLabel(status) {
+function requestStatusLabel(
+  status
+) {
   const labels = {
     new: 'New',
     contacted: 'Contacted',
-    in_progress: 'In progress',
-    completed: 'Completed',
-    closed: 'Closed'
+    in_progress:
+      'In progress',
+    completed:
+      'Completed',
+    closed:
+      'Closed'
   };
+
 
   return labels[status] ||
     titleCase(status);
 }
 
 
-function reviewStatusLabel(status) {
+function reviewStatusLabel(
+  status
+) {
   const labels = {
-    pending: 'Pending',
-    approved: 'Approved',
-    rejected: 'Rejected'
+    pending:
+      'Pending',
+
+    approved:
+      'Approved',
+
+    rejected:
+      'Rejected'
   };
+
 
   return labels[status] ||
     titleCase(status);
 }
 
 
-function renderReviewStars(rating) {
+function renderReviewStars(
+  rating
+) {
   const value =
     Math.max(
       0,
       Math.min(
         5,
-        Number(rating) || 0
+        Number(rating) ||
+        0
       )
     );
 
+
   return (
-    '★'.repeat(value) +
-    '☆'.repeat(5 - value)
+    '★'.repeat(
+      value
+    ) +
+    '☆'.repeat(
+      5 - value
+    )
   );
 }
 
 
-function contactMethodLabel(value) {
+function contactMethodLabel(
+  value
+) {
   const labels = {
     phone: 'Phone',
     whatsapp: 'WhatsApp',
     email: 'Email'
   };
 
+
   return labels[value] ||
-    titleCase(value || '');
+    titleCase(
+      value || ''
+    );
 }
 
 
-function formatDate(value) {
+function formatDate(
+  value
+) {
   if (!value) {
     return '—';
   }
 
+
   const date =
-    new Date(value);
+    new Date(
+      value
+    );
+
 
   if (
     Number.isNaN(
@@ -373,23 +460,35 @@ function formatDate(value) {
     return '—';
   }
 
+
   return new Intl.DateTimeFormat(
     'en-GB',
     {
-      dateStyle: 'medium',
-      timeStyle: 'short'
+      dateStyle:
+        'medium',
+
+      timeStyle:
+        'short'
     }
-  ).format(date);
+  ).format(
+    date
+  );
 }
 
 
-function formatShortDate(value) {
+function formatShortDate(
+  value
+) {
   if (!value) {
     return '—';
   }
 
+
   const date =
-    new Date(value);
+    new Date(
+      value
+    );
+
 
   if (
     Number.isNaN(
@@ -399,58 +498,81 @@ function formatShortDate(value) {
     return '—';
   }
 
+
   return new Intl.DateTimeFormat(
     'en-GB',
     {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
+      day:
+        'numeric',
+
+      month:
+        'short',
+
+      year:
+        'numeric'
     }
-  ).format(date);
+  ).format(
+    date
+  );
 }
 
 
-function formatPropertyPrice(property) {
+function formatPropertyPrice(
+  property
+) {
   const currency =
     property.currency ||
     'USD';
 
+
   let amount;
 
+
   try {
+
     amount =
       new Intl.NumberFormat(
         'en-US',
         {
-          style: 'currency',
+          style:
+            'currency',
+
           currency,
-          maximumFractionDigits: 0
+
+          maximumFractionDigits:
+            0
         }
       ).format(
         Number(
-          property.price || 0
+          property.price ||
+          0
         )
       );
+
   } catch (_error) {
+
     amount =
       `${currency} ${
         Number(
-          property.price || 0
-        ).toLocaleString('en-US')
+          property.price ||
+          0
+        )
+          .toLocaleString(
+            'en-US'
+          )
       }`;
   }
 
-  if (
-    property.price_period
-  ) {
-    return `${amount} / ${property.price_period}`;
-  }
 
-  return amount;
+  return property.price_period
+    ? `${amount} / ${property.price_period}`
+    : amount;
 }
 
 
-function formatRequestBudget(request) {
+function formatRequestBudget(
+  request
+) {
   const min =
     request.budget_min === null ||
     request.budget_min === undefined
@@ -458,6 +580,7 @@ function formatRequestBudget(request) {
       : Number(
           request.budget_min
         );
+
 
   const max =
     request.budget_max === null ||
@@ -488,14 +611,19 @@ function formatRequestBudget(request) {
         : 'US$';
 
 
-  const money = value =>
-    `${symbol}${Number(value)
-      .toLocaleString(
-        'en-US',
-        {
-          maximumFractionDigits: 0
-        }
-      )}`;
+  const money =
+    value =>
+      `${symbol}${
+        Number(
+          value
+        ).toLocaleString(
+          'en-US',
+          {
+            maximumFractionDigits:
+              0
+          }
+        )
+      }`;
 
 
   if (
@@ -527,8 +655,12 @@ function formatRequestBudget(request) {
 function normalizePhoneForWhatsApp(
   phone
 ) {
-  return String(phone || '')
-    .replace(/\D/g, '');
+  return String(
+    phone || ''
+  ).replace(
+    /\D/g,
+    ''
+  );
 }
 
 
@@ -536,24 +668,40 @@ function makePropertyReference() {
   const date =
     new Date();
 
+
   const stamp = [
     date.getFullYear(),
 
     String(
-      date.getMonth() + 1
-    ).padStart(2, '0'),
+      date.getMonth() +
+      1
+    ).padStart(
+      2,
+      '0'
+    ),
 
     String(
       date.getDate()
-    ).padStart(2, '0')
-  ].join('');
+    ).padStart(
+      2,
+      '0'
+    )
+  ].join(
+    ''
+  );
 
 
   const suffix =
     crypto
       .randomUUID()
-      .replaceAll('-', '')
-      .slice(0, 6)
+      .replaceAll(
+        '-',
+        ''
+      )
+      .slice(
+        0,
+        6
+      )
       .toUpperCase();
 
 
@@ -565,7 +713,9 @@ function makePropertyReference() {
    VIEW NAVIGATION
    ========================================================= */
 
-function showView(name) {
+function showView(
+  name
+) {
   Object.entries(
     views
   ).forEach(
@@ -573,14 +723,19 @@ function showView(name) {
       key,
       element
     ]) => {
+
       if (!element) {
         return;
       }
 
-      element.classList.toggle(
-        'active',
-        key === name
-      );
+
+      element
+        .classList
+        .toggle(
+          'active',
+          key ===
+          name
+        );
     }
   );
 
@@ -591,10 +746,16 @@ function showView(name) {
     )
     .forEach(
       button => {
-        button.classList.toggle(
-          'active',
-          button.dataset.section === name
-        );
+
+        button
+          .classList
+          .toggle(
+            'active',
+            button
+              .dataset
+              .section ===
+              name
+          );
       }
     );
 
@@ -635,7 +796,9 @@ function showView(name) {
    ========================================================= */
 
 async function getAuthorizedAdmin() {
-  if (!supabaseClient) {
+  if (
+    !supabaseClient
+  ) {
     return null;
   }
 
@@ -672,8 +835,12 @@ async function getAuthorizedAdmin() {
       adminError
   } =
     await supabaseClient
-      .from('admin_users')
-      .select('user_id')
+      .from(
+        'admin_users'
+      )
+      .select(
+        'user_id'
+      )
       .eq(
         'user_id',
         user.id
@@ -681,12 +848,16 @@ async function getAuthorizedAdmin() {
       .maybeSingle();
 
 
-  if (adminError) {
+  if (
+    adminError
+  ) {
     throw adminError;
   }
 
 
-  if (!adminRow) {
+  if (
+    !adminRow
+  ) {
     return null;
   }
 
@@ -698,12 +869,17 @@ async function getAuthorizedAdmin() {
 function showLogin(
   message = ''
 ) {
-  if (appShell) {
+  if (
+    appShell
+  ) {
     appShell.hidden =
       true;
   }
 
-  if (loginScreen) {
+
+  if (
+    loginScreen
+  ) {
     loginScreen.hidden =
       false;
   }
@@ -716,6 +892,7 @@ function showLogin(
     loginMessage.textContent =
       message;
 
+
     loginMessage.className =
       'form-message error';
   }
@@ -727,10 +904,13 @@ async function enterAdmin() {
     await getAuthorizedAdmin();
 
 
-  if (!admin) {
+  if (
+    !admin
+  ) {
     await supabaseClient
       ?.auth
       .signOut();
+
 
     throw new Error(
       'This account is not authorised to access the Helen Estates Realtors admin area.'
@@ -741,13 +921,17 @@ async function enterAdmin() {
   loginScreen.hidden =
     true;
 
+
   appShell.hidden =
     false;
 
 
   await refreshAll();
 
-  showView('dashboard');
+
+  showView(
+    'dashboard'
+  );
 }
 
 
@@ -762,8 +946,11 @@ async function refreshAll() {
     loadReviews()
   ]);
 
+
   updatePropertyStats();
+
   updateRequestStats();
+
   updateReviewStats();
 }
 
@@ -774,23 +961,31 @@ async function loadProperties() {
     error
   } =
     await supabaseClient
-      .from('properties')
-      .select('*')
+      .from(
+        'properties'
+      )
+      .select(
+        '*'
+      )
       .order(
         'created_at',
         {
-          ascending: false
+          ascending:
+            false
         }
       );
 
 
-  if (error) {
+  if (
+    error
+  ) {
     throw error;
   }
 
 
   properties =
-    data || [];
+    data ||
+    [];
 
 
   renderProperties();
@@ -803,7 +998,9 @@ async function loadRequests() {
     error
   } =
     await supabaseClient
-      .from('requests')
+      .from(
+        'requests'
+      )
       .select(`
         id,
         reference,
@@ -830,26 +1027,34 @@ async function loadRequests() {
       .order(
         'created_at',
         {
-          ascending: false
+          ascending:
+            false
         }
       );
 
 
-  if (error) {
+  if (
+    error
+  ) {
     throw error;
   }
 
 
   requests =
-    data || [];
+    data ||
+    [];
 
 
   renderRequests();
+
   renderDashboardRequests();
+
   updateRequestStats();
 
 
-  if (activeRequestId) {
+  if (
+    activeRequestId
+  ) {
     const stillExists =
       requests.find(
         request =>
@@ -857,7 +1062,10 @@ async function loadRequests() {
           activeRequestId
       );
 
-    if (stillExists) {
+
+    if (
+      stillExists
+    ) {
       displayRequest(
         stillExists
       );
@@ -872,7 +1080,9 @@ async function loadReviews() {
     error
   } =
     await supabaseClient
-      .from('reviews')
+      .from(
+        'reviews'
+      )
       .select(`
         id,
         name,
@@ -885,81 +1095,95 @@ async function loadReviews() {
       .order(
         'created_at',
         {
-          ascending: false
+          ascending:
+            false
         }
       );
 
 
-  if (error) {
+  if (
+    error
+  ) {
     throw error;
   }
 
 
   reviews =
-    data || [];
+    data ||
+    [];
 
 
   renderReviews();
+
   updateReviewStats();
 }
 
 
 /* =========================================================
-   PROPERTY STATISTICS
+   STATS
    ========================================================= */
 
 function updatePropertyStats() {
-  document.getElementById(
-    'stat-total'
-  ).textContent =
-    properties.length;
+  document
+    .getElementById(
+      'stat-total'
+    )
+    .textContent =
+      properties.length;
 
 
-  document.getElementById(
-    'stat-buy'
-  ).textContent =
-    properties.filter(
-      property =>
-        property.purpose ===
-        'buy'
-    ).length;
+  document
+    .getElementById(
+      'stat-buy'
+    )
+    .textContent =
+      properties.filter(
+        property =>
+          property.purpose ===
+          'buy'
+      ).length;
 
 
-  document.getElementById(
-    'stat-rent'
-  ).textContent =
-    properties.filter(
-      property =>
-        property.purpose ===
-        'rent'
-    ).length;
+  document
+    .getElementById(
+      'stat-rent'
+    )
+    .textContent =
+      properties.filter(
+        property =>
+          property.purpose ===
+          'rent'
+      ).length;
 
 
-  document.getElementById(
-    'stat-featured'
-  ).textContent =
-    properties.filter(
-      property =>
-        property.featured
-    ).length;
+  document
+    .getElementById(
+      'stat-featured'
+    )
+    .textContent =
+      properties.filter(
+        property =>
+          property.featured
+      ).length;
 }
 
 
-/* =========================================================
-   REQUEST STATISTICS
-   ========================================================= */
-
-function countRequestStatus(status) {
+function countRequestStatus(
+  status
+) {
   return requests.filter(
     request =>
-      request.status === status
+      request.status ===
+      status
   ).length;
 }
 
 
 function updateRequestStats() {
   const newCount =
-    countRequestStatus('new');
+    countRequestStatus(
+      'new'
+    );
 
 
   const mainStat =
@@ -967,7 +1191,10 @@ function updateRequestStats() {
       'stat-new-requests'
     );
 
-  if (mainStat) {
+
+  if (
+    mainStat
+  ) {
     mainStat.textContent =
       newCount;
   }
@@ -998,12 +1225,16 @@ function updateRequestStats() {
       id,
       status
     ]) => {
+
       const element =
         document.getElementById(
           id
         );
 
-      if (element) {
+
+      if (
+        element
+      ) {
         element.textContent =
           countRequestStatus(
             status
@@ -1013,24 +1244,27 @@ function updateRequestStats() {
   );
 
 
-  if (requestNavCount) {
+  if (
+    requestNavCount
+  ) {
     requestNavCount.textContent =
       newCount;
 
+
     requestNavCount.hidden =
-      newCount === 0;
+      newCount ===
+      0;
   }
 }
 
 
-/* =========================================================
-   REVIEW STATISTICS
-   ========================================================= */
-
-function countReviewStatus(status) {
+function countReviewStatus(
+  status
+) {
   return reviews.filter(
     review =>
-      review.status === status
+      review.status ===
+      status
   ).length;
 }
 
@@ -1048,7 +1282,9 @@ function updateReviewStats() {
     );
 
 
-  if (dashboardStat) {
+  if (
+    dashboardStat
+  ) {
     dashboardStat.textContent =
       pendingCount;
   }
@@ -1080,12 +1316,16 @@ function updateReviewStats() {
       id,
       value
     ]) => {
+
       const element =
         document.getElementById(
           id
         );
 
-      if (element) {
+
+      if (
+        element
+      ) {
         element.textContent =
           value;
       }
@@ -1093,12 +1333,16 @@ function updateReviewStats() {
   );
 
 
-  if (reviewNavCount) {
+  if (
+    reviewNavCount
+  ) {
     reviewNavCount.textContent =
       pendingCount;
 
+
     reviewNavCount.hidden =
-      pendingCount === 0;
+      pendingCount ===
+      0;
   }
 }
 
@@ -1110,7 +1354,8 @@ function updateReviewStats() {
 function getFilteredProperties() {
   const search =
     String(
-      adminSearch?.value || ''
+      adminSearch?.value ||
+      ''
     )
       .trim()
       .toLowerCase();
@@ -1123,6 +1368,7 @@ function getFilteredProperties() {
 
   return properties.filter(
     property => {
+
       const haystack =
         [
           property.title,
@@ -1130,7 +1376,9 @@ function getFilteredProperties() {
           property.id,
           property.property_type
         ]
-          .join(' ')
+          .join(
+            ' '
+          )
           .toLowerCase();
 
 
@@ -1146,7 +1394,8 @@ function getFilteredProperties() {
 
 
       if (
-        filter === 'buy'
+        filter ===
+        'buy'
       ) {
         matchesFilter =
           property.purpose ===
@@ -1155,7 +1404,8 @@ function getFilteredProperties() {
 
 
       if (
-        filter === 'rent'
+        filter ===
+        'rent'
       ) {
         matchesFilter =
           property.purpose ===
@@ -1164,7 +1414,8 @@ function getFilteredProperties() {
 
 
       if (
-        filter === 'featured'
+        filter ===
+        'featured'
       ) {
         matchesFilter =
           Boolean(
@@ -1183,7 +1434,9 @@ function getFilteredProperties() {
 
 
 function renderProperties() {
-  if (!propertyList) {
+  if (
+    !propertyList
+  ) {
     return;
   }
 
@@ -1193,125 +1446,143 @@ function renderProperties() {
 
 
   propertyList.innerHTML =
-    filtered.map(
-      property => {
-        const cover =
-          property.images?.[0] ||
-          'Helen Estates Realtors Logo 1.png';
+    filtered
+      .map(
+        property => {
+
+          const cover =
+            property.images?.[0] ||
+            'Helen Estates Realtors Logo 1.png';
 
 
-        return `
-          <article
-            class="admin-property-row"
-            data-property-id="${escapeHTML(property.id)}"
-          >
+          return `
+            <article
+              class="admin-property-row"
+              data-property-id="${escapeHTML(property.id)}"
+            >
 
-            <img
-              src="${escapeHTML(cover)}"
-              alt=""
-            />
+              <img
+                src="${escapeHTML(cover)}"
+                alt=""
+              />
 
-            <div class="property-main">
+              <div class="property-main">
 
-              <h3>
-                ${escapeHTML(property.title)}
-              </h3>
+                <h3>
+                  ${escapeHTML(property.title)}
+                </h3>
 
-              <p>
-                ${escapeHTML(property.location)}
-              </p>
+                <p>
+                  ${escapeHTML(property.location)}
+                </p>
 
-              <span class="listing-badge ${
-                property.purpose === 'rent'
-                  ? 'rent'
-                  : ''
-              }">
+                <span
+                  class="listing-badge ${
+                    property.purpose ===
+                    'rent'
+                      ? 'rent'
+                      : ''
+                  }"
+                >
+                  ${
+                    property.purpose ===
+                    'rent'
+                      ? 'To rent'
+                      : 'For sale'
+                  }
+                </span>
+
                 ${
-                  property.purpose === 'rent'
-                    ? 'To rent'
-                    : 'For sale'
+                  property.featured
+                    ? `
+                      <span class="featured-pill">
+                        Featured
+                      </span>
+                    `
+                    : ''
                 }
-              </span>
 
-              ${
-                property.featured
-                  ? `
-                    <span class="featured-pill">
-                      Featured
-                    </span>
-                  `
-                  : ''
-              }
-
-            </div>
+              </div>
 
 
-            <div class="property-meta-admin">
+              <div class="property-meta-admin">
 
-              <strong>
-                ${escapeHTML(
-                  propertyTypeLabel(
-                    property.property_type
-                  )
-                )}
-              </strong>
+                <strong>
+                  ${escapeHTML(
+                    propertyTypeLabel(
+                      property.property_type
+                    )
+                  )}
+                </strong>
 
-              <small>
-                ${Number(property.bedrooms || 0)} bed ·
-                ${Number(property.bathrooms || 0)} bath
-              </small>
+                <small>
+                  ${Number(
+                    property.bedrooms ||
+                    0
+                  )} bed ·
+                  ${Number(
+                    property.bathrooms ||
+                    0
+                  )} bath
+                </small>
 
-            </div>
-
-
-            <div class="property-price">
-
-              <strong>
-                ${escapeHTML(
-                  formatPropertyPrice(
-                    property
-                  )
-                )}
-              </strong>
-
-              <small>
-                ${escapeHTML(property.id)}
-              </small>
-
-            </div>
+              </div>
 
 
-            <div class="row-actions">
+              <div class="property-price">
 
-              <button
-                class="icon-button"
-                type="button"
-                data-edit-property="${escapeHTML(property.id)}"
-                aria-label="Edit ${escapeHTML(property.title)}"
-              >
-                ✎
-              </button>
+                <strong>
+                  ${escapeHTML(
+                    formatPropertyPrice(
+                      property
+                    )
+                  )}
+                </strong>
 
-              <button
-                class="icon-button delete"
-                type="button"
-                data-delete-property="${escapeHTML(property.id)}"
-                aria-label="Delete ${escapeHTML(property.title)}"
-              >
-                ×
-              </button>
+                <small>
+                  ${escapeHTML(property.id)}
+                </small>
 
-            </div>
-
-          </article>
-        `;
-      }
-    ).join('');
+              </div>
 
 
-  if (propertyEmpty) {
+              <div class="row-actions">
+
+                <button
+                  class="icon-button"
+                  type="button"
+                  data-edit-property="${escapeHTML(property.id)}"
+                  aria-label="Edit ${escapeHTML(property.title)}"
+                >
+                  ✎
+                </button>
+
+                <button
+                  class="icon-button delete"
+                  type="button"
+                  data-delete-property="${escapeHTML(property.id)}"
+                  aria-label="Delete ${escapeHTML(property.title)}"
+                >
+                  ×
+                </button>
+
+              </div>
+
+            </article>
+          `;
+        }
+      )
+      .join(
+        ''
+      );
+
+
+  if (
+    propertyEmpty
+  ) {
     propertyEmpty.hidden =
-      filtered.length > 0;
+      filtered.length >
+      0;
   }
 }
 
@@ -1324,7 +1595,9 @@ function setPropertyFormMessage(
   message = '',
   type = ''
 ) {
-  if (!propertyFormMessage) {
+  if (
+    !propertyFormMessage
+  ) {
     return;
   }
 
@@ -1335,13 +1608,16 @@ function setPropertyFormMessage(
 
   propertyFormMessage.className =
     `form-message ${
-      type || ''
+      type ||
+      ''
     }`.trim();
 }
 
 
 function updatePriceLabel() {
-  if (!priceLabel) {
+  if (
+    !priceLabel
+  ) {
     return;
   }
 
@@ -1359,6 +1635,94 @@ function updatePriceLabel() {
 }
 
 
+function clearNewVideoPreview() {
+  if (
+    newVideoObjectUrl
+  ) {
+    URL.revokeObjectURL(
+      newVideoObjectUrl
+    );
+
+
+    newVideoObjectUrl =
+      null;
+  }
+
+
+  if (
+    newVideoPlayer
+  ) {
+    newVideoPlayer.pause();
+
+
+    newVideoPlayer.removeAttribute(
+      'src'
+    );
+
+
+    newVideoPlayer.load();
+  }
+
+
+  if (
+    newVideoPreview
+  ) {
+    newVideoPreview.hidden =
+      true;
+  }
+}
+
+
+function renderExistingVideo(
+  property
+) {
+  const videoUrl =
+    property?.video_url ||
+    '';
+
+
+  if (
+    !existingVideo ||
+    !existingVideoPlayer
+  ) {
+    return;
+  }
+
+
+  if (
+    !videoUrl
+  ) {
+    existingVideo.hidden =
+      true;
+
+
+    existingVideoPlayer.pause();
+
+
+    existingVideoPlayer.removeAttribute(
+      'src'
+    );
+
+
+    existingVideoPlayer.load();
+
+
+    return;
+  }
+
+
+  existingVideo.hidden =
+    false;
+
+
+  existingVideoPlayer.src =
+    videoUrl;
+
+
+  existingVideoPlayer.load();
+}
+
+
 function resetPropertyForm() {
   editingProperty =
     null;
@@ -1367,35 +1731,45 @@ function resetPropertyForm() {
   propertyForm.reset();
 
 
-  document.getElementById(
-    'property-id'
-  ).value =
-    '';
+  document
+    .getElementById(
+      'property-id'
+    )
+    .value =
+      '';
 
 
-  document.getElementById(
-    'bedrooms-input'
-  ).value =
-    3;
+  document
+    .getElementById(
+      'bedrooms-input'
+    )
+    .value =
+      3;
 
 
-  document.getElementById(
-    'bathrooms-input'
-  ).value =
-    2;
+  document
+    .getElementById(
+      'bathrooms-input'
+    )
+    .value =
+      2;
 
 
-  document.getElementById(
-    'featured'
-  ).checked =
-    true;
+  document
+    .getElementById(
+      'featured'
+    )
+    .checked =
+      true;
 
 
   purposeSelect.value =
     'buy';
 
 
-  if (currencySelect) {
+  if (
+    currencySelect
+  ) {
     currencySelect.value =
       'USD';
   }
@@ -1421,25 +1795,74 @@ function resetPropertyForm() {
     '';
 
 
-  document.getElementById(
-    'editor-kicker'
-  ).textContent =
-    'New listing';
+  if (
+    videoInput
+  ) {
+    videoInput.value =
+      '';
+  }
 
 
-  document.getElementById(
-    'editor-title'
-  ).textContent =
-    'Add a property';
+  if (
+    removeVideo
+  ) {
+    removeVideo.checked =
+      false;
+  }
 
 
-  document.getElementById(
-    'save-property'
-  ).textContent =
-    'Publish property';
+  if (
+    existingVideo
+  ) {
+    existingVideo.hidden =
+      true;
+  }
+
+
+  if (
+    existingVideoPlayer
+  ) {
+    existingVideoPlayer.pause();
+
+
+    existingVideoPlayer.removeAttribute(
+      'src'
+    );
+
+
+    existingVideoPlayer.load();
+  }
+
+
+  clearNewVideoPreview();
+
+
+  document
+    .getElementById(
+      'editor-kicker'
+    )
+    .textContent =
+      'New listing';
+
+
+  document
+    .getElementById(
+      'editor-title'
+    )
+    .textContent =
+      'Add a property';
+
+
+  document
+    .getElementById(
+      'save-property'
+    )
+    .textContent =
+      'Publish property';
 
 
   setPropertyFormMessage();
+
 
   updatePriceLabel();
 }
@@ -1448,7 +1871,10 @@ function resetPropertyForm() {
 function startAddProperty() {
   resetPropertyForm();
 
-  showView('editor');
+
+  showView(
+    'editor'
+  );
 }
 
 
@@ -1456,15 +1882,20 @@ function renderExistingImages(
   property
 ) {
   const images =
-    property.images || [];
+    property.images ||
+    [];
 
 
-  if (!images.length) {
+  if (
+    !images.length
+  ) {
     existingImages.hidden =
       true;
 
+
     existingImageGrid.innerHTML =
       '';
+
 
     return;
   }
@@ -1475,26 +1906,33 @@ function renderExistingImages(
 
 
   existingImageGrid.innerHTML =
-    images.map(
-      (url, index) => `
-        <div class="image-preview">
+    images
+      .map(
+        (
+          url,
+          index
+        ) => `
+          <div class="image-preview">
 
-          <img
-            src="${escapeHTML(url)}"
-            alt=""
-          />
+            <img
+              src="${escapeHTML(url)}"
+              alt=""
+            />
 
-          <span>
-            ${
-              index === 0
-                ? 'Cover image'
-                : `Image ${index + 1}`
-            }
-          </span>
+            <span>
+              ${
+                index === 0
+                  ? 'Cover image'
+                  : `Image ${index + 1}`
+              }
+            </span>
 
-        </div>
-      `
-    ).join('');
+          </div>
+        `
+      )
+      .join(
+        ''
+      );
 }
 
 
@@ -1505,16 +1943,21 @@ function startEditProperty(
     property;
 
 
-  document.getElementById(
-    'property-id'
-  ).value =
-    property.id;
+  document
+    .getElementById(
+      'property-id'
+    )
+    .value =
+      property.id;
 
 
-  document.getElementById(
-    'title'
-  ).value =
-    property.title || '';
+  document
+    .getElementById(
+      'title'
+    )
+    .value =
+      property.title ||
+      '';
 
 
   purposeSelect.value =
@@ -1522,62 +1965,86 @@ function startEditProperty(
     'buy';
 
 
-  document.getElementById(
-    'propertyType'
-  ).value =
-    property.property_type ||
-    'house';
+  document
+    .getElementById(
+      'propertyType'
+    )
+    .value =
+      property.property_type ||
+      'house';
 
 
-  document.getElementById(
-    'property-location'
-  ).value =
-    property.location || '';
+  document
+    .getElementById(
+      'property-location'
+    )
+    .value =
+      property.location ||
+      '';
 
 
-  document.getElementById(
-    'price'
-  ).value =
-    property.price ?? '';
+  document
+    .getElementById(
+      'price'
+    )
+    .value =
+      property.price ??
+      '';
 
 
-  if (currencySelect) {
+  if (
+    currencySelect
+  ) {
     currencySelect.value =
       property.currency ||
       'USD';
   }
 
 
-  document.getElementById(
-    'bedrooms-input'
-  ).value =
-    property.bedrooms ?? 0;
+  document
+    .getElementById(
+      'bedrooms-input'
+    )
+    .value =
+      property.bedrooms ??
+      0;
 
 
-  document.getElementById(
-    'bathrooms-input'
-  ).value =
-    property.bathrooms ?? 0;
+  document
+    .getElementById(
+      'bathrooms-input'
+    )
+    .value =
+      property.bathrooms ??
+      0;
 
 
-  document.getElementById(
-    'size'
-  ).value =
-    property.size ?? 0;
+  document
+    .getElementById(
+      'size'
+    )
+    .value =
+      property.size ??
+      0;
 
 
-  document.getElementById(
-    'description'
-  ).value =
-    property.description || '';
+  document
+    .getElementById(
+      'description'
+    )
+    .value =
+      property.description ||
+      '';
 
 
-  document.getElementById(
-    'featured'
-  ).checked =
-    Boolean(
-      property.featured
-    );
+  document
+    .getElementById(
+      'featured'
+    )
+    .checked =
+      Boolean(
+        property.featured
+      );
 
 
   imageInput.value =
@@ -1592,22 +2059,52 @@ function startEditProperty(
     false;
 
 
-  document.getElementById(
-    'editor-kicker'
-  ).textContent =
-    'Edit listing';
+  if (
+    videoInput
+  ) {
+    videoInput.value =
+      '';
+  }
 
 
-  document.getElementById(
-    'editor-title'
-  ).textContent =
-    property.title;
+  if (
+    removeVideo
+  ) {
+    removeVideo.checked =
+      false;
+  }
 
 
-  document.getElementById(
-    'save-property'
-  ).textContent =
-    'Save changes';
+  clearNewVideoPreview();
+
+
+  renderExistingVideo(
+    property
+  );
+
+
+  document
+    .getElementById(
+      'editor-kicker'
+    )
+    .textContent =
+      'Edit listing';
+
+
+  document
+    .getElementById(
+      'editor-title'
+    )
+    .textContent =
+      property.title;
+
+
+  document
+    .getElementById(
+      'save-property'
+    )
+    .textContent =
+      'Save changes';
 
 
   renderExistingImages(
@@ -1617,14 +2114,18 @@ function startEditProperty(
 
   setPropertyFormMessage();
 
+
   updatePriceLabel();
 
-  showView('editor');
+
+  showView(
+    'editor'
+  );
 }
 
 
 /* =========================================================
-   IMAGE PREVIEW
+   IMAGE PREVIEW + VALIDATION
    ========================================================= */
 
 function renderNewImagePreviews(
@@ -1634,13 +2135,19 @@ function renderNewImagePreviews(
     '';
 
 
-  Array.from(files)
-    .slice(0, 15)
+  Array.from(
+    files
+  )
+    .slice(
+      0,
+      15
+    )
     .forEach(
       (
         file,
         index
       ) => {
+
         const wrapper =
           document.createElement(
             'div'
@@ -1687,6 +2194,7 @@ function renderNewImagePreviews(
         reader.addEventListener(
           'load',
           () => {
+
             image.src =
               reader.result;
           }
@@ -1701,7 +2209,9 @@ function renderNewImagePreviews(
 }
 
 
-function validateImageFiles(files) {
+function validateImageFiles(
+  files
+) {
   const allowed =
     new Set([
       'image/jpeg',
@@ -1710,15 +2220,19 @@ function validateImageFiles(files) {
     ]);
 
 
-  if (files.length > 8) {
+  if (
+    files.length >
+    15
+  ) {
     throw new Error(
-      'You can upload a maximum of 8 images.'
+      'You can upload a maximum of 15 images.'
     );
   }
 
 
   for (
-    const file of files
+    const file
+    of files
   ) {
     if (
       !allowed.has(
@@ -1744,6 +2258,83 @@ function validateImageFiles(files) {
 
 
 /* =========================================================
+   VIDEO PREVIEW + VALIDATION
+   ========================================================= */
+
+function validateVideoFile(
+  file
+) {
+  if (
+    !file
+  ) {
+    return;
+  }
+
+
+  const allowed =
+    new Set([
+      'video/mp4',
+      'video/webm',
+      'video/quicktime'
+    ]);
+
+
+  if (
+    !allowed.has(
+      file.type
+    )
+  ) {
+    throw new Error(
+      `${file.name} is not an MP4, WebM or MOV video.`
+    );
+  }
+
+
+  if (
+    file.size >
+    50 * 1024 * 1024
+  ) {
+    throw new Error(
+      `${file.name} is larger than 50 MB.`
+    );
+  }
+}
+
+
+function renderNewVideoPreview(
+  file
+) {
+  clearNewVideoPreview();
+
+
+  if (
+    !file ||
+    !newVideoPreview ||
+    !newVideoPlayer
+  ) {
+    return;
+  }
+
+
+  newVideoObjectUrl =
+    URL.createObjectURL(
+      file
+    );
+
+
+  newVideoPlayer.src =
+    newVideoObjectUrl;
+
+
+  newVideoPreview.hidden =
+    false;
+
+
+  newVideoPlayer.load();
+}
+
+
+/* =========================================================
    STORAGE
    ========================================================= */
 
@@ -1755,18 +2346,59 @@ function storagePathFromPublicUrl(
 
 
   const index =
-    String(url).indexOf(
+    String(
+      url
+    ).indexOf(
       marker
     );
 
 
-  if (index < 0) {
+  if (
+    index <
+    0
+  ) {
     return null;
   }
 
 
   return decodeURIComponent(
-    String(url).slice(
+    String(
+      url
+    ).slice(
+      index +
+      marker.length
+    )
+  );
+}
+
+
+function storagePathFromVideoPublicUrl(
+  url
+) {
+  const marker =
+    '/storage/v1/object/public/property-videos/';
+
+
+  const index =
+    String(
+      url
+    ).indexOf(
+      marker
+    );
+
+
+  if (
+    index <
+    0
+  ) {
+    return null;
+  }
+
+
+  return decodeURIComponent(
+    String(
+      url
+    ).slice(
       index +
       marker.length
     )
@@ -1783,7 +2415,8 @@ async function uploadPropertyImages(
 
 
   for (
-    const file of files
+    const file
+    of files
   ) {
     const safeName =
       file.name
@@ -1819,7 +2452,9 @@ async function uploadPropertyImages(
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
       throw error;
     }
 
@@ -1847,6 +2482,73 @@ async function uploadPropertyImages(
 }
 
 
+async function uploadPropertyVideo(
+  propertyId,
+  file
+) {
+  validateVideoFile(
+    file
+  );
+
+
+  const safeName =
+    file.name
+      .toLowerCase()
+      .replace(
+        /[^a-z0-9._-]+/g,
+        '-'
+      );
+
+
+  const path =
+    `${propertyId}/${crypto.randomUUID()}-${safeName}`;
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .storage
+      .from(
+        'property-videos'
+      )
+      .upload(
+        path,
+        file,
+        {
+          upsert:
+            false,
+
+          contentType:
+            file.type
+        }
+      );
+
+
+  if (
+    error
+  ) {
+    throw error;
+  }
+
+
+  const {
+    data
+  } =
+    supabaseClient
+      .storage
+      .from(
+        'property-videos'
+      )
+      .getPublicUrl(
+        path
+      );
+
+
+  return data.publicUrl;
+}
+
+
 async function removeStorageImages(
   urls
 ) {
@@ -1855,10 +2557,14 @@ async function removeStorageImages(
       .map(
         storagePathFromPublicUrl
       )
-      .filter(Boolean);
+      .filter(
+        Boolean
+      );
 
 
-  if (!paths.length) {
+  if (
+    !paths.length
+  ) {
     return;
   }
 
@@ -1876,9 +2582,58 @@ async function removeStorageImages(
       );
 
 
-  if (error) {
+  if (
+    error
+  ) {
     console.warn(
       'Could not remove property images:',
+      error
+    );
+  }
+}
+
+
+async function removeStorageVideo(
+  url
+) {
+  if (
+    !url
+  ) {
+    return;
+  }
+
+
+  const path =
+    storagePathFromVideoPublicUrl(
+      url
+    );
+
+
+  if (
+    !path
+  ) {
+    return;
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .storage
+      .from(
+        'property-videos'
+      )
+      .remove([
+        path
+      ]);
+
+
+  if (
+    error
+  ) {
+    console.warn(
+      'Could not remove property video:',
       error
     );
   }
@@ -1892,6 +2647,7 @@ async function removeStorageImages(
 propertyForm.addEventListener(
   'submit',
   async event => {
+
     event.preventDefault();
 
 
@@ -1901,7 +2657,20 @@ propertyForm.addEventListener(
       );
 
 
+    let uploadedUrls =
+      [];
+
+
+    let uploadedVideoUrl =
+      null;
+
+
+    let propertySaved =
+      false;
+
+
     try {
+
       saveButton.disabled =
         true;
 
@@ -1919,12 +2688,23 @@ propertyForm.addEventListener(
 
       const files =
         Array.from(
-          imageInput.files || []
+          imageInput.files ||
+          []
         );
 
 
       validateImageFiles(
         files
+      );
+
+
+      const videoFile =
+        videoInput?.files?.[0] ||
+        null;
+
+
+      validateVideoFile(
+        videoFile
       );
 
 
@@ -1938,27 +2718,59 @@ propertyForm.addEventListener(
         [];
 
 
+      const existingVideoUrl =
+        editingProperty?.video_url ||
+        null;
+
+
       if (
         editingProperty &&
         !replaceImages.checked &&
         (
           existingUrls.length +
           files.length
-        ) > 8
+        ) > 15
       ) {
         throw new Error(
-          'A property can have a maximum of 8 images.'
+          'A property can have a maximum of 15 images.'
         );
       }
 
 
-      const uploadedUrls =
+      uploadedUrls =
         files.length
           ? await uploadPropertyImages(
               propertyId,
               files
             )
           : [];
+
+
+      uploadedVideoUrl =
+        videoFile
+          ? await uploadPropertyVideo(
+              propertyId,
+              videoFile
+            )
+          : null;
+
+
+      let finalVideoUrl =
+        existingVideoUrl;
+
+
+      if (
+        uploadedVideoUrl
+      ) {
+        finalVideoUrl =
+          uploadedVideoUrl;
+
+      } else if (
+        removeVideo?.checked
+      ) {
+        finalVideoUrl =
+          null;
+      }
 
 
       let finalImages =
@@ -1968,6 +2780,7 @@ propertyForm.addEventListener(
       if (
         editingProperty
       ) {
+
         if (
           replaceImages.checked
         ) {
@@ -1975,13 +2788,17 @@ propertyForm.addEventListener(
             uploadedUrls.length
               ? uploadedUrls
               : existingUrls;
+
         } else {
+
           finalImages = [
             ...existingUrls,
             ...uploadedUrls
           ];
         }
+
       } else {
+
         finalImages =
           uploadedUrls;
       }
@@ -2019,33 +2836,41 @@ propertyForm.addEventListener(
 
         bedrooms:
           Number(
-            document.getElementById(
-              'bedrooms-input'
-            ).value ||
+            document
+              .getElementById(
+                'bedrooms-input'
+              )
+              .value ||
             0
           ),
 
         bathrooms:
           Number(
-            document.getElementById(
-              'bathrooms-input'
-            ).value ||
+            document
+              .getElementById(
+                'bathrooms-input'
+              )
+              .value ||
             0
           ),
 
         size:
           Number(
-            document.getElementById(
-              'size'
-            ).value ||
+            document
+              .getElementById(
+                'size'
+              )
+              .value ||
             0
           ),
 
         price:
           Number(
-            document.getElementById(
-              'price'
-            ).value
+            document
+              .getElementById(
+                'price'
+              )
+              .value
           ),
 
         currency:
@@ -2067,9 +2892,11 @@ propertyForm.addEventListener(
             .trim(),
 
         featured:
-          document.getElementById(
-            'featured'
-          ).checked,
+          document
+            .getElementById(
+              'featured'
+            )
+            .checked,
 
         published:
           true,
@@ -2080,6 +2907,9 @@ propertyForm.addEventListener(
         images:
           finalImages,
 
+        video_url:
+          finalVideoUrl,
+
         updated_at:
           new Date()
             .toISOString()
@@ -2089,6 +2919,7 @@ propertyForm.addEventListener(
       if (
         editingProperty
       ) {
+
         const {
           error
         } =
@@ -2105,17 +2936,15 @@ propertyForm.addEventListener(
             );
 
 
-        if (error) {
-          if (
-            uploadedUrls.length
-          ) {
-            await removeStorageImages(
-              uploadedUrls
-            );
-          }
-
+        if (
+          error
+        ) {
           throw error;
         }
+
+
+        propertySaved =
+          true;
 
 
         if (
@@ -2125,6 +2954,21 @@ propertyForm.addEventListener(
         ) {
           await removeStorageImages(
             existingUrls
+          );
+        }
+
+
+        if (
+          existingVideoUrl &&
+          (
+            uploadedVideoUrl ||
+            removeVideo?.checked
+          ) &&
+          existingVideoUrl !==
+          finalVideoUrl
+        ) {
+          await removeStorageVideo(
+            existingVideoUrl
           );
         }
 
@@ -2147,17 +2991,15 @@ propertyForm.addEventListener(
             );
 
 
-        if (error) {
-          if (
-            uploadedUrls.length
-          ) {
-            await removeStorageImages(
-              uploadedUrls
-            );
-          }
-
+        if (
+          error
+        ) {
           throw error;
         }
+
+
+        propertySaved =
+          true;
 
 
         showToast(
@@ -2168,18 +3010,45 @@ propertyForm.addEventListener(
 
       await loadProperties();
 
+
       updatePropertyStats();
+
 
       resetPropertyForm();
 
-      showView('dashboard');
+
+      showView(
+        'dashboard'
+      );
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
       console.error(
         error
       );
+
+
+      if (
+        !propertySaved &&
+        uploadedUrls.length
+      ) {
+        await removeStorageImages(
+          uploadedUrls
+        );
+      }
+
+
+      if (
+        !propertySaved &&
+        uploadedVideoUrl
+      ) {
+        await removeStorageVideo(
+          uploadedVideoUrl
+        );
+      }
 
 
       setPropertyFormMessage(
@@ -2194,6 +3063,7 @@ propertyForm.addEventListener(
         'Could not save property.',
         'error'
       );
+
 
     } finally {
 
@@ -2223,7 +3093,9 @@ async function deleteProperty(
     );
 
 
-  if (!confirmed) {
+  if (
+    !confirmed
+  ) {
     return;
   }
 
@@ -2234,7 +3106,9 @@ async function deleteProperty(
       error
     } =
       await supabaseClient
-        .from('properties')
+        .from(
+          'properties'
+        )
         .delete()
         .eq(
           'id',
@@ -2242,13 +3116,21 @@ async function deleteProperty(
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
       throw error;
     }
 
 
     await removeStorageImages(
-      property.images || []
+      property.images ||
+      []
+    );
+
+
+    await removeStorageVideo(
+      property.video_url
     );
 
 
@@ -2262,6 +3144,7 @@ async function deleteProperty(
 
     renderProperties();
 
+
     updatePropertyStats();
 
 
@@ -2269,7 +3152,10 @@ async function deleteProperty(
       'Property deleted.'
     );
 
-  } catch (error) {
+
+  } catch (
+    error
+  ) {
 
     console.error(
       error
@@ -2286,13 +3172,14 @@ async function deleteProperty(
 
 
 /* =========================================================
-   REVIEW FILTERING
+   REVIEW FILTERING + LIST
    ========================================================= */
 
 function getFilteredReviews() {
   const search =
     String(
-      reviewSearch?.value || ''
+      reviewSearch?.value ||
+      ''
     )
       .trim()
       .toLowerCase();
@@ -2305,13 +3192,16 @@ function getFilteredReviews() {
 
   return reviews.filter(
     review => {
+
       const haystack =
         [
           review.name,
           review.review_text,
           review.rating
         ]
-          .join(' ')
+          .join(
+            ' '
+          )
           .toLowerCase();
 
 
@@ -2324,9 +3214,9 @@ function getFilteredReviews() {
 
       const matchesStatus =
         statusFilter ===
-          'all' ||
+        'all' ||
         review.status ===
-          statusFilter;
+        statusFilter;
 
 
       return (
@@ -2338,12 +3228,10 @@ function getFilteredReviews() {
 }
 
 
-/* =========================================================
-   REVIEW LIST
-   ========================================================= */
-
 function renderReviews() {
-  if (!adminReviewList) {
+  if (
+    !adminReviewList
+  ) {
     return;
   }
 
@@ -2353,105 +3241,110 @@ function renderReviews() {
 
 
   adminReviewList.innerHTML =
-    filtered.map(
-      review => {
+    filtered
+      .map(
+        review => {
 
-        const rating =
-          Math.max(
-            1,
-            Math.min(
-              5,
-              Number(
-                review.rating || 0
+          const rating =
+            Math.max(
+              1,
+              Math.min(
+                5,
+                Number(
+                  review.rating ||
+                  0
+                )
               )
-            )
-          );
+            );
 
 
-        const reviewText =
-          String(
-            review.review_text || ''
-          ).trim();
+          const reviewText =
+            String(
+              review.review_text ||
+              ''
+            ).trim();
 
 
-        return `
-          <article
-            class="admin-review-card"
-            data-review-id="${escapeHTML(review.id)}"
-          >
+          return `
+            <article
+              class="admin-review-card"
+              data-review-id="${escapeHTML(review.id)}"
+            >
 
-            <div class="admin-review-top">
+              <div class="admin-review-top">
 
-              <div>
-                <h3 class="admin-review-name">
-                  ${escapeHTML(review.name)}
-                </h3>
+                <div>
 
-                <span class="admin-review-date">
-                  Submitted ${escapeHTML(
-                    formatDate(
-                      review.created_at
+                  <h3 class="admin-review-name">
+                    ${escapeHTML(review.name)}
+                  </h3>
+
+                  <span class="admin-review-date">
+                    Submitted ${escapeHTML(
+                      formatDate(
+                        review.created_at
+                      )
+                    )}
+                  </span>
+
+                </div>
+
+
+                <span
+                  class="review-status-badge ${escapeHTML(review.status)}"
+                >
+                  ${escapeHTML(
+                    reviewStatusLabel(
+                      review.status
                     )
                   )}
                 </span>
+
               </div>
 
 
-              <span
-                class="review-status-badge ${escapeHTML(review.status)}"
+              <div
+                class="admin-review-stars"
+                aria-label="${rating} out of 5 stars"
               >
-                ${escapeHTML(
-                  reviewStatusLabel(
-                    review.status
-                  )
+                ${renderReviewStars(
+                  rating
                 )}
-              </span>
-
-            </div>
+              </div>
 
 
-            <div
-              class="admin-review-stars"
-              aria-label="${rating} out of 5 stars"
-            >
-              ${renderReviewStars(
-                rating
-              )}
-            </div>
-
-
-            ${
-              reviewText
-                ? `
+              ${
+                reviewText
+                  ? `
                     <p class="admin-review-text">
                       ${escapeHTML(reviewText)}
                     </p>
                   `
-                : `
+                  : `
                     <p class="admin-review-text admin-review-no-text">
                       No written review was supplied.
                     </p>
                   `
-            }
+              }
 
 
-            <div class="admin-review-footer">
+              <div class="admin-review-footer">
 
-              <small class="muted">
-                Last updated ${escapeHTML(
-                  formatDate(
-                    review.updated_at
-                  )
-                )}
-              </small>
+                <small class="muted">
+                  Last updated ${escapeHTML(
+                    formatDate(
+                      review.updated_at
+                    )
+                  )}
+                </small>
 
 
-              <div class="admin-review-actions">
+                <div class="admin-review-actions">
 
-                ${
-                  review.status !==
+                  ${
+                    review.status !==
                     'approved'
-                    ? `
+                      ? `
                         <button
                           class="review-action-button review-approve-button"
                           type="button"
@@ -2461,14 +3354,14 @@ function renderReviews() {
                           Approve
                         </button>
                       `
-                    : ''
-                }
+                      : ''
+                  }
 
 
-                ${
-                  review.status !==
+                  ${
+                    review.status !==
                     'rejected'
-                    ? `
+                      ? `
                         <button
                           class="review-action-button review-reject-button"
                           type="button"
@@ -2478,14 +3371,14 @@ function renderReviews() {
                           Reject
                         </button>
                       `
-                    : ''
-                }
+                      : ''
+                  }
 
 
-                ${
-                  review.status !==
+                  ${
+                    review.status !==
                     'pending'
-                    ? `
+                      ? `
                         <button
                           class="review-action-button secondary-button"
                           type="button"
@@ -2495,38 +3388,40 @@ function renderReviews() {
                           Set pending
                         </button>
                       `
-                    : ''
-                }
+                      : ''
+                  }
 
 
-                <button
-                  class="review-action-button review-delete-button"
-                  type="button"
-                  data-delete-review="${escapeHTML(review.id)}"
-                >
-                  Delete
-                </button>
+                  <button
+                    class="review-action-button review-delete-button"
+                    type="button"
+                    data-delete-review="${escapeHTML(review.id)}"
+                  >
+                    Delete
+                  </button>
+
+                </div>
 
               </div>
 
-            </div>
+            </article>
+          `;
+        }
+      )
+      .join(
+        ''
+      );
 
-          </article>
-        `;
-      }
-    ).join('');
 
-
-  if (reviewEmptyState) {
+  if (
+    reviewEmptyState
+  ) {
     reviewEmptyState.hidden =
-      filtered.length > 0;
+      filtered.length >
+      0;
   }
 }
 
-
-/* =========================================================
-   REVIEW MODERATION
-   ========================================================= */
 
 async function updateReviewStatus(
   reviewId,
@@ -2557,9 +3452,12 @@ async function updateReviewStatus(
       error
     } =
       await supabaseClient
-        .from('reviews')
+        .from(
+          'reviews'
+        )
         .update({
           status,
+
           updated_at:
             new Date()
               .toISOString()
@@ -2580,7 +3478,9 @@ async function updateReviewStatus(
         .single();
 
 
-    if (error) {
+    if (
+      error
+    ) {
       throw error;
     }
 
@@ -2588,26 +3488,33 @@ async function updateReviewStatus(
     reviews =
       reviews.map(
         review =>
-          review.id === data.id
+          review.id ===
+          data.id
             ? data
             : review
       );
 
 
     renderReviews();
+
+
     updateReviewStats();
 
 
     showToast(
-      status === 'approved'
+      status ===
+      'approved'
         ? 'Review approved and published.'
-        : status === 'rejected'
+        : status ===
+          'rejected'
           ? 'Review rejected.'
           : 'Review returned to pending.'
     );
 
 
-  } catch (error) {
+  } catch (
+    error
+  ) {
 
     console.error(
       error
@@ -2629,11 +3536,14 @@ async function deleteReview(
   const review =
     reviews.find(
       item =>
-        item.id === reviewId
+        item.id ===
+        reviewId
     );
 
 
-  if (!review) {
+  if (
+    !review
+  ) {
     return;
   }
 
@@ -2644,7 +3554,9 @@ async function deleteReview(
     );
 
 
-  if (!confirmed) {
+  if (
+    !confirmed
+  ) {
     return;
   }
 
@@ -2655,7 +3567,9 @@ async function deleteReview(
       error
     } =
       await supabaseClient
-        .from('reviews')
+        .from(
+          'reviews'
+        )
         .delete()
         .eq(
           'id',
@@ -2663,7 +3577,9 @@ async function deleteReview(
         );
 
 
-    if (error) {
+    if (
+      error
+    ) {
       throw error;
     }
 
@@ -2671,11 +3587,14 @@ async function deleteReview(
     reviews =
       reviews.filter(
         item =>
-          item.id !== reviewId
+          item.id !==
+          reviewId
       );
 
 
     renderReviews();
+
+
     updateReviewStats();
 
 
@@ -2684,7 +3603,9 @@ async function deleteReview(
     );
 
 
-  } catch (error) {
+  } catch (
+    error
+  ) {
 
     console.error(
       error
@@ -2701,13 +3622,14 @@ async function deleteReview(
 
 
 /* =========================================================
-   REQUEST FILTERING
+   REQUEST FILTERING + LIST
    ========================================================= */
 
 function getFilteredRequests() {
   const search =
     String(
-      requestSearch?.value || ''
+      requestSearch?.value ||
+      ''
     )
       .trim()
       .toLowerCase();
@@ -2725,6 +3647,7 @@ function getFilteredRequests() {
 
   return requests.filter(
     request => {
+
       const haystack = [
         request.reference,
         request.name,
@@ -2734,7 +3657,9 @@ function getFilteredRequests() {
         request.property_reference,
         request.property_type
       ]
-        .join(' ')
+        .join(
+          ' '
+        )
         .toLowerCase();
 
 
@@ -2747,16 +3672,16 @@ function getFilteredRequests() {
 
       const matchesStatus =
         statusFilter ===
-          'all' ||
+        'all' ||
         request.status ===
-          statusFilter;
+        statusFilter;
 
 
       const matchesType =
         typeFilter ===
-          'all' ||
+        'all' ||
         request.request_type ===
-          typeFilter;
+        typeFilter;
 
 
       return (
@@ -2769,12 +3694,10 @@ function getFilteredRequests() {
 }
 
 
-/* =========================================================
-   REQUEST LIST
-   ========================================================= */
-
 function renderRequests() {
-  if (!requestList) {
+  if (
+    !requestList
+  ) {
     return;
   }
 
@@ -2784,84 +3707,94 @@ function renderRequests() {
 
 
   requestList.innerHTML =
-    filtered.map(
-      request => `
-        <button
-          class="request-list-item ${
-            activeRequestId === request.id
-              ? 'active'
-              : ''
-          }"
-          type="button"
-          data-request-id="${escapeHTML(request.id)}"
-        >
+    filtered
+      .map(
+        request => `
+          <button
+            class="request-list-item ${
+              activeRequestId ===
+              request.id
+                ? 'active'
+                : ''
+            }"
+            type="button"
+            data-request-id="${escapeHTML(request.id)}"
+          >
 
-          <div class="request-list-top">
+            <div class="request-list-top">
 
-            <span class="request-list-reference">
-              ${escapeHTML(request.reference)}
-            </span>
+              <span class="request-list-reference">
+                ${escapeHTML(request.reference)}
+              </span>
 
-            <span class="request-list-date">
-              ${escapeHTML(
-                formatShortDate(
-                  request.created_at
-                )
-              )}
-            </span>
+              <span class="request-list-date">
+                ${escapeHTML(
+                  formatShortDate(
+                    request.created_at
+                  )
+                )}
+              </span>
 
-          </div>
-
-
-          <h3 class="request-list-name">
-            ${escapeHTML(request.name)}
-          </h3>
+            </div>
 
 
-          <p class="request-list-location">
-            ${escapeHTML(request.location)}
-          </p>
+            <h3 class="request-list-name">
+              ${escapeHTML(request.name)}
+            </h3>
 
 
-          <div class="request-list-footer">
-
-            <span class="request-type-badge ${escapeHTML(request.request_type)}">
-              ${escapeHTML(
-                requestTypeLabel(
-                  request.request_type
-                )
-              )}
-            </span>
+            <p class="request-list-location">
+              ${escapeHTML(request.location)}
+            </p>
 
 
-            <span class="request-status-badge ${escapeHTML(request.status)}">
-              ${escapeHTML(
-                requestStatusLabel(
-                  request.status
-                )
-              )}
-            </span>
+            <div class="request-list-footer">
 
-          </div>
-
-        </button>
-      `
-    ).join('');
+              <span
+                class="request-type-badge ${escapeHTML(request.request_type)}"
+              >
+                ${escapeHTML(
+                  requestTypeLabel(
+                    request.request_type
+                  )
+                )}
+              </span>
 
 
-  if (requestEmptyState) {
+              <span
+                class="request-status-badge ${escapeHTML(request.status)}"
+              >
+                ${escapeHTML(
+                  requestStatusLabel(
+                    request.status
+                  )
+                )}
+              </span>
+
+            </div>
+
+          </button>
+        `
+      )
+      .join(
+        ''
+      );
+
+
+  if (
+    requestEmptyState
+  ) {
     requestEmptyState.hidden =
-      filtered.length > 0;
+      filtered.length >
+      0;
   }
 }
 
 
-/* =========================================================
-   DASHBOARD REQUESTS
-   ========================================================= */
-
 function renderDashboardRequests() {
-  if (!dashboardRequestList) {
+  if (
+    !dashboardRequestList
+  ) {
     return;
   }
 
@@ -2874,78 +3807,87 @@ function renderDashboardRequests() {
 
 
   dashboardRequestList.innerHTML =
-    latest.map(
-      request => `
-        <button
-          class="dashboard-request-item"
-          type="button"
-          data-dashboard-request="${escapeHTML(request.id)}"
-        >
+    latest
+      .map(
+        request => `
+          <button
+            class="dashboard-request-item"
+            type="button"
+            data-dashboard-request="${escapeHTML(request.id)}"
+          >
 
-          <div class="dashboard-request-main">
+            <div class="dashboard-request-main">
 
-            <strong>
-              ${escapeHTML(request.name)}
-            </strong>
+              <strong>
+                ${escapeHTML(request.name)}
+              </strong>
 
-            <small>
-              ${escapeHTML(request.reference)}
-            </small>
+              <small>
+                ${escapeHTML(request.reference)}
+              </small>
 
-          </div>
-
-
-          <div class="dashboard-request-meta request-location">
-
-            <strong>
-              ${escapeHTML(request.location)}
-            </strong>
-
-            <small>
-              Location
-            </small>
-
-          </div>
+            </div>
 
 
-          <div class="dashboard-request-meta request-type-column">
+            <div class="dashboard-request-meta request-location">
 
-            <strong>
+              <strong>
+                ${escapeHTML(request.location)}
+              </strong>
+
+              <small>
+                Location
+              </small>
+
+            </div>
+
+
+            <div class="dashboard-request-meta request-type-column">
+
+              <strong>
+                ${escapeHTML(
+                  requestTypeLabel(
+                    request.request_type
+                  )
+                )}
+              </strong>
+
+              <small>
+                Request
+              </small>
+
+            </div>
+
+
+            <span
+              class="request-status-badge ${escapeHTML(request.status)}"
+            >
               ${escapeHTML(
-                requestTypeLabel(
-                  request.request_type
+                requestStatusLabel(
+                  request.status
                 )
               )}
-            </strong>
-
-            <small>
-              Request
-            </small>
-
-          </div>
+            </span>
 
 
-          <span class="request-status-badge ${escapeHTML(request.status)}">
-            ${escapeHTML(
-              requestStatusLabel(
-                request.status
-              )
-            )}
-          </span>
+            <span aria-hidden="true">
+              →
+            </span>
+
+          </button>
+        `
+      )
+      .join(
+        ''
+      );
 
 
-          <span aria-hidden="true">
-            →
-          </span>
-
-        </button>
-      `
-    ).join('');
-
-
-  if (dashboardRequestEmpty) {
+  if (
+    dashboardRequestEmpty
+  ) {
     dashboardRequestEmpty.hidden =
-      latest.length > 0;
+      latest.length >
+      0;
   }
 }
 
@@ -2964,15 +3906,18 @@ function displayRequest(
   requestDetailPlaceholder.hidden =
     true;
 
+
   requestDetailContent.hidden =
     false;
 
 
-  document.getElementById(
-    'request-detail-reference'
-  ).textContent =
-    request.reference ||
-    '—';
+  document
+    .getElementById(
+      'request-detail-reference'
+    )
+    .textContent =
+      request.reference ||
+      '—';
 
 
   const statusBadge =
@@ -3007,19 +3952,23 @@ function displayRequest(
     `request-type-badge ${request.request_type}`;
 
 
-  document.getElementById(
-    'request-detail-created'
-  ).textContent =
-    formatDate(
-      request.created_at
-    );
+  document
+    .getElementById(
+      'request-detail-created'
+    )
+    .textContent =
+      formatDate(
+        request.created_at
+      );
 
 
-  document.getElementById(
-    'request-detail-name'
-  ).textContent =
-    request.name ||
-    '—';
+  document
+    .getElementById(
+      'request-detail-name'
+    )
+    .textContent =
+      request.name ||
+      '—';
 
 
   const emailElement =
@@ -3056,57 +4005,71 @@ function displayRequest(
       : '#';
 
 
-  document.getElementById(
-    'request-detail-contact'
-  ).textContent =
-    contactMethodLabel(
-      request.preferred_contact
-    ) ||
-    '—';
+  document
+    .getElementById(
+      'request-detail-contact'
+    )
+    .textContent =
+      contactMethodLabel(
+        request.preferred_contact
+      ) ||
+      '—';
 
 
-  document.getElementById(
-    'request-detail-location'
-  ).textContent =
-    request.location ||
-    '—';
+  document
+    .getElementById(
+      'request-detail-location'
+    )
+    .textContent =
+      request.location ||
+      '—';
 
 
-  document.getElementById(
-    'request-detail-property-type'
-  ).textContent =
-    propertyTypeLabel(
-      request.property_type
-    );
+  document
+    .getElementById(
+      'request-detail-property-type'
+    )
+    .textContent =
+      propertyTypeLabel(
+        request.property_type
+      );
 
 
-  document.getElementById(
-    'request-detail-budget'
-  ).textContent =
-    formatRequestBudget(
-      request
-    );
+  document
+    .getElementById(
+      'request-detail-budget'
+    )
+    .textContent =
+      formatRequestBudget(
+        request
+      );
 
 
-  document.getElementById(
-    'request-detail-bedrooms'
-  ).textContent =
-    request.bedrooms ??
-    'Not specified';
+  document
+    .getElementById(
+      'request-detail-bedrooms'
+    )
+    .textContent =
+      request.bedrooms ??
+      'Not specified';
 
 
-  document.getElementById(
-    'request-detail-property-reference'
-  ).textContent =
-    request.property_reference ||
-    'None';
+  document
+    .getElementById(
+      'request-detail-property-reference'
+    )
+    .textContent =
+      request.property_reference ||
+      'None';
 
 
-  document.getElementById(
-    'request-detail-message'
-  ).textContent =
-    request.message ||
-    '—';
+  document
+    .getElementById(
+      'request-detail-message'
+    )
+    .textContent =
+      request.message ||
+      '—';
 
 
   requestStatusSelect.value =
@@ -3121,6 +4084,7 @@ function displayRequest(
   requestSaveMessage.textContent =
     '';
 
+
   requestSaveMessage.className =
     'form-message';
 
@@ -3133,9 +4097,11 @@ function displayRequest(
 
   emailButton.href =
     request.email
-      ? `mailto:${request.email}?subject=${encodeURIComponent(
-          `Helen Estates Realtors — ${request.reference}`
-        )}`
+      ? `mailto:${request.email}?subject=${
+          encodeURIComponent(
+            `Helen Estates Realtors — ${request.reference}`
+          )
+        }`
       : '#';
 
 
@@ -3186,7 +4152,9 @@ async function saveActiveRequest() {
     );
 
 
-  if (!request) {
+  if (
+    !request
+  ) {
     return;
   }
 
@@ -3230,7 +4198,9 @@ async function saveActiveRequest() {
       error
     } =
       await supabaseClient
-        .from('requests')
+        .from(
+          'requests'
+        )
         .update(
           updates
         )
@@ -3242,7 +4212,9 @@ async function saveActiveRequest() {
         .single();
 
 
-    if (error) {
+    if (
+      error
+    ) {
       throw error;
     }
 
@@ -3250,7 +4222,8 @@ async function saveActiveRequest() {
     requests =
       requests.map(
         item =>
-          item.id === data.id
+          item.id ===
+          data.id
             ? data
             : item
       );
@@ -3258,9 +4231,12 @@ async function saveActiveRequest() {
 
     updateRequestStats();
 
+
     renderDashboardRequests();
 
+
     renderRequests();
+
 
     displayRequest(
       data
@@ -3279,7 +4255,10 @@ async function saveActiveRequest() {
       'Request updated.'
     );
 
-  } catch (error) {
+
+  } catch (
+    error
+  ) {
 
     console.error(
       error
@@ -3300,6 +4279,7 @@ async function saveActiveRequest() {
       'Could not save request.',
       'error'
     );
+
 
   } finally {
 
@@ -3326,7 +4306,9 @@ async function deleteActiveRequest() {
     );
 
 
-  if (!request) {
+  if (
+    !request
+  ) {
     return;
   }
 
@@ -3340,7 +4322,9 @@ async function deleteActiveRequest() {
     );
 
 
-  if (!confirmed) {
+  if (
+    !confirmed
+  ) {
     return;
   }
 
@@ -3360,23 +4344,30 @@ async function deleteActiveRequest() {
       error
     } =
       await supabaseClient
-        .from('requests')
+        .from(
+          'requests'
+        )
         .delete()
         .eq(
           'id',
           request.id
         )
-        .select('id');
+        .select(
+          'id'
+        );
 
 
-    if (error) {
+    if (
+      error
+    ) {
       throw error;
     }
 
 
     if (
       !data ||
-      data.length === 0
+      data.length ===
+      0
     ) {
       throw new Error(
         'The request could not be deleted. Please refresh and try again.'
@@ -3398,7 +4389,9 @@ async function deleteActiveRequest() {
 
     updateRequestStats();
 
+
     renderDashboardRequests();
+
 
     renderRequests();
 
@@ -3424,7 +4417,9 @@ async function deleteActiveRequest() {
     );
 
 
-  } catch (error) {
+  } catch (
+    error
+  ) {
 
     console.error(
       error
@@ -3454,7 +4449,7 @@ async function deleteActiveRequest() {
    PROPERTY EVENTS
    ========================================================= */
 
-propertyList.addEventListener(
+propertyList?.addEventListener(
   'click',
   event => {
 
@@ -3464,8 +4459,9 @@ propertyList.addEventListener(
       );
 
 
-    if (editButton) {
-
+    if (
+      editButton
+    ) {
       const property =
         properties.find(
           item =>
@@ -3474,11 +4470,14 @@ propertyList.addEventListener(
         );
 
 
-      if (property) {
+      if (
+        property
+      ) {
         startEditProperty(
           property
         );
       }
+
 
       return;
     }
@@ -3490,8 +4489,9 @@ propertyList.addEventListener(
       );
 
 
-    if (deleteButton) {
-
+    if (
+      deleteButton
+    ) {
       const property =
         properties.find(
           item =>
@@ -3500,7 +4500,9 @@ propertyList.addEventListener(
         );
 
 
-      if (property) {
+      if (
+        property
+      ) {
         deleteProperty(
           property
         );
@@ -3537,6 +4539,7 @@ currencySelect?.addEventListener(
 imageInput?.addEventListener(
   'change',
   () => {
+
     try {
 
       const files =
@@ -3558,7 +4561,10 @@ imageInput?.addEventListener(
 
       setPropertyFormMessage();
 
-    } catch (error) {
+
+    } catch (
+      error
+    ) {
 
       imageInput.value =
         '';
@@ -3577,6 +4583,77 @@ imageInput?.addEventListener(
 );
 
 
+videoInput?.addEventListener(
+  'change',
+  () => {
+
+    try {
+
+      const file =
+        videoInput.files?.[0] ||
+        null;
+
+
+      validateVideoFile(
+        file
+      );
+
+
+      renderNewVideoPreview(
+        file
+      );
+
+
+      if (
+        file &&
+        removeVideo
+      ) {
+        removeVideo.checked =
+          false;
+      }
+
+
+      setPropertyFormMessage();
+
+
+    } catch (
+      error
+    ) {
+
+      videoInput.value =
+        '';
+
+
+      clearNewVideoPreview();
+
+
+      setPropertyFormMessage(
+        error.message,
+        'error'
+      );
+    }
+  }
+);
+
+
+removeVideo?.addEventListener(
+  'change',
+  () => {
+
+    if (
+      removeVideo.checked &&
+      videoInput
+    ) {
+      videoInput.value =
+        '';
+
+
+      clearNewVideoPreview();
+    }
+  }
+);
+
+
 /* =========================================================
    DRAG AND DROP IMAGES
    ========================================================= */
@@ -3590,7 +4667,9 @@ imageInput?.addEventListener(
     uploadZone?.addEventListener(
       eventName,
       event => {
+
         event.preventDefault();
+
 
         uploadZone.classList.add(
           'dragover'
@@ -3610,7 +4689,9 @@ imageInput?.addEventListener(
     uploadZone?.addEventListener(
       eventName,
       event => {
+
         event.preventDefault();
+
 
         uploadZone.classList.remove(
           'dragover'
@@ -3660,7 +4741,140 @@ uploadZone?.addEventListener(
       );
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
+
+      showToast(
+        error.message,
+        'error'
+      );
+    }
+  }
+);
+
+
+/* =========================================================
+   DRAG AND DROP VIDEO
+   ========================================================= */
+
+[
+  'dragenter',
+  'dragover'
+].forEach(
+  eventName => {
+
+    videoUploadZone?.addEventListener(
+      eventName,
+      event => {
+
+        event.preventDefault();
+
+
+        videoUploadZone.classList.add(
+          'dragover'
+        );
+      }
+    );
+  }
+);
+
+
+[
+  'dragleave',
+  'drop'
+].forEach(
+  eventName => {
+
+    videoUploadZone?.addEventListener(
+      eventName,
+      event => {
+
+        event.preventDefault();
+
+
+        videoUploadZone.classList.remove(
+          'dragover'
+        );
+      }
+    );
+  }
+);
+
+
+videoUploadZone?.addEventListener(
+  'drop',
+  event => {
+
+    const files =
+      Array.from(
+        event.dataTransfer?.files ||
+        []
+      );
+
+
+    const file =
+      files[0] ||
+      null;
+
+
+    try {
+
+      if (
+        files.length >
+        1
+      ) {
+        throw new Error(
+          'Please upload one property video only.'
+        );
+      }
+
+
+      validateVideoFile(
+        file
+      );
+
+
+      if (
+        !file ||
+        !videoInput
+      ) {
+        return;
+      }
+
+
+      const transfer =
+        new DataTransfer();
+
+
+      transfer.items.add(
+        file
+      );
+
+
+      videoInput.files =
+        transfer.files;
+
+
+      renderNewVideoPreview(
+        file
+      );
+
+
+      if (
+        removeVideo
+      ) {
+        removeVideo.checked =
+          false;
+      }
+
+
+      setPropertyFormMessage();
+
+
+    } catch (
+      error
+    ) {
 
       showToast(
         error.message,
@@ -3685,7 +4899,9 @@ requestList?.addEventListener(
       );
 
 
-    if (!button) {
+    if (
+      !button
+    ) {
       return;
     }
 
@@ -3698,7 +4914,9 @@ requestList?.addEventListener(
       );
 
 
-    if (request) {
+    if (
+      request
+    ) {
       displayRequest(
         request
       );
@@ -3717,7 +4935,9 @@ dashboardRequestList?.addEventListener(
       );
 
 
-    if (!button) {
+    if (
+      !button
+    ) {
       return;
     }
 
@@ -3730,7 +4950,9 @@ dashboardRequestList?.addEventListener(
       );
 
 
-    if (!request) {
+    if (
+      !request
+    ) {
       return;
     }
 
@@ -3786,12 +5008,18 @@ document
     async () => {
 
       try {
+
         await loadRequests();
-      } catch (error) {
+
+      } catch (
+        error
+      ) {
+
         console.error(
           error
         );
       }
+
 
       showView(
         'requests'
@@ -3814,11 +5042,14 @@ adminReviewList?.addEventListener(
       );
 
 
-    if (statusButton) {
+    if (
+      statusButton
+    ) {
       updateReviewStatus(
         statusButton.dataset.reviewId,
         statusButton.dataset.reviewStatus
       );
+
 
       return;
     }
@@ -3830,7 +5061,9 @@ adminReviewList?.addEventListener(
       );
 
 
-    if (deleteButton) {
+    if (
+      deleteButton
+    ) {
       deleteReview(
         deleteButton.dataset.deleteReview
       );
@@ -3876,6 +5109,7 @@ document
           ) {
             startAddProperty();
 
+
             return;
           }
 
@@ -3885,11 +5119,17 @@ document
             'requests'
           ) {
             try {
+
               await loadRequests();
-            } catch (error) {
+
+            } catch (
+              error
+            ) {
+
               console.error(
                 error
               );
+
 
               showToast(
                 'Could not refresh requests.',
@@ -3904,11 +5144,17 @@ document
             'reviews'
           ) {
             try {
+
               await loadReviews();
-            } catch (error) {
+
+            } catch (
+              error
+            ) {
+
               console.error(
                 error
               );
+
 
               showToast(
                 'Could not refresh reviews.',
@@ -3923,17 +5169,25 @@ document
             'dashboard'
           ) {
             try {
+
               await Promise.all([
                 loadProperties(),
                 loadRequests(),
                 loadReviews()
               ]);
 
+
               updatePropertyStats();
+
               updateRequestStats();
+
               updateReviewStats();
 
-            } catch (error) {
+
+            } catch (
+              error
+            ) {
+
               console.error(
                 error
               );
@@ -3970,6 +5224,7 @@ document
 
       resetPropertyForm();
 
+
       showView(
         'dashboard'
       );
@@ -3988,14 +5243,16 @@ loginForm.addEventListener(
     event.preventDefault();
 
 
-    if (!supabaseClient) {
-
+    if (
+      !supabaseClient
+    ) {
       loginMessage.textContent =
         'Supabase has not been connected yet. Complete supabase-config.js first.';
 
 
       loginMessage.className =
         'form-message error';
+
 
       return;
     }
@@ -4011,9 +5268,11 @@ loginForm.addEventListener(
 
 
     const password =
-      document.getElementById(
-        'admin-password'
-      ).value;
+      document
+        .getElementById(
+          'admin-password'
+        )
+        .value;
 
 
     loginMessage.textContent =
@@ -4037,7 +5296,9 @@ loginForm.addEventListener(
           });
 
 
-      if (error) {
+      if (
+        error
+      ) {
         throw error;
       }
 
@@ -4046,8 +5307,9 @@ loginForm.addEventListener(
         await getAuthorizedAdmin();
 
 
-      if (!admin) {
-
+      if (
+        !admin
+      ) {
         await supabaseClient
           .auth
           .signOut();
@@ -4069,7 +5331,9 @@ loginForm.addEventListener(
       await enterAdmin();
 
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
       console.error(
         error
@@ -4102,7 +5366,9 @@ logoutButton?.addEventListener(
         ?.auth
         .signOut();
 
-    } catch (error) {
+    } catch (
+      error
+    ) {
 
       console.error(
         error
@@ -4110,17 +5376,24 @@ logoutButton?.addEventListener(
     }
 
 
+    clearNewVideoPreview();
+
+
     properties =
       [];
+
 
     requests =
       [];
 
+
     reviews =
       [];
 
+
     activeRequestId =
       null;
+
 
     editingProperty =
       null;
@@ -4136,11 +5409,13 @@ logoutButton?.addEventListener(
    ========================================================= */
 
 async function restoreSession() {
-  if (!supabaseClient) {
-
+  if (
+    !supabaseClient
+  ) {
     showLogin(
       'Supabase has not been connected yet. Complete supabase-config.js first.'
     );
+
 
     return;
   }
@@ -4156,8 +5431,11 @@ async function restoreSession() {
         .getSession();
 
 
-    if (!data.session) {
+    if (
+      !data.session
+    ) {
       showLogin();
+
 
       return;
     }
@@ -4166,7 +5444,9 @@ async function restoreSession() {
     await enterAdmin();
 
 
-  } catch (error) {
+  } catch (
+    error
+  ) {
 
     console.error(
       error
@@ -4196,6 +5476,7 @@ supabaseClient
       ) {
         appShell.hidden =
           true;
+
 
         loginScreen.hidden =
           false;
