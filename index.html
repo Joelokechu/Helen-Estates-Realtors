@@ -1,1950 +1,329 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123d2e">
+  <meta name="description" content="Eze Green Energy Company in Saint Lucia. Browse biofuel, home care and everyday essentials, then submit an order request for in-person payment.">
+  <title>Eze Green Energy Company | Made in Saint Lucia</title>
 
-  <meta charset="UTF-8" />
+  <link rel="icon" href="/brand/egec-logo.png?v=2" type="image/png">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/orders.css?v=1">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  />
-
-  <meta
-    name="description"
-    content="Helen Estates Realtors — a modern property service for buying, renting, selling and advertising property."
-  />
-
-  <meta
-    name="theme-color"
-    content="#063b37"
-  />
-
-  <title>
-    Helen Estates Realtors | Buy, Rent & Sell Property
-  </title>
-
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  />
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
-    rel="stylesheet"
-  />
-
-  <link
-    rel="stylesheet"
-    href="styles.css"
-  />
-
-  <link
-  rel="icon"
-  type="image/png"
-  href="Helen Estates Realtors Logo 1.png"
-  />
-
-  <script src="supabase-config.js"></script>
-
-  <style>
-    /* Keep the expanded currency-aware search on one row on large screens. */
-    @media (min-width: 1141px) {
-      .search-form {
-        grid-template-columns: 1.4fr repeat(5, 1fr) auto;
-      }
-    }
-  </style>
-
+  <script src="/config.js" defer></script>
+  <script src="/app.js?v=3" defer></script>
 </head>
 
+<body id="top">
+  <div class="announcement">
+    Made in Saint Lucia <span>·</span> Browse the range
+    <span>·</span> Pay in person
+  </div>
 
-<body>
-
-
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
-
-  <header
-    class="site-header"
-    id="top"
-  >
-
-    <div class="container nav-wrap">
-
-      <a
-        class="brand"
-        href="#top"
-        aria-label="Helen Estates Realtors home"
-      >
-
-        <span class="brand-badge">
-
-          <img
-            class="brand-logo brand-logo-header"
-            src="Helen Estates Realtors Logo 1.png"
-            alt="Helen Estates Realtors logo"
-          />
-
-        </span>
-
-
-        <span class="brand-wordmark">
-
-          <strong>
-            Helen Estates
-          </strong>
-
-          <small>
-            Realtors
-          </small>
-
-        </span>
-
+  <header class="site-header">
+    <div class="header-inner wrap">
+      <a class="brand" href="#top" aria-label="Eze Green Energy Company home">
+        <img src="/brand/egec-logo.png"
+             alt="Eze Green Energy Company" width="240" height="155">
       </a>
 
-
-      <button
-        class="nav-toggle"
-        type="button"
-        aria-expanded="false"
-        aria-controls="main-navigation"
-        aria-label="Open navigation"
-      >
-
-        <span></span>
-        <span></span>
-        <span></span>
-
-      </button>
-
-
-      <nav
-        class="main-nav"
-        id="main-navigation"
-        aria-label="Main navigation"
-      >
-
-        <a
-          class="active"
-          href="#top"
-        >
-          Home
-        </a>
-
-        <a
-          href="#properties"
-          data-filter-link="buy"
-        >
-          Buy
-        </a>
-
-        <a
-          href="#properties"
-          data-filter-link="rent"
-        >
-          Rent
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="sell"
-        >
-          Sell
-        </a>
-
-        <a href="#request">
-          Property request
-        </a>
-
-        <a href="liked.html">
-          Liked
-        </a>
-
-        <a href="#about">
-          About
-        </a>
-
-        <a href="#contact">
-          Contact
-        </a>
-
+      <nav aria-label="Main navigation">
+        <a href="#shop">SHOP</a>
+        <a href="#values">Our approach</a>
+        <a href="#contact">Contact</a>
       </nav>
 
-
-      <a
-        class="button button-accent header-cta"
-        href="#request"
-      >
-        Start a request
-      </a>
-
+      <button class="cart-toggle" id="cart-toggle" type="button"
+              aria-controls="cart-panel" aria-haspopup="dialog">
+        <span aria-hidden="true">▢</span> Cart
+        <span id="cart-count" class="cart-count" hidden>0</span>
+      </button>
     </div>
-
   </header>
 
-
   <main>
+    <section class="hero wrap" aria-labelledby="hero-heading">
+      <div class="hero-copy">
+        <div class="hero-orbit" aria-hidden="true"></div>
 
-
-    <!-- =====================================================
-         HERO
-         ===================================================== -->
-
-    <section
-      class="hero"
-      aria-labelledby="hero-title"
-    >
-
-      <div class="hero-overlay"></div>
-
-      <div
-        class="tropical-orb tropical-orb-one"
-        aria-hidden="true"
-      ></div>
-
-      <div
-        class="tropical-orb tropical-orb-two"
-        aria-hidden="true"
-      ></div>
-
-
-      <div class="container hero-content">
-
-        <p class="eyebrow light">
-          Helen Estates Realtors
-        </p>
-
-
-        <h1 id="hero-title">
-          Property made<br />
-          more personal.
-        </h1>
-
-
-        <p class="hero-copy">
-          Discover homes, investment opportunities and rentals
-          — or tell us exactly what you need and let us help
-          you find it.
-        </p>
-
+        <div class="hero-top">
+          <span class="eyebrow light">
+            Biofuel · Home care · Everyday essentials
+          </span>
+          <h1 id="hero-heading">Fuel better.<br><em>Clean smarter.</em></h1>
+          <p>
+            Practical biofuel and household essentials from Saint Lucia,
+            brought together in one straightforward shop.
+          </p>
+        </div>
 
         <div class="hero-actions">
-
-          <a
-            class="button button-accent"
-            href="#properties"
-          >
-            Explore properties
-
-            <span aria-hidden="true">
-              →
-            </span>
+          <a class="button button-gold" href="#shop">
+            Shop the range <span aria-hidden="true">↗</span>
           </a>
-
-
-          <a
-            class="button button-ghost"
-            href="#request"
-          >
-            Tell us what you need
-          </a>
-
+          <span>Locally made in Saint Lucia</span>
         </div>
-
-
-        <div
-          class="hero-proof"
-          aria-label="Helen Estates service promise"
-        >
-
-          <span>Buy</span>
-
-          <i></i>
-
-          <span>Rent</span>
-
-          <i></i>
-
-          <span>Sell</span>
-
-          <i></i>
-
-          <span>Advertise</span>
-
-        </div>
-
       </div>
 
-    </section>
-
-
-    <!-- =====================================================
-         PROPERTY SEARCH
-         ===================================================== -->
-
-    <section
-      class="property-search"
-      aria-label="Property search"
-    >
-
-      <div class="container">
-
-        <div class="search-shell">
-
-          <div class="search-intro">
-
-            <p class="eyebrow">
-              Find your property
-            </p>
-
-            <h2>
-              Search what is available
-            </h2>
-
-          </div>
-
-
-          <div
-            class="search-tabs"
-            role="tablist"
-            aria-label="Property search type"
-          >
-
-            <button
-              class="search-tab active"
-              type="button"
-              role="tab"
-              aria-selected="true"
-              data-mode="buy"
-            >
-              Buy
-            </button>
-
-
-            <button
-              class="search-tab"
-              type="button"
-              role="tab"
-              aria-selected="false"
-              data-mode="rent"
-            >
-              Rent
-            </button>
-
-          </div>
-
-
-          <form
-            class="search-form"
-            id="property-search-form"
-          >
-
-            <label>
-
-              <span>
-                Location
-              </span>
-
-              <input
-                id="location"
-                type="text"
-                placeholder="Area, town or district"
-              />
-
-            </label>
-
-
-            <label>
-
-              <span>
-                Property type
-              </span>
-
-              <select id="property-type">
-
-                <option value="any">
-                  Any type
-                </option>
-
-                <option value="house">
-                  House / Villa
-                </option>
-
-                <option value="apartment">
-                  Apartment / Condo
-                </option>
-
-                <option value="land">
-                  Land
-                </option>
-
-                <option value="commercial">
-                  Commercial
-                </option>
-
-              </select>
-
-            </label>
-
-            <label>
-
-              <span>
-                Currency
-              </span>
-
-              <select id="search-currency">
-
-                <option value="XCD">
-                  XCD — EC$
-                </option>
-
-                <option
-                  value="USD"
-                  selected
-                >
-                  USD — US$
-                </option>
-
-                <option value="GBP">
-                  GBP — £
-                </option>
-
-              </select>
-
-            </label>
-
-
-            <label>
-
-              <span>
-                Min price
-              </span>
-
-              <select id="min-price"></select>
-
-            </label>
-
-
-            <label>
-
-              <span>
-                Max price
-              </span>
-
-              <select id="max-price"></select>
-
-            </label>
-
-
-            <label>
-
-              <span>
-                Bedrooms
-              </span>
-
-              <select id="bedrooms">
-
-                <option value="any">
-                  Any
-                </option>
-
-                <option value="1">
-                  1+
-                </option>
-
-                <option value="2">
-                  2+
-                </option>
-
-                <option value="3">
-                  3+
-                </option>
-
-                <option value="4">
-                  4+
-                </option>
-
-              </select>
-
-            </label>
-
-
-            <button
-              class="button button-accent search-button"
-              type="submit"
-            >
-
-              Search
-
-              <span aria-hidden="true">
-                ⌕
-              </span>
-
-            </button>
-
-          </form>
-
-
-          <p
-            class="search-message"
-            id="search-message"
-            aria-live="polite"
-          ></p>
-
+      <div class="hero-photo">
+        <img src="/products/range.png"
+             alt="EGEC range of household cleaning products"
+             fetchpriority="high">
+        <span class="photo-tag">EGEC · Everyday essentials</span>
+        <div class="photo-note">
+          <strong>Choose online. Arrange in person.</strong>
+          <small>Browse products and send your order request.</small>
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         PROPERTIES
-         ===================================================== -->
-
-    <section
-      class="section properties-section"
-      id="properties"
-    >
-
-      <div class="container">
-
-        <div class="section-heading-row">
-
+    <section id="shop" class="shop-section" aria-labelledby="shop-heading">
+      <div class="wrap">
+        <div class="section-heading">
           <div>
-
-            <p class="eyebrow">
-              Current portfolio
-            </p>
-
-            <h2>
-              Featured properties
-            </h2>
-
-            <p class="section-copy">
-              Listings published from the Helen Estates
-              management system will appear here automatically.
-            </p>
-
+            <p class="overline">THE EGEC COLLECTION</p>
+            <h2 id="shop-heading">Good things for<br>everyday living.</h2>
           </div>
-
-
-          <button
-            class="text-link view-all-button"
-            id="view-all-properties"
-            type="button"
-          >
-
-            View all properties
-
-            <span aria-hidden="true">
-              →
-            </span>
-
-          </button>
-
-        </div>
-
-
-        <div
-          class="property-grid"
-          id="property-grid"
-          aria-live="polite"
-        >
-
-          <p
-            class="properties-loading"
-            id="properties-loading"
-          >
-            Loading properties…
-          </p>
-
-        </div>
-
-
-        <p
-          class="properties-status"
-          id="properties-status"
-          hidden
-        ></p>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         PROPERTY REQUEST
-         ===================================================== -->
-
-    <section
-      class="request-section"
-      id="request"
-    >
-
-      <div class="container request-grid">
-
-        <div class="request-copy">
-
-          <p class="eyebrow light">
-            Property request desk
-          </p>
-
-
-          <h2>
-            Tell us what you need.<br />
-            We’ll take it from there.
-          </h2>
-
-
           <p>
-            Buying, renting, selling or advertising a property?
-            Submit a request with the essentials. It will become
-            a ticket in the private Helen Estates admin dashboard
-            so the team can follow up directly.
+            Explore the range, select quantities in units, and send
+            an order request. Our team confirms pricing, availability
+            and fulfilment.
           </p>
-
-
-          <div
-            class="request-steps"
-            aria-label="How the property request service works"
-          >
-
-            <article>
-
-              <span>
-                01
-              </span>
-
-              <div>
-
-                <strong>
-                  Submit your request
-                </strong>
-
-                <p>
-                  Share your contact details and the basics
-                  of what you need.
-                </p>
-
-              </div>
-
-            </article>
-
-
-            <article>
-
-              <span>
-                02
-              </span>
-
-              <div>
-
-                <strong>
-                  We review it
-                </strong>
-
-                <p>
-                  Your request appears in the private admin
-                  queue with a unique reference.
-                </p>
-
-              </div>
-
-            </article>
-
-
-            <article>
-
-              <span>
-                03
-              </span>
-
-              <div>
-
-                <strong>
-                  Keep your receipt
-                </strong>
-
-                <p>
-                  We email your reference number and a secure
-                  link so you can check the request status
-                  without creating an account.
-                </p>
-
-              </div>
-
-            </article>
-
-
-            <article>
-
-              <span>
-                04
-              </span>
-
-              <div>
-
-                <strong>
-                  We contact you
-                </strong>
-
-                <p>
-                  Helen Estates aims to contact you within two
-                  working days to understand the requirement
-                  and agree the next step.
-                </p>
-
-              </div>
-
-            </article>
-
-          </div>
-
         </div>
 
-
-        <div class="ticket-card">
-
-          <div class="ticket-card-head">
-
-            <p class="eyebrow">
-              Open a property request
-            </p>
-
-            <h3>
-              How can we help?
-            </h3>
-
-            <p>
-              Fields marked * are required.
-            </p>
-
-          </div>
-
-
-          <form
-            id="ticket-form"
-            class="ticket-form"
-          >
-
-            <div
-              class="hp-field"
-              aria-hidden="true"
-            >
-
-              <label>
-
-                Website
-
-                <input
-                  name="website"
-                  type="text"
-                  tabindex="-1"
-                  autocomplete="off"
-                />
-
-              </label>
-
-            </div>
-
-
-            <div class="form-row form-row-three">
-
-              <label class="choice-card">
-
-                <input
-                  type="radio"
-                  name="requestType"
-                  value="buy"
-                  checked
-                />
-
-                <span>
-                  Buy
-                </span>
-
-              </label>
-
-
-              <label class="choice-card">
-
-                <input
-                  type="radio"
-                  name="requestType"
-                  value="rent"
-                />
-
-                <span>
-                  Rent
-                </span>
-
-              </label>
-
-
-              <label class="choice-card">
-
-                <input
-                  type="radio"
-                  name="requestType"
-                  value="sell"
-                />
-
-                <span>
-                  Sell / Advertise
-                </span>
-
-              </label>
-
-            </div>
-
-
-            <div class="form-row form-row-two">
-
-              <label>
-
-                Full name *
-
-                <input
-                  id="ticket-name"
-                  name="name"
-                  type="text"
-                  autocomplete="name"
-                  required
-                />
-
-              </label>
-
-
-              <label>
-
-                Email *
-
-                <input
-                  id="ticket-email"
-                  name="email"
-                  type="email"
-                  autocomplete="email"
-                  required
-                />
-
-              </label>
-
-            </div>
-
-
-            <div class="form-row form-row-two">
-
-              <label>
-
-                Phone / WhatsApp *
-
-                <input
-                  id="ticket-phone"
-                  name="phone"
-                  type="tel"
-                  autocomplete="tel"
-                  required
-                />
-
-              </label>
-
-
-              <label>
-
-                Preferred contact
-
-                <select
-                  id="ticket-contact-method"
-                  name="contactMethod"
-                >
-
-                  <option value="phone">
-                    Phone
-                  </option>
-
-                  <option value="whatsapp">
-                    WhatsApp
-                  </option>
-
-                  <option value="email">
-                    Email
-                  </option>
-
-                </select>
-
-              </label>
-
-            </div>
-
-
-            <div class="form-row form-row-two">
-
-              <label>
-
-                Preferred area / property location *
-
-                <input
-                  id="ticket-location"
-                  name="location"
-                  type="text"
-                  required
-                  placeholder="e.g. area, town, community"
-                />
-
-              </label>
-
-
-              <label>
-
-                Property type
-
-                <select
-                  id="ticket-property-type"
-                  name="propertyType"
-                >
-
-                  <option value="any">
-                    Any / Not sure
-                  </option>
-
-                  <option value="house">
-                    House / Villa
-                  </option>
-
-                  <option value="apartment">
-                    Apartment / Condo
-                  </option>
-
-                  <option value="land">
-                    Land
-                  </option>
-
-                  <option value="commercial">
-                    Commercial
-                  </option>
-
-                </select>
-
-              </label>
-
-            </div>
-
-
-            <div class="form-row form-row-three">
-
-              <label>
-
-                Currency
-
-                <select
-                  id="ticket-currency"
-                  name="budgetCurrency"
-                >
-
-                  <option value="XCD">
-                    XCD
-                  </option>
-
-                  <option
-                    value="USD"
-                    selected
-                  >
-                    USD
-                  </option>
-
-                  <option value="GBP">
-                    GBP
-                  </option>
-
-                </select>
-
-              </label>
-
-
-              <label id="ticket-budget-label">
-
-                Budget / target price
-
-                <input
-                  id="ticket-budget"
-                  name="budget"
-                  type="text"
-                  placeholder="e.g. 350,000"
-                />
-
-              </label>
-
-
-              <label>
-
-                Bedrooms
-
-                <select
-                  id="ticket-bedrooms"
-                  name="bedrooms"
-                >
-
-                  <option value="">
-                    Not specified
-                  </option>
-
-                  <option value="1">
-                    1+
-                  </option>
-
-                  <option value="2">
-                    2+
-                  </option>
-
-                  <option value="3">
-                    3+
-                  </option>
-
-                  <option value="4">
-                    4+
-                  </option>
-
-                  <option value="5">
-                    5+
-                  </option>
-
-                </select>
-
-              </label>
-
-            </div>
-
-
-            <label>
-
-              Tell us a little more *
-
-              <textarea
-                id="ticket-message"
-                name="message"
-                rows="5"
-                required
-                placeholder="Describe the property you want to find, sell, rent or advertise."
-              ></textarea>
-
-            </label>
-
-
-            <input
-              id="ticket-property-reference"
-              name="propertyReference"
-              type="hidden"
-              value=""
-            />
-
-
-            <label class="consent-row">
-
-              <input
-                id="ticket-consent"
-                type="checkbox"
-                required
-              />
-
-              <span>
-                I agree that Helen Estates Realtors may use
-                these details to contact me about this request.
-              </span>
-
-            </label>
-
-
-            <button
-              class="button button-accent ticket-submit"
-              type="submit"
-            >
-
-              Submit property request
-
-              <span aria-hidden="true">
-                →
-              </span>
-
-            </button>
-
-
-            <p
-              class="ticket-message"
-              id="ticket-message-status"
-              aria-live="polite"
-            ></p>
-
-          </form>
-
-
-          <section
-            class="ticket-confirmation"
-            id="ticket-confirmation"
-            hidden
-            aria-live="polite"
-          >
-
-            <div
-              class="confirmation-icon"
-              aria-hidden="true"
-            >
-              ✓
-            </div>
-
-
-            <p class="eyebrow">
-              Request received
-            </p>
-
-
-            <h3>
-              Thank you,
-              <span id="confirmation-name">
-                there
-              </span>.
-            </h3>
-
-
-            <p>
-              Your Helen Estates Realtors request has been
-              recorded. We aim to contact you within two
-              working days.
-            </p>
-
-
-            <div class="confirmation-reference">
-
-              <span>
-                Your reference
-              </span>
-
-              <strong id="confirmation-reference">
-                —
-              </strong>
-
-            </div>
-
-
-            <p
-              class="confirmation-email-note"
-              id="confirmation-email-note"
-            ></p>
-
-
-            <a
-              class="button button-accent"
-              id="confirmation-status-link"
-              href="request-status.html"
-              hidden
-            >
-
-              View request status
-
-              <span aria-hidden="true">
-                →
-              </span>
-
-            </a>
-
-
-            <button
-              class="text-link confirmation-new-request"
-              id="new-request-button"
-              type="button"
-            >
-              Submit another request
-            </button>
-
-          </section>
-
+        <div class="filters" id="filters" role="group"
+             aria-label="Filter products by category"></div>
+
+        <div class="product-grid" id="product-grid" aria-busy="true">
+          <p>Loading the EGEC collection…</p>
         </div>
 
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         ABOUT
-         ===================================================== -->
-
-    <section
-      class="about-section"
-      id="about"
-    >
-
-      <div class="container about-grid">
-
-        <div class="about-image">
-
-          <img
-            src="about.jpg"
-            alt="Bright, elegant interior"
-          />
-
-          <div class="image-note">
-            Personal service. Modern marketing. Local knowledge.
-          </div>
-
-        </div>
-
-
-        <div class="about-copy">
-
-          <p class="eyebrow">
-            About Helen Estates Realtors
-          </p>
-
-
-          <h2>
-            Property service with a human touch.
-          </h2>
-
-
+        <noscript>
           <p>
-            Helen Estates Realtors is built around a simple
-            idea: make it easier for people to find the right
-            opportunity and easier for owners to put their
-            property in front of serious prospects.
+            Please enable JavaScript to browse the catalogue.
+            You can also contact
+            <a href="mailto:ezegreenenergy@gmail.com">
+              ezegreenenergy@gmail.com
+            </a> to enquire about products.
           </p>
+        </noscript>
 
-
-          <div
-            class="service-pills"
-            aria-label="Services"
-          >
-
-            <span>
-              Property sales
-            </span>
-
-            <span>
-              Long-term rentals
-            </span>
-
-            <span>
-              Property sourcing
-            </span>
-
-            <span>
-              Owner advertising
-            </span>
-
-          </div>
-
-
-          <a
-            class="button button-dark"
-            href="#request"
-          >
-            Open a property request
-          </a>
-
-        </div>
-
+        <p class="shop-footnote">
+          Prices are in EC dollars (XCD). Product images are illustrative.
+          Sizes, prices and availability are confirmed by EGEC before
+          an order is agreed.
+        </p>
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         SERVICES
-         ===================================================== -->
-
-    <section
-      class="services-section"
-      id="services"
-    >
-
-      <div class="container">
-
-        <div class="section-heading centered">
-
-          <p class="eyebrow">
-            How we can help
+    <section id="values" class="approach wrap"
+             aria-labelledby="approach-heading">
+      <div class="approach-grid">
+        <div class="approach-copy">
+          <p class="overline">OUR APPROACH</p>
+          <h2 id="approach-heading">Rooted in<br>Saint Lucia.</h2>
+          <p>
+            Eze Green Energy Company brings together biofuel, home care
+            and personal care. From washing-up liquid to laundry
+            essentials, the range supports the everyday needs of
+            homes and businesses.
           </p>
-
-          <h2>
-            One place for both sides of the property search
-          </h2>
-
+          <p>
+            Choose the products and quantities you need. Our team can
+            then confirm availability, pricing, collection or delivery,
+            and payment in person.
+          </p>
         </div>
 
-
-        <div class="services-grid">
-
+        <div class="steps">
           <article>
-
-            <span>
-              01
-            </span>
-
-            <h3>
-              Find a property
-            </h3>
-
-            <p>
-              Tell us what you want to buy or rent and create
-              a request even if the ideal listing is not yet
-              on the website.
-            </p>
-
-            <a
-              href="#request"
-              data-request-link="buy"
-            >
-              Start buying request →
-            </a>
-
-          </article>
-
-
-          <article>
-
-            <span>
-              02
-            </span>
-
-            <h3>
-              Advertise a property
-            </h3>
-
-            <p>
-              Owners can submit the essentials and Helen
-              Estates can follow up to prepare the property
-              for listing.
-            </p>
-
-            <a
-              href="#request"
-              data-request-link="sell"
-            >
-              Advertise property →
-            </a>
-
-          </article>
-
-
-          <article>
-
-            <span>
-              03
-            </span>
-
-            <h3>
-              Enquire on a listing
-            </h3>
-
-            <p>
-              Every property can be connected to the same
-              ticket system so enquiries arrive with the
-              listing reference attached.
-            </p>
-
-            <a href="#properties">
-              Browse listings →
-            </a>
-
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- =====================================================
-         REVIEWS
-         ===================================================== -->
-
-    <section
-      class="reviews-section"
-      id="reviews"
-    >
-
-      <div class="container">
-
-
-        <div class="reviews-heading">
-
-          <div>
-
-            <p class="eyebrow">
-              Customer experiences
-            </p>
-
-            <h2>
-              What our clients say.
-            </h2>
-
-            <p class="section-copy">
-              Read experiences shared by people who have
-              worked with Helen Estates Realtors.
-            </p>
-
-          </div>
-
-
-          <div
-            class="review-summary"
-            id="review-summary"
-            aria-label="Average customer rating"
-          >
-
-            <strong
-              class="review-average"
-              id="review-average"
-            >
-              —
-            </strong>
-
-
+            <span class="step-icon">01</span>
             <div>
-
-              <div
-                class="review-summary-stars"
-                id="review-summary-stars"
-                aria-hidden="true"
-              >
-                ☆☆☆☆☆
-              </div>
-
-              <p id="review-count">
-                No approved reviews yet
-              </p>
-
+              <h3>Choose your units</h3>
+              <p>Browse by category and add the quantities you need.</p>
             </div>
+          </article>
 
-          </div>
-
-        </div>
-
-
-        <div class="reviews-layout">
-
-
-          <!-- APPROVED REVIEWS -->
-
-          <div class="reviews-display">
-
-            <div
-              class="reviews-list"
-              id="reviews-list"
-              aria-live="polite"
-            >
-
-              <div class="reviews-loading">
-                Loading reviews…
-              </div>
-
-            </div>
-
-          </div>
-
-
-          <!-- REVIEW FORM -->
-
-          <aside class="review-form-card">
-
-            <p class="eyebrow">
-              Share your experience
-            </p>
-
-
-            <h3>
-              Leave a review.
-            </h3>
-
-
-            <p class="review-form-intro">
-              Tell others about your experience with
-              Helen Estates Realtors.
-            </p>
-
-
-            <form
-              class="review-form"
-              id="review-form"
-            >
-
-
-              <!-- Spam protection -->
-
-              <div
-                class="hp-field"
-                aria-hidden="true"
-              >
-
-                <label>
-
-                  Website
-
-                  <input
-                    name="website"
-                    type="text"
-                    tabindex="-1"
-                    autocomplete="off"
-                  />
-
-                </label>
-
-              </div>
-
-
-              <label class="review-name-field">
-
-                Your name *
-
-                <input
-                  id="review-name"
-                  name="name"
-                  type="text"
-                  autocomplete="name"
-                  maxlength="80"
-                  required
-                />
-
-              </label>
-
-
-              <fieldset
-                class="review-rating-fieldset"
-              >
-
-                <legend>
-                  Your rating *
-                </legend>
-
-
-                <div
-                  class="review-rating"
-                  aria-label="Choose a rating from one to five stars"
-                >
-
-                  <input
-                    id="review-star-5"
-                    name="rating"
-                    type="radio"
-                    value="5"
-                    required
-                  />
-
-                  <label
-                    for="review-star-5"
-                    title="5 stars"
-                    aria-label="5 stars"
-                  >
-                    ★
-                  </label>
-
-
-                  <input
-                    id="review-star-4"
-                    name="rating"
-                    type="radio"
-                    value="4"
-                  />
-
-                  <label
-                    for="review-star-4"
-                    title="4 stars"
-                    aria-label="4 stars"
-                  >
-                    ★
-                  </label>
-
-
-                  <input
-                    id="review-star-3"
-                    name="rating"
-                    type="radio"
-                    value="3"
-                  />
-
-                  <label
-                    for="review-star-3"
-                    title="3 stars"
-                    aria-label="3 stars"
-                  >
-                    ★
-                  </label>
-
-
-                  <input
-                    id="review-star-2"
-                    name="rating"
-                    type="radio"
-                    value="2"
-                  />
-
-                  <label
-                    for="review-star-2"
-                    title="2 stars"
-                    aria-label="2 stars"
-                  >
-                    ★
-                  </label>
-
-
-                  <input
-                    id="review-star-1"
-                    name="rating"
-                    type="radio"
-                    value="1"
-                  />
-
-                  <label
-                    for="review-star-1"
-                    title="1 star"
-                    aria-label="1 star"
-                  >
-                    ★
-                  </label>
-
-                </div>
-
-              </fieldset>
-
-
-              <label>
-
-                Review
-
-                <textarea
-                  id="review-text"
-                  name="reviewText"
-                  rows="5"
-                  maxlength="1500"
-                  placeholder="Tell us about your experience..."
-                ></textarea>
-
-              </label>
-
-
-              <p class="review-moderation-note">
-                Reviews are checked before they are published.
+          <article>
+            <span class="step-icon">02</span>
+            <div>
+              <h3>Send your request</h3>
+              <p>
+                Enter your contact details and submit your selection.
+                Receive an order reference and email confirmation.
               </p>
+            </div>
+          </article>
 
-
-              <button
-                class="button button-accent review-submit"
-                type="submit"
-              >
-
-                Submit review
-
-                <span aria-hidden="true">
-                  →
-                </span>
-
-              </button>
-
-
-              <p
-                class="review-message"
-                id="review-message"
-                aria-live="polite"
-              ></p>
-
-            </form>
-
-          </aside>
-
+          <article>
+            <span class="step-icon">03</span>
+            <div>
+              <h3>Arrange fulfilment</h3>
+              <p>
+                EGEC confirms the details and arranges payment in person.
+              </p>
+            </div>
+          </article>
         </div>
-
       </div>
 
-    </section>
+      <div class="about-gallery">
+        <figure>
+          <img src="/about/community.jpeg"
+               alt="EGEC in Saint Lucia's business community"
+               loading="lazy">
+          <figcaption>
+            Our story in Saint Lucia’s business community.
+          </figcaption>
+        </figure>
 
-
-    <!-- =====================================================
-         CLOSING CTA
-         ===================================================== -->
-
-    <section class="closing-cta">
-
-      <div class="container closing-cta-inner">
-
-        <div>
-
-          <p class="eyebrow light">
-            Not seeing what you need?
-          </p>
-
-          <h2>
-            Make the first move.
-          </h2>
-
-        </div>
-
-
-        <a
-          class="button button-light"
-          href="#request"
-        >
-          Create a property request
-        </a>
-
+        <figure class="award">
+          <img src="/about/energy-globe.jpeg"
+               alt="2020 Energy Globe National Award for Saint Lucia"
+               loading="lazy">
+          <figcaption>
+            2020 Energy Globe National Award · Saint Lucia
+          </figcaption>
+        </figure>
       </div>
-
     </section>
-
   </main>
 
-
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
-
-  <footer
-    class="site-footer"
-    id="contact"
-  >
-
-    <div class="container footer-grid">
-
-      <div class="footer-brand">
-
-        <a
-          class="brand brand-footer"
-          href="#top"
-          aria-label="Helen Estates Realtors home"
-        >
-
-          <span
-            class="brand-badge brand-badge-footer"
-          >
-
-            <img
-              class="brand-logo brand-logo-footer"
-              src="Helen Estates Realtors Logo 1.png"
-              alt="Helen Estates Realtors logo"
-            />
-
-          </span>
-
-
-          <span
-            class="brand-wordmark brand-wordmark-footer"
-          >
-
-            <strong>
-              Helen Estates
-            </strong>
-
-            <small>
-              Realtors
-            </small>
-
-          </span>
-
+  <footer id="contact">
+    <div class="wrap footer-inner">
+      <div>
+        <a class="footer-brand" href="#top">
+          <img src="/brand/egec-logo.png"
+               alt="Eze Green Energy Company" width="176" height="76">
         </a>
-
-
         <p>
-          Helping people buy, rent, sell and advertise
-          property through one straightforward service.
+          Eze Green Energy Company · Biofuel, household essentials
+          and personal care.<br>
+          Odsan Industrial Estate, Castries, Saint Lucia.
         </p>
-
       </div>
 
-
-      <div>
-
-        <h3>
-          Explore
-        </h3>
-
-        <a href="#properties">
-          Properties
+      <div class="footer-links">
+        <strong>Get in touch</strong>
+        <a href="mailto:ezegreenenergy@gmail.com">
+          ezegreenenergy@gmail.com
         </a>
-
-        <a
-          href="#properties"
-          data-filter-link="buy"
-        >
-          Buy
-        </a>
-
-        <a
-          href="#properties"
-          data-filter-link="rent"
-        >
-          Rent
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="sell"
-        >
-          Sell / Advertise
-        </a>
-
+        <a href="tel:+17582845019">+1 758 284 5019</a>
+        <span>Orders are arranged directly with our team.</span>
       </div>
-
-
-      <div>
-
-        <h3>
-          Requests
-        </h3>
-
-        <a
-          href="#request"
-          data-request-link="buy"
-        >
-          Find to buy
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="rent"
-        >
-          Find to rent
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="sell"
-        >
-          List a property
-        </a>
-
-      </div>
-
-
-      <div>
-
-        <h3>
-          Company
-        </h3>
-
-        <a href="#about">
-          About
-        </a>
-
-        <a href="#services">
-          Services
-        </a>
-
-        <a href="#reviews">
-          Reviews
-        </a>
-
-        <a href="#contact">
-          Contact
-        </a>
-
-      </div>
-
-
-      <div class="footer-contact">
-
-  <h3>
-    Contact
-  </h3>
-
-  <p>
-    <strong>Patricia</strong><br />
-    Helen Estates Realtors
-  </p>
-
-  <a href="tel:+17584856585">
-    +1 (758) 485-6585
-  </a>
-
-  <a
-    href="https://wa.me/17584856585"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    WhatsApp
-  </a>
-
-  <a href="mailto:Helenestates@outlook.com">
-    Helenestates@outlook.com
-  </a>
-
-  <p>
-    Castries, St. Lucia
-  </p>
-
-  <a href="#request">
-    Open a property request →
-  </a>
-
-</div>
-
     </div>
 
-
-    <div class="container footer-bottom">
-
-      <p>
-        ©
-        <span id="current-year"></span>
-        Helen Estates Realtors.
-        All rights reserved.
-      </p>
-
-
-      <div>
-
-        <a href="#">
-          Privacy policy
-        </a>
-
-        <a href="#">
-          Terms &amp; conditions
-        </a>
-
-      </div>
-
+    <div class="wrap copyright">
+      © <span id="year"></span> Eze Green Energy Company
     </div>
-
   </footer>
 
+  <div id="cart-backdrop" class="backdrop" hidden></div>
 
-  <a
-    class="floating-request"
-    href="#request"
-    aria-label="Open a property request"
-  >
+  <aside id="cart-panel" class="cart-panel" role="dialog"
+         aria-modal="true" aria-labelledby="cart-heading"
+         aria-hidden="true" tabindex="-1">
+    <div class="cart-head">
+      <div>
+        <p class="overline">YOUR SELECTION</p>
+        <h2 id="cart-heading">Your cart</h2>
+        <p id="cart-intro">Your cart is currently empty.</p>
+      </div>
 
-    <span>
-      +
-    </span>
+      <button class="icon-close" id="cart-close" type="button"
+              aria-label="Close cart">×</button>
+    </div>
 
-    Property request
+    <div class="cart-scroll">
+      <div id="cart-lines" class="cart-lines"></div>
 
-  </a>
+      <div id="order-result" class="order-result"
+           role="status" tabindex="-1" hidden></div>
 
+      <form id="order-form" class="order-form" hidden>
+        <fieldset id="order-fields">
+          <legend>Your details</legend>
+          <p class="order-help">
+            We’ll use these details to confirm your request and arrange
+            collection or delivery.
+          </p>
 
-  <button
-    class="back-to-top"
-    type="button"
-    aria-label="Back to top"
-  >
-    ↑
-  </button>
+          <label for="customer-name">Full name</label>
+          <input id="customer-name" name="customer_name"
+                 type="text" autocomplete="name"
+                 maxlength="200" required>
 
+          <label for="customer-email">Email address</label>
+          <input id="customer-email" name="customer_email"
+                 type="email" autocomplete="email"
+                 maxlength="254" required>
 
-  <script src="script.js"></script>
+          <label for="customer-phone">Phone number</label>
+          <input id="customer-phone" name="customer_phone"
+                 type="tel" autocomplete="tel"
+                 minlength="5" maxlength="40" required>
 
-  <script src="reviews.js"></script>
+          <label for="fulfilment-method">Collection or delivery?</label>
+          <select id="fulfilment-method" name="fulfilment_method">
+            <option value="collection">Collection</option>
+            <option value="delivery">Request delivery</option>
+          </select>
 
-  <script src="animations.js"></script>
+          <div id="delivery-fields" hidden>
+            <label for="delivery-address">Delivery address in Saint Lucia</label>
+            <textarea id="delivery-address" name="delivery_address"
+                      autocomplete="street-address"
+                      maxlength="1000" rows="3" disabled></textarea>
+            <p class="order-help">
+              Delivery availability and any charges are confirmed by EGEC.
+            </p>
+          </div>
 
+          <label for="customer-notes">Additional notes <span>(optional)</span></label>
+          <textarea id="customer-notes" name="customer_notes"
+                    maxlength="2000" rows="3"
+                    placeholder="Tell us anything we should know about your request."></textarea>
+
+          <div class="order-trap" aria-hidden="true">
+            <label for="order-website">Website</label>
+            <input id="order-website" name="website"
+                   type="text" tabindex="-1" autocomplete="off">
+          </div>
+
+          <label class="order-agreement">
+            <input id="order-agreement" type="checkbox" required>
+            <span>
+              I understand that this is an order request. EGEC will confirm
+              prices and availability, and payment will be arranged in person.
+            </span>
+          </label>
+        </fieldset>
+      </form>
+
+      <p id="order-message" class="order-message"
+         role="status" tabindex="-1" hidden></p>
+    </div>
+
+    <div class="cart-bottom">
+      <p>
+        <strong>Payment in person</strong><br>
+        No online payment is taken. EGEC will confirm prices
+        and availability before proceeding.
+      </p>
+
+      <button id="order-button" class="button button-dark"
+              type="submit" form="order-form" disabled>
+        Send order request <span aria-hidden="true">↗</span>
+      </button>
+
+      <small>
+        Your request will be saved and confirmation emails will be
+        submitted to you and EGEC. Keep the order reference shown afterwards.
+      </small>
+    </div>
+  </aside>
+
+  <div id="status" class="sr-only" role="status" aria-live="polite"></div>
 </body>
-
 </html>
