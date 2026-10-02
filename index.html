@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8" />
 
   <meta
@@ -15,101 +13,59 @@
     content="Helen Estates Realtors — a modern property service for buying, renting, selling and advertising property."
   />
 
-  <meta
-    name="theme-color"
-    content="#063b37"
-  />
+  <meta name="theme-color" content="#063b37" />
 
-  <title>
-    Helen Estates Realtors | Buy, Rent & Sell Property
-  </title>
+  <title>Helen Estates Realtors | Buy, Rent & Sell Property</title>
 
-  <link
-    rel="preconnect"
-    href="https://fonts.googleapis.com"
-  />
-
-  <link
-    rel="preconnect"
-    href="https://fonts.gstatic.com"
-    crossorigin
-  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600&display=swap"
     rel="stylesheet"
   />
 
-  <link
-    rel="stylesheet"
-    href="styles.css"
-  />
+  <link rel="stylesheet" href="styles.css" />
 
   <link
-  rel="icon"
-  type="image/png"
-  href="Helen Estates Realtors Logo 1.png"
+    rel="icon"
+    type="image/png"
+    href="Helen Estates Realtors Logo 1.png"
   />
 
   <script src="supabase-config.js"></script>
 
   <style>
-    /* Keep the expanded currency-aware search on one row on large screens. */
     @media (min-width: 1141px) {
       .search-form {
         grid-template-columns: 1.4fr repeat(5, 1fr) auto;
       }
     }
   </style>
-
 </head>
 
-
 <body>
-
-
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
-
-  <header
-    class="site-header"
-    id="top"
-  >
-
+  <!-- HEADER -->
+  <header class="site-header" id="top">
     <div class="container nav-wrap">
-
       <a
         class="brand"
         href="#top"
         aria-label="Helen Estates Realtors home"
       >
-
         <span class="brand-badge">
-
           <img
             class="brand-logo brand-logo-header"
             src="Helen Estates Realtors Logo 1.png"
             alt="Helen Estates Realtors logo"
           />
-
         </span>
-
 
         <span class="brand-wordmark">
-
-          <strong>
-            Helen Estates
-          </strong>
-
-          <small>
-            Realtors
-          </small>
-
+          <strong>Helen Estates</strong>
+          <small>Realtors</small>
         </span>
-
       </a>
-
 
       <button
         class="nav-toggle"
@@ -118,66 +74,25 @@
         aria-controls="main-navigation"
         aria-label="Open navigation"
       >
-
         <span></span>
         <span></span>
         <span></span>
-
       </button>
-
 
       <nav
         class="main-nav"
         id="main-navigation"
         aria-label="Main navigation"
       >
-
-        <a
-          class="active"
-          href="#top"
-        >
-          Home
-        </a>
-
-        <a
-          href="#properties"
-          data-filter-link="buy"
-        >
-          Buy
-        </a>
-
-        <a
-          href="#properties"
-          data-filter-link="rent"
-        >
-          Rent
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="sell"
-        >
-          Sell
-        </a>
-
-        <a href="#request">
-          Property request
-        </a>
-
-        <a href="liked.html">
-          Liked
-        </a>
-
-        <a href="#about">
-          About
-        </a>
-
-        <a href="#contact">
-          Contact
-        </a>
-
+        <a class="active" href="#top">Home</a>
+        <a href="#properties" data-filter-link="buy">Buy</a>
+        <a href="#properties" data-filter-link="rent">Rent</a>
+        <a href="#request" data-request-link="sell">Sell</a>
+        <a href="#request">Property request</a>
+        <a href="liked.html">Liked</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
       </nav>
-
 
       <a
         class="button button-accent header-cta"
@@ -185,24 +100,12 @@
       >
         Start a request
       </a>
-
     </div>
-
   </header>
 
-
   <main>
-
-
-    <!-- =====================================================
-         HERO
-         ===================================================== -->
-
-    <section
-      class="hero"
-      aria-labelledby="hero-title"
-    >
-
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
       <div class="hero-overlay"></div>
 
       <div
@@ -215,19 +118,13 @@
         aria-hidden="true"
       ></div>
 
-
       <div class="container hero-content">
-
-        <p class="eyebrow light">
-          Helen Estates Realtors
-        </p>
-
+        <p class="eyebrow light">Helen Estates Realtors</p>
 
         <h1 id="hero-title">
           Property made<br />
           more personal.
         </h1>
-
 
         <p class="hero-copy">
           Discover homes, investment opportunities and rentals
@@ -235,89 +132,46 @@
           you find it.
         </p>
 
-
         <div class="hero-actions">
-
-          <a
-            class="button button-accent"
-            href="#properties"
-          >
+          <a class="button button-accent" href="#properties">
             Explore properties
-
-            <span aria-hidden="true">
-              →
-            </span>
+            <span aria-hidden="true">→</span>
           </a>
 
-
-          <a
-            class="button button-ghost"
-            href="#request"
-          >
+          <a class="button button-ghost" href="#request">
             Tell us what you need
           </a>
-
         </div>
-
 
         <div
           class="hero-proof"
           aria-label="Helen Estates service promise"
         >
-
           <span>Buy</span>
-
           <i></i>
-
           <span>Rent</span>
-
           <i></i>
-
           <span>Sell</span>
-
           <i></i>
-
           <span>Advertise</span>
-
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         PROPERTY SEARCH
-         ===================================================== -->
-
-    <section
-      class="property-search"
-      aria-label="Property search"
-    >
-
+    <!-- PROPERTY SEARCH -->
+    <section class="property-search" aria-label="Property search">
       <div class="container">
-
         <div class="search-shell">
-
           <div class="search-intro">
-
-            <p class="eyebrow">
-              Find your property
-            </p>
-
-            <h2>
-              Search what is available
-            </h2>
-
+            <p class="eyebrow">Find your property</p>
+            <h2>Search what is available</h2>
           </div>
-
 
           <div
             class="search-tabs"
             role="tablist"
             aria-label="Property search type"
           >
-
             <button
               class="search-tab active"
               type="button"
@@ -328,7 +182,6 @@
               Buy
             </button>
 
-
             <button
               class="search-tab"
               type="button"
@@ -338,272 +191,129 @@
             >
               Rent
             </button>
-
           </div>
 
-
-          <form
-            class="search-form"
-            id="property-search-form"
-          >
-
+          <form class="search-form" id="property-search-form">
             <label>
-
-              <span>
-                Location
-              </span>
-
+              <span>Location</span>
               <input
                 id="location"
                 type="text"
                 placeholder="Area, town or district"
               />
-
             </label>
 
-
             <label>
-
-              <span>
-                Property type
-              </span>
-
+              <span>Property type</span>
               <select id="property-type">
-
-                <option value="any">
-                  Any type
-                </option>
-
-                <option value="house">
-                  House / Villa
-                </option>
-
-                <option value="apartment">
-                  Apartment / Condo
-                </option>
-
-                <option value="land">
-                  Land
-                </option>
-
-                <option value="commercial">
-                  Commercial
-                </option>
-
+                <option value="any">Any type</option>
+                <option value="house">House / Villa</option>
+                <option value="apartment">Apartment / Condo</option>
+                <option value="land">Land</option>
+                <option value="commercial">Commercial</option>
               </select>
-
             </label>
 
             <label>
-
-              <span>
-                Currency
-              </span>
-
+              <span>Currency</span>
               <select id="search-currency">
-
-                <option value="XCD">
-                  XCD — EC$
-                </option>
-
-                <option
-                  value="USD"
-                  selected
-                >
-                  USD — US$
-                </option>
-
-                <option value="GBP">
-                  GBP — £
-                </option>
-
+                <option value="XCD">XCD — EC$</option>
+                <option value="USD" selected>USD — US$</option>
+                <option value="GBP">GBP — £</option>
               </select>
-
             </label>
 
-
             <label>
-
-              <span>
-                Min price
-              </span>
-
+              <span>Min price</span>
               <select id="min-price"></select>
-
             </label>
 
-
             <label>
-
-              <span>
-                Max price
-              </span>
-
+              <span>Max price</span>
               <select id="max-price"></select>
-
             </label>
-
 
             <label>
-
-              <span>
-                Bedrooms
-              </span>
-
+              <span>Bedrooms</span>
               <select id="bedrooms">
-
-                <option value="any">
-                  Any
-                </option>
-
-                <option value="1">
-                  1+
-                </option>
-
-                <option value="2">
-                  2+
-                </option>
-
-                <option value="3">
-                  3+
-                </option>
-
-                <option value="4">
-                  4+
-                </option>
-
+                <option value="any">Any</option>
+                <option value="1">1+</option>
+                <option value="2">2+</option>
+                <option value="3">3+</option>
+                <option value="4">4+</option>
               </select>
-
             </label>
-
 
             <button
               class="button button-accent search-button"
               type="submit"
             >
-
               Search
-
-              <span aria-hidden="true">
-                ⌕
-              </span>
-
+              <span aria-hidden="true">⌕</span>
             </button>
-
           </form>
-
 
           <p
             class="search-message"
             id="search-message"
             aria-live="polite"
           ></p>
-
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         PROPERTIES
-         ===================================================== -->
-
-    <section
-      class="section properties-section"
-      id="properties"
-    >
-
+    <!-- PROPERTIES -->
+    <section class="section properties-section" id="properties">
       <div class="container">
-
         <div class="section-heading-row">
-
           <div>
-
-            <p class="eyebrow">
-              Current portfolio
-            </p>
-
-            <h2>
-              Featured properties
-            </h2>
+            <p class="eyebrow">Current portfolio</p>
+            <h2>All properties</h2>
 
             <p class="section-copy">
               Listings published from the Helen Estates
               management system will appear here automatically.
             </p>
-
           </div>
-
 
           <button
             class="text-link view-all-button"
             id="view-all-properties"
             type="button"
           >
-
-            View all properties
-
-            <span aria-hidden="true">
-              →
-            </span>
-
+            Show featured
+            <span aria-hidden="true">→</span>
           </button>
-
         </div>
-
 
         <div
           class="property-grid"
           id="property-grid"
           aria-live="polite"
         >
-
-          <p
-            class="properties-loading"
-            id="properties-loading"
-          >
+          <p class="properties-loading" id="properties-loading">
             Loading properties…
           </p>
-
         </div>
-
 
         <p
           class="properties-status"
           id="properties-status"
           hidden
         ></p>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         PROPERTY REQUEST
-         ===================================================== -->
-
-    <section
-      class="request-section"
-      id="request"
-    >
-
+    <!-- PROPERTY REQUEST -->
+    <section class="request-section" id="request">
       <div class="container request-grid">
-
         <div class="request-copy">
-
-          <p class="eyebrow light">
-            Property request desk
-          </p>
-
+          <p class="eyebrow light">Property request desk</p>
 
           <h2>
             Tell us what you need.<br />
             We’ll take it from there.
           </h2>
-
 
           <p>
             Buying, renting, selling or advertising a property?
@@ -612,207 +322,111 @@
             so the team can follow up directly.
           </p>
 
-
           <div
             class="request-steps"
             aria-label="How the property request service works"
           >
-
             <article>
-
-              <span>
-                01
-              </span>
-
+              <span>01</span>
               <div>
-
-                <strong>
-                  Submit your request
-                </strong>
-
+                <strong>Submit your request</strong>
                 <p>
                   Share your contact details and the basics
                   of what you need.
                 </p>
-
               </div>
-
             </article>
 
-
             <article>
-
-              <span>
-                02
-              </span>
-
+              <span>02</span>
               <div>
-
-                <strong>
-                  We review it
-                </strong>
-
+                <strong>We review it</strong>
                 <p>
                   Your request appears in the private admin
                   queue with a unique reference.
                 </p>
-
               </div>
-
             </article>
 
-
             <article>
-
-              <span>
-                03
-              </span>
-
+              <span>03</span>
               <div>
-
-                <strong>
-                  Keep your receipt
-                </strong>
-
+                <strong>Keep your receipt</strong>
                 <p>
                   We email your reference number and a secure
                   link so you can check the request status
                   without creating an account.
                 </p>
-
               </div>
-
             </article>
 
-
             <article>
-
-              <span>
-                04
-              </span>
-
+              <span>04</span>
               <div>
-
-                <strong>
-                  We contact you
-                </strong>
-
+                <strong>We contact you</strong>
                 <p>
                   Helen Estates aims to contact you within two
                   working days to understand the requirement
                   and agree the next step.
                 </p>
-
               </div>
-
             </article>
-
           </div>
-
         </div>
 
-
         <div class="ticket-card">
-
           <div class="ticket-card-head">
-
-            <p class="eyebrow">
-              Open a property request
-            </p>
-
-            <h3>
-              How can we help?
-            </h3>
-
-            <p>
-              Fields marked * are required.
-            </p>
-
+            <p class="eyebrow">Open a property request</p>
+            <h3>How can we help?</h3>
+            <p>Fields marked * are required.</p>
           </div>
 
-
-          <form
-            id="ticket-form"
-            class="ticket-form"
-          >
-
-            <div
-              class="hp-field"
-              aria-hidden="true"
-            >
-
+          <form id="ticket-form" class="ticket-form">
+            <div class="hp-field" aria-hidden="true">
               <label>
-
                 Website
-
                 <input
                   name="website"
                   type="text"
                   tabindex="-1"
                   autocomplete="off"
                 />
-
               </label>
-
             </div>
 
-
             <div class="form-row form-row-three">
-
               <label class="choice-card">
-
                 <input
                   type="radio"
                   name="requestType"
                   value="buy"
                   checked
                 />
-
-                <span>
-                  Buy
-                </span>
-
+                <span>Buy</span>
               </label>
 
-
               <label class="choice-card">
-
                 <input
                   type="radio"
                   name="requestType"
                   value="rent"
                 />
-
-                <span>
-                  Rent
-                </span>
-
+                <span>Rent</span>
               </label>
 
-
               <label class="choice-card">
-
                 <input
                   type="radio"
                   name="requestType"
                   value="sell"
                 />
-
-                <span>
-                  Sell / Advertise
-                </span>
-
+                <span>Sell / Advertise</span>
               </label>
-
             </div>
 
-
             <div class="form-row form-row-two">
-
               <label>
-
                 Full name *
-
                 <input
                   id="ticket-name"
                   name="name"
@@ -820,14 +434,10 @@
                   autocomplete="name"
                   required
                 />
-
               </label>
 
-
               <label>
-
                 Email *
-
                 <input
                   id="ticket-email"
                   name="email"
@@ -835,18 +445,12 @@
                   autocomplete="email"
                   required
                 />
-
               </label>
-
             </div>
 
-
             <div class="form-row form-row-two">
-
               <label>
-
                 Phone / WhatsApp *
-
                 <input
                   id="ticket-phone"
                   name="phone"
@@ -854,44 +458,24 @@
                   autocomplete="tel"
                   required
                 />
-
               </label>
 
-
               <label>
-
                 Preferred contact
-
                 <select
                   id="ticket-contact-method"
                   name="contactMethod"
                 >
-
-                  <option value="phone">
-                    Phone
-                  </option>
-
-                  <option value="whatsapp">
-                    WhatsApp
-                  </option>
-
-                  <option value="email">
-                    Email
-                  </option>
-
+                  <option value="phone">Phone</option>
+                  <option value="whatsapp">WhatsApp</option>
+                  <option value="email">Email</option>
                 </select>
-
               </label>
-
             </div>
 
-
             <div class="form-row form-row-two">
-
               <label>
-
                 Preferred area / property location *
-
                 <input
                   id="ticket-location"
                   name="location"
@@ -899,135 +483,64 @@
                   required
                   placeholder="e.g. area, town, community"
                 />
-
               </label>
 
-
               <label>
-
                 Property type
-
                 <select
                   id="ticket-property-type"
                   name="propertyType"
                 >
-
-                  <option value="any">
-                    Any / Not sure
-                  </option>
-
-                  <option value="house">
-                    House / Villa
-                  </option>
-
-                  <option value="apartment">
-                    Apartment / Condo
-                  </option>
-
-                  <option value="land">
-                    Land
-                  </option>
-
-                  <option value="commercial">
-                    Commercial
-                  </option>
-
+                  <option value="any">Any / Not sure</option>
+                  <option value="house">House / Villa</option>
+                  <option value="apartment">Apartment / Condo</option>
+                  <option value="land">Land</option>
+                  <option value="commercial">Commercial</option>
                 </select>
-
               </label>
-
             </div>
 
-
             <div class="form-row form-row-three">
-
               <label>
-
                 Currency
-
                 <select
                   id="ticket-currency"
                   name="budgetCurrency"
                 >
-
-                  <option value="XCD">
-                    XCD
-                  </option>
-
-                  <option
-                    value="USD"
-                    selected
-                  >
-                    USD
-                  </option>
-
-                  <option value="GBP">
-                    GBP
-                  </option>
-
+                  <option value="XCD">XCD</option>
+                  <option value="USD" selected>USD</option>
+                  <option value="GBP">GBP</option>
                 </select>
-
               </label>
 
-
               <label id="ticket-budget-label">
-
                 Budget / target price
-
                 <input
                   id="ticket-budget"
                   name="budget"
                   type="text"
                   placeholder="e.g. 350,000"
                 />
-
               </label>
 
-
               <label>
-
                 Bedrooms
-
                 <select
                   id="ticket-bedrooms"
                   name="bedrooms"
                 >
-
-                  <option value="">
-                    Not specified
-                  </option>
-
-                  <option value="1">
-                    1+
-                  </option>
-
-                  <option value="2">
-                    2+
-                  </option>
-
-                  <option value="3">
-                    3+
-                  </option>
-
-                  <option value="4">
-                    4+
-                  </option>
-
-                  <option value="5">
-                    5+
-                  </option>
-
+                  <option value="">Not specified</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                  <option value="4">4+</option>
+                  <option value="5">5+</option>
                 </select>
-
               </label>
-
             </div>
 
-
             <label>
-
               Tell us a little more *
-
               <textarea
                 id="ticket-message"
                 name="message"
@@ -1035,9 +548,7 @@
                 required
                 placeholder="Describe the property you want to find, sell, rent or advertise."
               ></textarea>
-
             </label>
-
 
             <input
               id="ticket-property-reference"
@@ -1046,45 +557,32 @@
               value=""
             />
 
-
             <label class="consent-row">
-
               <input
                 id="ticket-consent"
                 type="checkbox"
                 required
               />
-
               <span>
                 I agree that Helen Estates Realtors may use
                 these details to contact me about this request.
               </span>
-
             </label>
-
 
             <button
               class="button button-accent ticket-submit"
               type="submit"
             >
-
               Submit property request
-
-              <span aria-hidden="true">
-                →
-              </span>
-
+              <span aria-hidden="true">→</span>
             </button>
-
 
             <p
               class="ticket-message"
               id="ticket-message-status"
               aria-live="polite"
             ></p>
-
           </form>
-
 
           <section
             class="ticket-confirmation"
@@ -1092,27 +590,16 @@
             hidden
             aria-live="polite"
           >
-
-            <div
-              class="confirmation-icon"
-              aria-hidden="true"
-            >
+            <div class="confirmation-icon" aria-hidden="true">
               ✓
             </div>
 
-
-            <p class="eyebrow">
-              Request received
-            </p>
-
+            <p class="eyebrow">Request received</p>
 
             <h3>
               Thank you,
-              <span id="confirmation-name">
-                there
-              </span>.
+              <span id="confirmation-name">there</span>.
             </h3>
-
 
             <p>
               Your Helen Estates Realtors request has been
@@ -1120,25 +607,15 @@
               working days.
             </p>
 
-
             <div class="confirmation-reference">
-
-              <span>
-                Your reference
-              </span>
-
-              <strong id="confirmation-reference">
-                —
-              </strong>
-
+              <span>Your reference</span>
+              <strong id="confirmation-reference">—</strong>
             </div>
-
 
             <p
               class="confirmation-email-note"
               id="confirmation-email-note"
             ></p>
-
 
             <a
               class="button button-accent"
@@ -1146,15 +623,9 @@
               href="request-status.html"
               hidden
             >
-
               View request status
-
-              <span aria-hidden="true">
-                →
-              </span>
-
+              <span aria-hidden="true">→</span>
             </a>
-
 
             <button
               class="text-link confirmation-new-request"
@@ -1163,52 +634,25 @@
             >
               Submit another request
             </button>
-
           </section>
-
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         ABOUT
-         ===================================================== -->
-
-    <section
-      class="about-section"
-      id="about"
-    >
-
+    <!-- ABOUT -->
+    <section class="about-section" id="about">
       <div class="container about-grid">
-
         <div class="about-image">
-
-          <img
-            src="about.jpg"
-            alt="Bright, elegant interior"
-          />
+          <img src="about.jpg" alt="Bright, elegant interior" />
 
           <div class="image-note">
             Personal service. Modern marketing. Local knowledge.
           </div>
-
         </div>
 
-
         <div class="about-copy">
-
-          <p class="eyebrow">
-            About Helen Estates Realtors
-          </p>
-
-
-          <h2>
-            Property service with a human touch.
-          </h2>
-
+          <p class="eyebrow">About Helen Estates Realtors</p>
+          <h2>Property service with a human touch.</h2>
 
           <p>
             Helen Estates Realtors is built around a simple
@@ -1217,80 +661,32 @@
             property in front of serious prospects.
           </p>
 
-
-          <div
-            class="service-pills"
-            aria-label="Services"
-          >
-
-            <span>
-              Property sales
-            </span>
-
-            <span>
-              Long-term rentals
-            </span>
-
-            <span>
-              Property sourcing
-            </span>
-
-            <span>
-              Owner advertising
-            </span>
-
+          <div class="service-pills" aria-label="Services">
+            <span>Property sales</span>
+            <span>Long-term rentals</span>
+            <span>Property sourcing</span>
+            <span>Owner advertising</span>
           </div>
 
-
-          <a
-            class="button button-dark"
-            href="#request"
-          >
+          <a class="button button-dark" href="#request">
             Open a property request
           </a>
-
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         SERVICES
-         ===================================================== -->
-
-    <section
-      class="services-section"
-      id="services"
-    >
-
+    <!-- SERVICES -->
+    <section class="services-section" id="services">
       <div class="container">
-
         <div class="section-heading centered">
-
-          <p class="eyebrow">
-            How we can help
-          </p>
-
-          <h2>
-            One place for both sides of the property search
-          </h2>
-
+          <p class="eyebrow">How we can help</p>
+          <h2>One place for both sides of the property search</h2>
         </div>
 
-
         <div class="services-grid">
-
           <article>
-
-            <span>
-              01
-            </span>
-
-            <h3>
-              Find a property
-            </h3>
+            <span>01</span>
+            <h3>Find a property</h3>
 
             <p>
               Tell us what you want to buy or rent and create
@@ -1298,25 +694,14 @@
               on the website.
             </p>
 
-            <a
-              href="#request"
-              data-request-link="buy"
-            >
+            <a href="#request" data-request-link="buy">
               Start buying request →
             </a>
-
           </article>
 
-
           <article>
-
-            <span>
-              02
-            </span>
-
-            <h3>
-              Advertise a property
-            </h3>
+            <span>02</span>
+            <h3>Advertise a property</h3>
 
             <p>
               Owners can submit the essentials and Helen
@@ -1324,25 +709,14 @@
               for listing.
             </p>
 
-            <a
-              href="#request"
-              data-request-link="sell"
-            >
+            <a href="#request" data-request-link="sell">
               Advertise property →
             </a>
-
           </article>
 
-
           <article>
-
-            <span>
-              03
-            </span>
-
-            <h3>
-              Enquire on a listing
-            </h3>
+            <span>03</span>
+            <h3>Enquire on a listing</h3>
 
             <p>
               Every property can be connected to the same
@@ -1350,67 +724,36 @@
               listing reference attached.
             </p>
 
-            <a href="#properties">
-              Browse listings →
-            </a>
-
+            <a href="#properties">Browse listings →</a>
           </article>
-
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         REVIEWS
-         ===================================================== -->
-
-    <section
-      class="reviews-section"
-      id="reviews"
-    >
-
+    <!-- REVIEWS -->
+    <section class="reviews-section" id="reviews">
       <div class="container">
-
-
         <div class="reviews-heading">
-
           <div>
-
-            <p class="eyebrow">
-              Customer experiences
-            </p>
-
-            <h2>
-              What our clients say.
-            </h2>
+            <p class="eyebrow">Customer experiences</p>
+            <h2>What our clients say.</h2>
 
             <p class="section-copy">
               Read experiences shared by people who have
               worked with Helen Estates Realtors.
             </p>
-
           </div>
-
 
           <div
             class="review-summary"
             id="review-summary"
             aria-label="Average customer rating"
           >
-
-            <strong
-              class="review-average"
-              id="review-average"
-            >
+            <strong class="review-average" id="review-average">
               —
             </strong>
 
-
             <div>
-
               <div
                 class="review-summary-stars"
                 id="review-summary-stars"
@@ -1419,92 +762,46 @@
                 ☆☆☆☆☆
               </div>
 
-              <p id="review-count">
-                No approved reviews yet
-              </p>
-
+              <p id="review-count">No approved reviews yet</p>
             </div>
-
           </div>
-
         </div>
 
-
         <div class="reviews-layout">
-
-
-          <!-- APPROVED REVIEWS -->
-
           <div class="reviews-display">
-
             <div
               class="reviews-list"
               id="reviews-list"
               aria-live="polite"
             >
-
-              <div class="reviews-loading">
-                Loading reviews…
-              </div>
-
+              <div class="reviews-loading">Loading reviews…</div>
             </div>
-
           </div>
 
-
-          <!-- REVIEW FORM -->
-
           <aside class="review-form-card">
-
-            <p class="eyebrow">
-              Share your experience
-            </p>
-
-
-            <h3>
-              Leave a review.
-            </h3>
-
+            <p class="eyebrow">Share your experience</p>
+            <h3>Leave a review.</h3>
 
             <p class="review-form-intro">
               Tell others about your experience with
               Helen Estates Realtors.
             </p>
 
-
-            <form
-              class="review-form"
-              id="review-form"
-            >
-
-
-              <!-- Spam protection -->
-
-              <div
-                class="hp-field"
-                aria-hidden="true"
-              >
-
+            <form class="review-form" id="review-form">
+              <div class="hp-field" aria-hidden="true">
                 <label>
-
                   Website
-
                   <input
                     name="website"
                     type="text"
                     tabindex="-1"
                     autocomplete="off"
                   />
-
                 </label>
-
               </div>
 
-
               <label class="review-name-field">
-
                 Your name *
-
                 <input
                   id="review-name"
                   name="name"
@@ -1513,24 +810,15 @@
                   maxlength="80"
                   required
                 />
-
               </label>
 
-
-              <fieldset
-                class="review-rating-fieldset"
-              >
-
-                <legend>
-                  Your rating *
-                </legend>
-
+              <fieldset class="review-rating-fieldset">
+                <legend>Your rating *</legend>
 
                 <div
                   class="review-rating"
                   aria-label="Choose a rating from one to five stars"
                 >
-
                   <input
                     id="review-star-5"
                     name="rating"
@@ -1538,15 +826,11 @@
                     value="5"
                     required
                   />
-
                   <label
                     for="review-star-5"
                     title="5 stars"
                     aria-label="5 stars"
-                  >
-                    ★
-                  </label>
-
+                  >★</label>
 
                   <input
                     id="review-star-4"
@@ -1554,15 +838,11 @@
                     type="radio"
                     value="4"
                   />
-
                   <label
                     for="review-star-4"
                     title="4 stars"
                     aria-label="4 stars"
-                  >
-                    ★
-                  </label>
-
+                  >★</label>
 
                   <input
                     id="review-star-3"
@@ -1570,15 +850,11 @@
                     type="radio"
                     value="3"
                   />
-
                   <label
                     for="review-star-3"
                     title="3 stars"
                     aria-label="3 stars"
-                  >
-                    ★
-                  </label>
-
+                  >★</label>
 
                   <input
                     id="review-star-2"
@@ -1586,15 +862,11 @@
                     type="radio"
                     value="2"
                   />
-
                   <label
                     for="review-star-2"
                     title="2 stars"
                     aria-label="2 stars"
-                  >
-                    ★
-                  </label>
-
+                  >★</label>
 
                   <input
                     id="review-star-1"
@@ -1602,24 +874,16 @@
                     type="radio"
                     value="1"
                   />
-
                   <label
                     for="review-star-1"
                     title="1 star"
                     aria-label="1 star"
-                  >
-                    ★
-                  </label>
-
+                  >★</label>
                 </div>
-
               </fieldset>
 
-
               <label>
-
                 Review
-
                 <textarea
                   id="review-text"
                   name="reviewText"
@@ -1627,308 +891,149 @@
                   maxlength="1500"
                   placeholder="Tell us about your experience..."
                 ></textarea>
-
               </label>
-
 
               <p class="review-moderation-note">
                 Reviews are checked before they are published.
               </p>
 
-
               <button
                 class="button button-accent review-submit"
                 type="submit"
               >
-
                 Submit review
-
-                <span aria-hidden="true">
-                  →
-                </span>
-
+                <span aria-hidden="true">→</span>
               </button>
-
 
               <p
                 class="review-message"
                 id="review-message"
                 aria-live="polite"
               ></p>
-
             </form>
-
           </aside>
-
         </div>
-
       </div>
-
     </section>
 
-
-    <!-- =====================================================
-         CLOSING CTA
-         ===================================================== -->
-
+    <!-- CLOSING CTA -->
     <section class="closing-cta">
-
       <div class="container closing-cta-inner">
-
         <div>
-
-          <p class="eyebrow light">
-            Not seeing what you need?
-          </p>
-
-          <h2>
-            Make the first move.
-          </h2>
-
+          <p class="eyebrow light">Not seeing what you need?</p>
+          <h2>Make the first move.</h2>
         </div>
 
-
-        <a
-          class="button button-light"
-          href="#request"
-        >
+        <a class="button button-light" href="#request">
           Create a property request
         </a>
-
       </div>
-
     </section>
-
   </main>
 
-
-  <!-- =====================================================
-       FOOTER
-       ===================================================== -->
-
-  <footer
-    class="site-footer"
-    id="contact"
-  >
-
+  <!-- FOOTER -->
+  <footer class="site-footer" id="contact">
     <div class="container footer-grid">
-
       <div class="footer-brand">
-
         <a
           class="brand brand-footer"
           href="#top"
           aria-label="Helen Estates Realtors home"
         >
-
-          <span
-            class="brand-badge brand-badge-footer"
-          >
-
+          <span class="brand-badge brand-badge-footer">
             <img
               class="brand-logo brand-logo-footer"
               src="Helen Estates Realtors Logo 1.png"
               alt="Helen Estates Realtors logo"
             />
-
           </span>
 
-
-          <span
-            class="brand-wordmark brand-wordmark-footer"
-          >
-
-            <strong>
-              Helen Estates
-            </strong>
-
-            <small>
-              Realtors
-            </small>
-
+          <span class="brand-wordmark brand-wordmark-footer">
+            <strong>Helen Estates</strong>
+            <small>Realtors</small>
           </span>
-
         </a>
-
 
         <p>
           Helping people buy, rent, sell and advertise
           property through one straightforward service.
         </p>
-
       </div>
 
-
       <div>
-
-        <h3>
-          Explore
-        </h3>
-
-        <a href="#properties">
-          Properties
-        </a>
-
-        <a
-          href="#properties"
-          data-filter-link="buy"
-        >
-          Buy
-        </a>
-
-        <a
-          href="#properties"
-          data-filter-link="rent"
-        >
-          Rent
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="sell"
-        >
+        <h3>Explore</h3>
+        <a href="#properties">Properties</a>
+        <a href="#properties" data-filter-link="buy">Buy</a>
+        <a href="#properties" data-filter-link="rent">Rent</a>
+        <a href="#request" data-request-link="sell">
           Sell / Advertise
         </a>
-
       </div>
-
 
       <div>
-
-        <h3>
-          Requests
-        </h3>
-
-        <a
-          href="#request"
-          data-request-link="buy"
-        >
-          Find to buy
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="rent"
-        >
-          Find to rent
-        </a>
-
-        <a
-          href="#request"
-          data-request-link="sell"
-        >
-          List a property
-        </a>
-
+        <h3>Requests</h3>
+        <a href="#request" data-request-link="buy">Find to buy</a>
+        <a href="#request" data-request-link="rent">Find to rent</a>
+        <a href="#request" data-request-link="sell">List a property</a>
       </div>
-
 
       <div>
-
-        <h3>
-          Company
-        </h3>
-
-        <a href="#about">
-          About
-        </a>
-
-        <a href="#services">
-          Services
-        </a>
-
-        <a href="#reviews">
-          Reviews
-        </a>
-
-        <a href="#contact">
-          Contact
-        </a>
-
+        <h3>Company</h3>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#contact">Contact</a>
       </div>
-
 
       <div class="footer-contact">
+        <h3>Contact</h3>
 
-  <h3>
-    Contact
-  </h3>
+        <p>
+          <strong>Patricia</strong><br />
+          Helen Estates Realtors
+        </p>
 
-  <p>
-    <strong>Patricia</strong><br />
-    Helen Estates Realtors
-  </p>
+        <a href="tel:+17584856585">+1 (758) 485-6585</a>
 
-  <a href="tel:+17584856585">
-    +1 (758) 485-6585
-  </a>
+        <a
+          href="https://wa.me/17584856585"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          WhatsApp
+        </a>
 
-  <a
-    href="https://wa.me/17584856585"
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    WhatsApp
-  </a>
+        <a href="mailto:Helenestates@outlook.com">
+          Helenestates@outlook.com
+        </a>
 
-  <a href="mailto:Helenestates@outlook.com">
-    Helenestates@outlook.com
-  </a>
+        <p>Castries, St. Lucia</p>
 
-  <p>
-    Castries, St. Lucia
-  </p>
-
-  <a href="#request">
-    Open a property request →
-  </a>
-
-</div>
-
+        <a href="#request">Open a property request →</a>
+      </div>
     </div>
-
 
     <div class="container footer-bottom">
-
       <p>
-        ©
-        <span id="current-year"></span>
-        Helen Estates Realtors.
-        All rights reserved.
+        © <span id="current-year"></span>
+        Helen Estates Realtors. All rights reserved.
       </p>
 
-
       <div>
-
-        <a href="#">
-          Privacy policy
-        </a>
-
-        <a href="#">
-          Terms &amp; conditions
-        </a>
-
+        <a href="#">Privacy policy</a>
+        <a href="#">Terms &amp; conditions</a>
       </div>
-
     </div>
-
   </footer>
-
 
   <a
     class="floating-request"
     href="#request"
     aria-label="Open a property request"
   >
-
-    <span>
-      +
-    </span>
-
+    <span>+</span>
     Property request
-
   </a>
-
 
   <button
     class="back-to-top"
@@ -1938,13 +1043,9 @@
     ↑
   </button>
 
-
   <script src="script.js"></script>
-
   <script src="reviews.js"></script>
-
   <script src="animations.js"></script>
-
+  <script src="helen-catalogue-update.js?v=20261002"></script>
 </body>
-
 </html>
