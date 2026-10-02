@@ -1,0 +1,76 @@
+/* Website creator credit */
+.he-creator-credit {
+  flex-basis: 100%;
+  margin: 12px 0 0;
+  text-align: center;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: inherit;
+  opacity: 0.85;
+}
+
+.he-creator-credit a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.he-creator-credit a:hover,
+.he-creator-credit a:focus-visible {
+  opacity: 1;
+  text-decoration-thickness: 2px;
+}
+
+.footer-bottom:has(.he-creator-credit) {
+  flex-wrap: wrap;
+}
+
+/* Missing property photographs */
+.he-photo-coming-soon {
+  position: relative;
+  background: #e7f0ec;
+}
+
+.property-image img.he-logo-placeholder,
+.liked-property-image img.he-logo-placeholder,
+.detail-main-image img.he-logo-placeholder {
+  object-fit: contain;
+  box-sizing: border-box;
+  padding: clamp(28px, 5vw, 64px);
+  background: #e7f0ec;
+}
+
+.detail-thumbnail img.he-logo-placeholder {
+  object-fit: contain;
+  padding: 8px;
+  background: #e7f0ec;
+}
+
+/* Semi-transparent Coming soon label */
+.he-coming-soon-label {
+  position: absolute;
+  left: 50%;
+  top: 72%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+
+  padding: 8px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+
+  color: #fff;
+  background: rgba(18, 70, 61, 0.56);
+
+  font-size: clamp(0.85rem, 2vw, 1.05rem);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.he-photo-coming-soon .badge,
+.he-photo-coming-soon .featured-marker,
+.he-photo-coming-soon .favourite,
+.he-photo-coming-soon .liked-remove {
+  z-index: 2;
+}
