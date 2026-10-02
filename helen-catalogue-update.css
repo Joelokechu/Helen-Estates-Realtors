@@ -25,7 +25,7 @@
   flex-wrap: wrap;
 }
 
-/* Missing property photographs */
+/* Property logo fills the image area */
 .he-photo-coming-soon {
   position: relative;
   background: #e7f0ec;
@@ -34,9 +34,9 @@
 .property-image img.he-logo-placeholder,
 .liked-property-image img.he-logo-placeholder,
 .detail-main-image img.he-logo-placeholder {
-  object-fit: contain;
+  object-fit: cover;
   box-sizing: border-box;
-  padding: clamp(28px, 5vw, 64px);
+  padding: 0;
   background: #e7f0ec;
 }
 
